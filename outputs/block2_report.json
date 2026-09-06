@@ -1,0 +1,44 @@
+{
+  "deeper_conv": {
+    "gradient_flow": {
+      "is_healthy": true,
+      "mean_grad_norm": 370.7406897801698,
+      "vanishing_layers": 0,
+      "exploding_layers": 0,
+      "output_shape": [
+        2,
+        32,
+        3584
+      ]
+    },
+    "token_diversity": {
+      "is_diverse": false,
+      "mean_pairwise_cosine_sim": 0.9434081315994263,
+      "std_pairwise_cosine_sim": 0.004832201637327671,
+      "token_count": 32,
+      "token_dim": 3584
+    },
+    "probe_accuracy": 52.0
+  },
+  "qformer": {
+    "gradient_flow": {
+      "is_healthy": false,
+      "mean_grad_norm": 74.15440690636233,
+      "vanishing_layers": 4,
+      "exploding_layers": 0,
+      "output_shape": [
+        2,
+        32,
+        3584
+      ]
+    },
+    "token_diversity": {
+      "is_diverse": true,
+      "mean_pairwise_cosine_sim": 0.03810616955161095,
+      "std_pairwise_cosine_sim": 0.04265577718615532,
+      "token_count": 32,
+      "token_dim": 3584
+    },
+    "probe_accuracy": 50.0
+  }
+}
