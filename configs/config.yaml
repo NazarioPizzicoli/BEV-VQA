@@ -1,0 +1,76 @@
+defaults:
+  - _self_
+  - paths: veh
+
+run_name: ${hydra:runtime.choices.paths}
+
+hydra:
+  run:
+    dir: outputs/${run_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: True
+
+# --- LLM backbone ---
+llm:
+  name: Qwen/Qwen2.5-3B-Instruct
+
+# --- Vision projector (BeLLA-style Deeper Conv) ---
+projector:
+  arch: deeper_conv           # deeper_conv | qformer
+  in_channels: 128            # BEV feature channels
+  hidden_channels: 256        # Conv hidden dim
+  num_conv_layers: 4          # Depth of conv stack
+  num_tokens: 32              # Visual tokens output (BEVDriver uses 32)
+  dropout: 0.1
+
+# --- LoRA ---
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+# --- Stage 1: BEV-text alignment (pretrain) ---
+pretrain:
+  enabled: true
+  lr: 1e-4
+  num_epochs: 10
+  batch_size: 4
+  grad_accum: 4               # effective batch = 16
+  early_stopping_patience: 3
+  max_len: 512                # max tokens (descriptions can be long)
+
+# --- Stage 2: VQA fine-tuning ---
+training:
+  lr: 2e-4
+  num_epochs: 15
+  batch_size: 2
+  eval_batch_size: 8
+  grad_accum: 8               # effective batch = 16
+  num_workers: 4
+  max_len: 256
+  max_new_tokens: 50
+  grad_clip: 1.0
+  eval_max_batches: null       # null = eval tutto
+  early_stopping_patience: 5
+  # Dataset mixing ratio (NuScenes-QA : DriveLM)
+  mix_nuscenes_qa: 0.4
+  mix_drivelm: 0.6
+
+# --- Data fractions (per quick experiments) ---
+data:
+  train_fraction: 1.0
+  val_fraction: 1.0
+
+# --- Evaluation ---
+eval:
+  shuffle_test: true           # Run shuffle test after training
+  shuffle_test_samples: 1000   # N samples for shuffle test
+  compute_nlg_metrics: true    # BLEU, METEOR, ROUGE, CIDEr on DriveLM

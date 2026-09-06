@@ -1,0 +1,6 @@
+{
+  "text_only_acc": 50.0,
+  "bev_film_acc": 57.0,
+  "visual_signal_gap": 7.0,
+  "passed": true
+}

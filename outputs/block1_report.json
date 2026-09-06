@@ -1,0 +1,22 @@
+{
+  "dataset": "NuScenes-QA (exist questions)",
+  "train_samples": 1200,
+  "val_samples": 400,
+  "resolution": "128x200x200",
+  "random_baseline": 50.0,
+  "majority_baseline": 50.0,
+  "text_only_acc": 76.5,
+  "text_only_stats": {
+    "acc": 76.5,
+    "acc_no": 80.5,
+    "acc_yes": 72.5
+  },
+  "full_probe_acc": 72.75,
+  "full_probe_stats": {
+    "acc": 72.75,
+    "acc_no": 83.0,
+    "acc_yes": 62.5
+  },
+  "bev_gap": -3.75,
+  "passed": false
+}

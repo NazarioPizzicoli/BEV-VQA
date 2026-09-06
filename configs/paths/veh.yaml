@@ -1,0 +1,12 @@
+# Paths to data on external drive
+bev_features_dir: /media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh
+unified_datasets_dir: /media/nazario.pizzicoli/Datos/vqa_datasets/unified
+
+# Stage 1: Pretrain descriptions
+pretrain_descriptions: ${paths.unified_datasets_dir}/omnidrive_descriptions_train.json
+
+# Stage 2: VQA datasets
+nuscenes_qa_train: ${paths.unified_datasets_dir}/nuscenes_qa_train.json
+nuscenes_qa_val: ${paths.unified_datasets_dir}/nuscenes_qa_val.json
+drivelm_train: ${paths.unified_datasets_dir}/drivelm_train.json
+drivelm_val: ${paths.unified_datasets_dir}/drivelm_val.json
