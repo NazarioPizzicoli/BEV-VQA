@@ -153,16 +153,20 @@ class BEVPretrainDataset(BaseBEVDataset):
             full_data = json.load(f)
             
         descriptions = full_data.get("descriptions", [])
-        
+        # Filtra solo campioni con file BEV esistente
+        valid_descriptions = [d for d in descriptions if (self.bev_dir / f"{d['sample_token']}.pt").exists()]
+        logger.info(f"Filtro BEV: {len(valid_descriptions)}/{len(descriptions)} campioni validi.")
+        descriptions = valid_descriptions
+
         if self.fraction < 1.0:
             num_samples = int(len(descriptions) * self.fraction)
             descriptions = random.sample(descriptions, num_samples)
-            
+
         logger.info(f"Loaded {len(descriptions)} descriptions.")
-        
+
         with open(cache_file, "wb") as f:
             pickle.dump(descriptions, f)
-            
+
         return descriptions
         
     def __getitem__(self, idx: int) -> Dict[str, Any]:
@@ -204,16 +208,19 @@ class BEVQADataset(BaseBEVDataset):
             
         questions = full_data.get("questions", [])
         questions = [q for q in questions if q.get("split", self.split) == self.split]
-        
+        valid_questions = [q for q in questions if (self.bev_dir / f"{q['sample_token']}.pt").exists()]
+        logger.info(f"Filtro BEV: {len(valid_questions)}/{len(questions)} domande con BEV valido.")
+        questions = valid_questions
+
         if self.fraction < 1.0:
             num_samples = int(len(questions) * self.fraction)
             questions = random.sample(questions, num_samples)
-            
+
         logger.info(f"Loaded {len(questions)} questions.")
-        
+
         with open(cache_file, "wb") as f:
             pickle.dump(questions, f)
-            
+
         return questions
         
     def __getitem__(self, idx: int) -> Dict[str, Any]:
