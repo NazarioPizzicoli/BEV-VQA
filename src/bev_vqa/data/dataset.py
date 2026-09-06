@@ -60,7 +60,7 @@ class BaseBEVDataset(Dataset):
         bev_dir: Union[str, Path],
         tokenizer: PreTrainedTokenizer,
         split: str = "train",
-        num_bev_tokens: int = 32,
+        num_bev_tokens: int = 1,
         fraction: float = 1.0,
         load_bev: bool = True,
         cache_dir: Optional[Union[str, Path]] = None,
@@ -92,7 +92,7 @@ class BaseBEVDataset(Dataset):
             logger.warning(f"BEV feature not found: {bev_path}")
             return torch.zeros((1, 128, 200, 200), dtype=torch.float16)
             
-        data = torch.load(bev_path, map_location="cpu")
+        data = torch.load(bev_path, map_location="cpu", weights_only=True)
         return data["features_fused"]
 
     def _prepare_sample(self, system_prompt: str, user_text: str, answer_text: str) -> Dict[str, Any]:
@@ -108,31 +108,34 @@ class BaseBEVDataset(Dataset):
             messages, tokenize=False, add_generation_prompt=True
         )
         
-        if self.split == "train":
+        tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
+        result = {
+            "prompt_ids": tokenized_prompt.input_ids[0],
+            "attention_mask": tokenized_prompt.attention_mask[0],
+        }
+
+        if answer_text:
             full_text = prompt + answer_text + self.tokenizer.eos_token
-            
-            tokenized_full = self.tokenizer(full_text, return_tensors="pt", add_special_tokens=False)
-            tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
-            
+            tokenized_full = self.tokenizer(
+                full_text,
+                return_tensors="pt",
+                add_special_tokens=False,
+                truncation=True,
+                max_length=384,
+            )
             input_ids = tokenized_full.input_ids[0]
             attention_mask = tokenized_full.attention_mask[0]
-            
             labels = input_ids.clone()
-            prompt_len = tokenized_prompt.input_ids.shape[1]
+            prompt_len = min(tokenized_prompt.input_ids.shape[1], input_ids.shape[0])
             labels[:prompt_len] = -100
-            
-            return {
+
+            result.update({
                 "input_ids": input_ids,
                 "attention_mask": attention_mask,
                 "labels": labels,
-            }
-        else:
-            tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
-            
-            return {
-                "prompt_ids": tokenized_prompt.input_ids[0],
-                "attention_mask": tokenized_prompt.attention_mask[0],
-            }
+            })
+
+        return result
 
 
 class BEVPretrainDataset(BaseBEVDataset):

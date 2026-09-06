@@ -23,9 +23,15 @@ def collate_train(batch: List[Dict[str, Any]], pad_id: int) -> Dict[str, torch.T
     attention_mask_padded = pad_sequence(attention_mask, batch_first=True, padding_value=0)
     labels_padded = pad_sequence(labels, batch_first=True, padding_value=-100)
     
-    bevs = [item["bev"] for item in batch if item["bev"] is not None]
+    bevs = []
+    for item in batch:
+        b = item.get("bev")
+        if b is not None:
+            if b.dim() == 3:
+                b = b.unsqueeze(0)
+            bevs.append(b)
     bev_tensor = torch.cat(bevs, dim=0) if bevs else None
-    
+
     return {
         "input_ids": input_ids_padded,
         "attention_mask": attention_mask_padded,
@@ -51,7 +57,13 @@ def collate_eval(batch: List[Dict[str, Any]], pad_id: int) -> Dict[str, Any]:
     prompt_ids_padded = pad_sequence(prompt_ids, batch_first=True, padding_value=pad_id).flip(dims=[1])
     attention_mask_padded = pad_sequence(attention_mask, batch_first=True, padding_value=0).flip(dims=[1])
     
-    bevs = [item["bev"] for item in batch if item.get("bev") is not None]
+    bevs = []
+    for item in batch:
+        b = item.get("bev")
+        if b is not None:
+            if b.dim() == 3:
+                b = b.unsqueeze(0)
+            bevs.append(b)
     bev_tensor = torch.cat(bevs, dim=0) if bevs else None
     
     return {

@@ -1,0 +1,355 @@
+{
+  "stage": 1,
+  "description": "BEV-Language Alignment Pretraining",
+  "llm_backbone": "Qwen/Qwen2.5-3B-Instruct",
+  "projector_arch": "deeper_conv",
+  "num_visual_tokens": 32,
+  "trainable_parameters": 6801408,
+  "frozen_llm_parameters": 3115872256,
+  "total_optimization_steps": 50,
+  "effective_batch_size": 16,
+  "learning_rate": 0.0001,
+  "training_time_seconds": 100.72,
+  "initial_val_loss": 2.7502,
+  "final_val_loss": 2.2775,
+  "best_val_loss": 2.2524,
+  "val_loss_delta": -0.4727,
+  "qualitative_initial": [
+    {
+      "sample_token": "d575e4dbdd6749068d4e71f7d99b02bc",
+      "ground_truth": "The panorama offers a view of a clear, unobstructed road flanked by lush greenery and urban development. On the left, a sidewalk parallels a well-maintained grassy area, suggesting a suburban or city park setting. Directly ahead, the road, marked by crisp, white lane lines, extends forward, free of traffic, under a bright sky hinting at midday. Tall trees and manicured shrubs line the right, bordering a tall glass building, indicating an approach to a more urban area. To the right-rear, a road sign is visible, possibly indicating local directions or regulations.",
+      "prediction": "I'm sorry, but there seems to be a misunderstanding. You've entered a string of \"thelarase\" multiple times, which doesn't provide any information about a bird's-eye-view feature map or the scene it depicts. Could you please provide a specific image or description of the feature map? I'd be happy to describe what you see once I have that information."
+    },
+    {
+      "sample_token": "bd0a172dbc9045d5a11b1980ccfb0d53",
+      "ground_truth": "The surroundings indicate an urban environment with ongoing construction as evidenced by barriers and a parked truck on the side of the road. There are a few pedestrians crossing the street in front of the vehicle, visible in the front-left view. In the direct front, there\u2019s a lineup of cars at a traffic light, suggesting the vehicle is approaching an intersection. The weather seems overcast, with sufficient daylight for visibility. The rear views show a clear road behind with no immediate traffic, and a bus to the right rear, indicating the presence of a bus lane or stop.",
+      "prediction": "I'm sorry, but there seems to be a misunderstanding. You've entered a string of \"thelocalthelocalthelocalthelocalthelocalthelocalthelocalthelocal\" which doesn't provide any information about a bird's-eye-view feature map or the scene it depicts. Could you please provide a specific image or description of the feature map?"
+    }
+  ],
+  "qualitative_final": [
+    {
+      "sample_token": "d575e4dbdd6749068d4e71f7d99b02bc",
+      "ground_truth": "The panorama offers a view of a clear, unobstructed road flanked by lush greenery and urban development. On the left, a sidewalk parallels a well-maintained grassy area, suggesting a suburban or city park setting. Directly ahead, the road, marked by crisp, white lane lines, extends forward, free of traffic, under a bright sky hinting at midday. Tall trees and manicured shrubs line the right, bordering a tall glass building, indicating an approach to a more urban area. To the right-rear, a road sign is visible, possibly indicating local directions or regulations.",
+      "prediction": "The vehicle is positioned on a busy urban street, with multiple lanes and traffic lights. The scene ahead reveals a congested intersection with several vehicles in motion, including a bus and a taxi. To the right, there's a pedestrian crossing marked by a crosswalk sign, indicating pedestrians are present. The road ahead is clear, but visibility is limited due to the dense traffic and nearby parked cars. On"
+    },
+    {
+      "sample_token": "bd0a172dbc9045d5a11b1980ccfb0d53",
+      "ground_truth": "The surroundings indicate an urban environment with ongoing construction as evidenced by barriers and a parked truck on the side of the road. There are a few pedestrians crossing the street in front of the vehicle, visible in the front-left view. In the direct front, there\u2019s a lineup of cars at a traffic light, suggesting the vehicle is approaching an intersection. The weather seems overcast, with sufficient daylight for visibility. The rear views show a clear road behind with no immediate traffic, and a bus to the right rear, indicating the presence of a bus lane or stop.",
+      "prediction": "The vehicle is positioned on a busy urban street, with multiple lanes and traffic lights. The scene is dominated by a high-rise building to the left, which casts a long shadow across the road. To the right, there's a row of parked cars, indicating a residential area. Ahead, the road narrows as it approaches an intersection with a set of traffic lights. The sky is clear, with"
+    },
+    {
+      "sample_token": "bc94beb70f694ee8a0399c4e7e1fc2d0",
+      "ground_truth": "Amidst a rain-drenched urban setting, the vehicle navigates a less trafficked thoroughfare marked by reflective wet asphalt. To the left-front, a pub sign hints at the commercial nature of the area, while construction work signals ongoing development. Directly ahead, the overcast sky looms above a clear road, suggesting a quiet period of the day, potentially late morning or early afternoon. Traffic lights are visible, but their status is indiscernible. On the right-front, scaffolding alongside a building indicates further construction. In the rear views, wet streets reflect the grey skies, and there are no vehicles closely following, suggesting light traffic conditions.",
+      "prediction": "The vehicle is positioned on a busy urban street, with multiple lanes and traffic lights. The scene is dominated by a clear blue sky with scattered clouds, indicating a bright day. To the left, there's a row of parked cars, and to the right, a pedestrian crossing with a few people walking across it. Ahead, the road ahead is clear with no visible obstacles or hazards. The traffic light"
+    }
+  ],
+  "checkpoints": {
+    "best_projector": "checkpoints/stage1/stage1_projector_best.pt",
+    "latest_projector": "checkpoints/stage1/stage1_projector_latest.pt",
+    "tokenizer": "checkpoints/stage1/tokenizer"
+  },
+  "history_sample": [
+    {
+      "step": 1,
+      "train_loss": 2.395102024078369,
+      "grad_norm": 2.1040470600128174,
+      "lr": 5e-05
+    },
+    {
+      "step": 2,
+      "train_loss": 2.4019139111042023,
+      "grad_norm": 2.360712766647339,
+      "lr": 0.0001
+    },
+    {
+      "step": 3,
+      "train_loss": 2.30131995677948,
+      "grad_norm": 1.4547828435897827,
+      "lr": 9.989294616193017e-05
+    },
+    {
+      "step": 4,
+      "train_loss": 2.241531163454056,
+      "grad_norm": 2.5052921772003174,
+      "lr": 9.957224306869053e-05
+    },
+    {
+      "step": 5,
+      "train_loss": 2.2410257160663605,
+      "grad_norm": 1.9331029653549194,
+      "lr": 9.903926402016153e-05
+    },
+    {
+      "step": 6,
+      "train_loss": 2.152334213256836,
+      "grad_norm": 1.6814802885055542,
+      "lr": 9.829629131445342e-05
+    },
+    {
+      "step": 7,
+      "train_loss": 2.178226977586746,
+      "grad_norm": 2.069117784500122,
+      "lr": 9.73465064747553e-05
+    },
+    {
+      "step": 8,
+      "train_loss": 2.0989244133234024,
+      "grad_norm": 1.6330320835113525,
+      "lr": 9.619397662556435e-05
+    },
+    {
+      "step": 9,
+      "train_loss": 2.093858301639557,
+      "grad_norm": 1.9178340435028076,
+      "lr": 9.484363707663442e-05
+    },
+    {
+      "step": 10,
+      "train_loss": 2.002396285533905,
+      "grad_norm": 1.5866907835006714,
+      "lr": 9.330127018922194e-05
+    },
+    {
+      "step": 11,
+      "train_loss": 2.0379050076007843,
+      "grad_norm": 1.8795315027236938,
+      "lr": 9.157348061512727e-05
+    },
+    {
+      "step": 12,
+      "train_loss": 1.9646628350019455,
+      "grad_norm": 1.4468783140182495,
+      "lr": 8.966766701456177e-05
+    },
+    {
+      "step": 13,
+      "train_loss": 1.9775986075401306,
+      "grad_norm": 1.0192536115646362,
+      "lr": 8.759199037394887e-05
+    },
+    {
+      "step": 14,
+      "train_loss": 1.9489396512508392,
+      "grad_norm": 1.1214599609375,
+      "lr": 8.535533905932738e-05
+    },
+    {
+      "step": 15,
+      "train_loss": 1.9723089784383774,
+      "grad_norm": 0.9993252754211426,
+      "lr": 8.296729075500344e-05
+    },
+    {
+      "step": 16,
+      "train_loss": 1.9925009310245514,
+      "grad_norm": 1.7186317443847656,
+      "lr": 8.043807145043604e-05
+    },
+    {
+      "step": 17,
+      "train_loss": 2.0502492040395737,
+      "grad_norm": 0.9211717247962952,
+      "lr": 7.777851165098012e-05
+    },
+    {
+      "step": 18,
+      "train_loss": 1.9891316890716553,
+      "grad_norm": 0.8287298679351807,
+      "lr": 7.500000000000001e-05
+    },
+    {
+      "step": 19,
+      "train_loss": 1.918395295739174,
+      "grad_norm": 0.8782045841217041,
+      "lr": 7.211443451095007e-05
+    },
+    {
+      "step": 20,
+      "train_loss": 1.9845518916845322,
+      "grad_norm": 0.9621926546096802,
+      "lr": 6.91341716182545e-05
+    },
+    {
+      "step": 21,
+      "train_loss": 2.036136418581009,
+      "grad_norm": 0.718716025352478,
+      "lr": 6.607197326515808e-05
+    },
+    {
+      "step": 22,
+      "train_loss": 1.9907789677381516,
+      "grad_norm": 0.9001433849334717,
+      "lr": 6.294095225512603e-05
+    },
+    {
+      "step": 23,
+      "train_loss": 1.9971214085817337,
+      "grad_norm": 0.8064807653427124,
+      "lr": 5.9754516100806423e-05
+    },
+    {
+      "step": 24,
+      "train_loss": 1.9456093311309814,
+      "grad_norm": 1.060923457145691,
+      "lr": 5.6526309611002594e-05
+    },
+    {
+      "step": 25,
+      "train_loss": 1.9740745276212692,
+      "grad_norm": 1.0378262996673584,
+      "lr": 5.327015646150716e-05,
+      "val_loss": 2.316370129585266
+    },
+    {
+      "step": 26,
+      "train_loss": 1.9381380677223206,
+      "grad_norm": 1.082942247390747,
+      "lr": 5e-05
+    },
+    {
+      "step": 27,
+      "train_loss": 1.8700973093509674,
+      "grad_norm": 0.9793630242347717,
+      "lr": 4.6729843538492847e-05
+    },
+    {
+      "step": 28,
+      "train_loss": 1.8903026729822159,
+      "grad_norm": 1.2119548320770264,
+      "lr": 4.347369038899744e-05
+    },
+    {
+      "step": 29,
+      "train_loss": 1.9796311408281326,
+      "grad_norm": 1.0225675106048584,
+      "lr": 4.0245483899193595e-05
+    },
+    {
+      "step": 30,
+      "train_loss": 1.948499172925949,
+      "grad_norm": 1.1926065683364868,
+      "lr": 3.705904774487396e-05
+    },
+    {
+      "step": 31,
+      "train_loss": 1.8835012018680573,
+      "grad_norm": 1.2730817794799805,
+      "lr": 3.392802673484193e-05
+    },
+    {
+      "step": 32,
+      "train_loss": 1.9363138675689697,
+      "grad_norm": 1.0497609376907349,
+      "lr": 3.086582838174551e-05
+    },
+    {
+      "step": 33,
+      "train_loss": 1.988630011677742,
+      "grad_norm": 0.961683452129364,
+      "lr": 2.7885565489049946e-05
+    },
+    {
+      "step": 34,
+      "train_loss": 1.969859704375267,
+      "grad_norm": 0.9722325801849365,
+      "lr": 2.500000000000001e-05
+    },
+    {
+      "step": 35,
+      "train_loss": 1.9084036946296692,
+      "grad_norm": 1.0448240041732788,
+      "lr": 2.2221488349019903e-05
+    },
+    {
+      "step": 36,
+      "train_loss": 1.9955028742551804,
+      "grad_norm": 1.1732864379882812,
+      "lr": 1.9561928549563968e-05
+    },
+    {
+      "step": 37,
+      "train_loss": 1.8870097696781158,
+      "grad_norm": 0.9186884760856628,
+      "lr": 1.703270924499656e-05
+    },
+    {
+      "step": 38,
+      "train_loss": 1.9705170392990112,
+      "grad_norm": 0.9124724268913269,
+      "lr": 1.4644660940672627e-05
+    },
+    {
+      "step": 39,
+      "train_loss": 1.9765271693468094,
+      "grad_norm": 1.2504398822784424,
+      "lr": 1.2408009626051137e-05
+    },
+    {
+      "step": 40,
+      "train_loss": 1.8128944337368011,
+      "grad_norm": 1.2038593292236328,
+      "lr": 1.0332332985438248e-05
+    },
+    {
+      "step": 41,
+      "train_loss": 1.9102576971054077,
+      "grad_norm": 0.9671317934989929,
+      "lr": 8.426519384872733e-06
+    },
+    {
+      "step": 42,
+      "train_loss": 1.8805317729711533,
+      "grad_norm": 1.0752348899841309,
+      "lr": 6.698729810778065e-06
+    },
+    {
+      "step": 43,
+      "train_loss": 1.9352779537439346,
+      "grad_norm": 0.926895022392273,
+      "lr": 5.156362923365588e-06
+    },
+    {
+      "step": 44,
+      "train_loss": 1.9867255985736847,
+      "grad_norm": 0.9394707679748535,
+      "lr": 3.8060233744356633e-06
+    },
+    {
+      "step": 45,
+      "train_loss": 1.827553778886795,
+      "grad_norm": 1.4458703994750977,
+      "lr": 2.653493525244721e-06
+    },
+    {
+      "step": 46,
+      "train_loss": 1.8667130917310715,
+      "grad_norm": 1.316074013710022,
+      "lr": 1.70370868554659e-06
+    },
+    {
+      "step": 47,
+      "train_loss": 1.847628802061081,
+      "grad_norm": 0.8216248154640198,
+      "lr": 9.607359798384785e-07
+    },
+    {
+      "step": 48,
+      "train_loss": 1.9411184340715408,
+      "grad_norm": 1.0170114040374756,
+      "lr": 4.277569313094809e-07
+    },
+    {
+      "step": 49,
+      "train_loss": 1.8565854132175446,
+      "grad_norm": 0.950774610042572,
+      "lr": 1.0705383806982606e-07
+    },
+    {
+      "step": 50,
+      "train_loss": 1.8978653699159622,
+      "grad_norm": 0.7942658066749573,
+      "lr": 0.0,
+      "val_loss": 2.2524007320404054
+    }
+  ]
+}

@@ -29,7 +29,7 @@ class ProjectorConfig:
     """Configurazione del proiettore visivo."""
     in_channels: int = 128
     num_tokens: int = 32
-    projector_output_size: int = 3584  # d_llm per Qwen2.5-3B
+    projector_output_size: int = 2048  # d_llm per Qwen2.5-3B
     arch_type: str = "deeper_conv"     # "deeper_conv" oppure "qformer"
     # Parametri per DeeperConv:
     hidden_channels: int = 256
