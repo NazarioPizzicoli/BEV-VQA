@@ -154,7 +154,8 @@ class BEVPretrainDataset(BaseBEVDataset):
             
         descriptions = full_data.get("descriptions", [])
         # Filtra solo campioni con file BEV esistente
-        valid_descriptions = [d for d in descriptions if (self.bev_dir / f"{d['sample_token']}.pt").exists()]
+        existing_tokens = {p.stem for p in self.bev_dir.glob("*.pt")} if self.bev_dir.exists() else set()
+        valid_descriptions = [d for d in descriptions if d.get("sample_token") in existing_tokens]
         logger.info(f"Filtro BEV: {len(valid_descriptions)}/{len(descriptions)} campioni validi.")
         descriptions = valid_descriptions
 
@@ -208,7 +209,8 @@ class BEVQADataset(BaseBEVDataset):
             
         questions = full_data.get("questions", [])
         questions = [q for q in questions if q.get("split", self.split) == self.split]
-        valid_questions = [q for q in questions if (self.bev_dir / f"{q['sample_token']}.pt").exists()]
+        existing_tokens = {p.stem for p in self.bev_dir.glob("*.pt")} if self.bev_dir.exists() else set()
+        valid_questions = [q for q in questions if q.get("sample_token") in existing_tokens]
         logger.info(f"Filtro BEV: {len(valid_questions)}/{len(questions)} domande con BEV valido.")
         questions = valid_questions
 

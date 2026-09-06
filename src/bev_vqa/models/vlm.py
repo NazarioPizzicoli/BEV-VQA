@@ -279,3 +279,27 @@ class BEVVLM(nn.Module):
         self.projector.load_state_dict(state_dict)
         logger.info(f"Pesi del proiettore caricati da: {load_path}")
 
+    def save_checkpoint(self, save_dir: str):
+        """Salva il checkpoint completo: proiettore + adattatori LoRA."""
+        from pathlib import Path
+        p = Path(save_dir)
+        p.mkdir(parents=True, exist_ok=True)
+        torch.save(self.projector.state_dict(), p / "projector.pt")
+        self.llm.save_pretrained(p / "lora_adapters")
+        logger.info(f"Checkpoint Stage 2 salvato in: {save_dir}")
+
+    def load_checkpoint(self, checkpoint_dir: str):
+        """Carica il checkpoint completo: proiettore + adattatori LoRA."""
+        from pathlib import Path
+        from peft import set_peft_model_state_dict, load_peft_weights
+        p = Path(checkpoint_dir)
+        proj_path = p / "projector.pt"
+        if proj_path.exists():
+            self.load_projector(str(proj_path))
+        lora_dir = p / "lora_adapters"
+        if lora_dir.exists():
+            weights = load_peft_weights(str(lora_dir))
+            set_peft_model_state_dict(self.llm, weights)
+            logger.info(f"Adattatori LoRA caricati con successo da: {lora_dir}")
+
+

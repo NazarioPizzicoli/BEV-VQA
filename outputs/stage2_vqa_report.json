@@ -1,0 +1,426 @@
+{
+  "stage": 2,
+  "description": "End-to-End Multimodal VQA Fine-Tuning",
+  "llm_backbone": "Qwen/Qwen2.5-3B-Instruct",
+  "projector_arch": "deeper_conv",
+  "trainable_parameters": 36734976,
+  "projector_parameters": 6801408,
+  "lora_parameters": 29933568,
+  "total_steps": 1000,
+  "effective_batch_size": 16,
+  "training_time_seconds": 5660.89,
+  "initial_accuracy": 24.67,
+  "final_accuracy": 54.67,
+  "best_accuracy": 62.0,
+  "text_baseline_accuracy": 19.6,
+  "visual_gain_delta": 35.07,
+  "category_breakdown": {
+    "count": {
+      "vlm": 18.3,
+      "text_baseline": 0.0,
+      "delta": 18.3
+    },
+    "exist": {
+      "vlm": 78.3,
+      "text_baseline": 38.0,
+      "delta": 40.3
+    },
+    "status": {
+      "vlm": 56.7,
+      "text_baseline": 6.0,
+      "delta": 50.7
+    },
+    "object": {
+      "vlm": 51.7,
+      "text_baseline": 12.0,
+      "delta": 39.7
+    },
+    "comparison": {
+      "vlm": 68.3,
+      "text_baseline": 42.0,
+      "delta": 26.3
+    }
+  },
+  "shuffle_test": {
+    "num_tested": 150,
+    "real_bev_accuracy": 60.67,
+    "shuffled_bev_accuracy": 60.67,
+    "visual_dependency_delta": 0.0,
+    "visual_grounded": false,
+    "examples": [
+      {
+        "question": "Are any moving bicycles visible?",
+        "ground_truth": "no",
+        "pred_real_bev": "no",
+        "match_real": true,
+        "pred_shuffled_bev": "no",
+        "match_shuffled": true
+      },
+      {
+        "question": "Are there any moving cars to the back of me?",
+        "ground_truth": "yes",
+        "pred_real_bev": "yes",
+        "match_real": true,
+        "pred_shuffled_bev": "yes",
+        "match_shuffled": true
+      },
+      {
+        "question": "Are there any things?",
+        "ground_truth": "yes",
+        "pred_real_bev": "yes",
+        "match_real": true,
+        "pred_shuffled_bev": "yes",
+        "match_shuffled": true
+      }
+    ]
+  },
+  "sample_predictions": [
+    {
+      "sample_token": "fd8420396768425eabec9bdddf7e64b6",
+      "category": "exist",
+      "question": "Are any moving bicycles visible?",
+      "ground_truth": "no",
+      "predicted": "no",
+      "match": true
+    },
+    {
+      "sample_token": "fd8420396768425eabec9bdddf7e64b6",
+      "category": "exist",
+      "question": "Are there any moving cars to the back of me?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    },
+    {
+      "sample_token": "6eb8a3ff0abf4f3a9380a48f2a0b87ef",
+      "category": "exist",
+      "question": "Are there any things?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    },
+    {
+      "sample_token": "b10f0cd792b64d16a1a5e8349b20504c",
+      "category": "exist",
+      "question": "Are there any moving cars to the front of me?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    },
+    {
+      "sample_token": "163b70e627854893b88575caf85a56ea",
+      "category": "exist",
+      "question": "Are any things visible?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    }
+  ],
+  "checkpoints": {
+    "best_model": "checkpoints/stage2/best_model",
+    "latest_model": "checkpoints/stage2/latest_model",
+    "tokenizer": "checkpoints/stage2/tokenizer"
+  },
+  "history_sample": [
+    {
+      "step": 1,
+      "train_loss": 10.596615754067898,
+      "grad_norm": 272.04486083984375,
+      "lr": 4.000000000000001e-06
+    },
+    {
+      "step": 21,
+      "train_loss": 1.3828012086451054,
+      "grad_norm": 4.08453893661499,
+      "lr": 8.4e-05
+    },
+    {
+      "step": 41,
+      "train_loss": 1.100422673393041,
+      "grad_norm": 3.087250232696533,
+      "lr": 0.000164
+    },
+    {
+      "step": 61,
+      "train_loss": 0.8215206775348634,
+      "grad_norm": 2.7930660247802734,
+      "lr": 0.00019993384540433894
+    },
+    {
+      "step": 81,
+      "train_loss": 0.658929739613086,
+      "grad_norm": 1.5157305002212524,
+      "lr": 0.00019947499245187068
+    },
+    {
+      "step": 101,
+      "train_loss": 0.4445121646858752,
+      "grad_norm": 1.4128702878952026,
+      "lr": 0.00019858116066758362
+    },
+    {
+      "step": 121,
+      "train_loss": 0.4603634874802083,
+      "grad_norm": 1.6490495204925537,
+      "lr": 0.00019725625855044617
+    },
+    {
+      "step": 141,
+      "train_loss": 0.7152925115078688,
+      "grad_norm": 5.727326393127441,
+      "lr": 0.0001955060795603117
+    },
+    {
+      "step": 161,
+      "train_loss": 0.4513527830131352,
+      "grad_norm": 0.8898950219154358,
+      "lr": 0.0001933382767845928
+    },
+    {
+      "step": 181,
+      "train_loss": 0.6578432051173877,
+      "grad_norm": 1.5564526319503784,
+      "lr": 0.00019076232947325722
+    },
+    {
+      "step": 201,
+      "train_loss": 0.5965628563426435,
+      "grad_norm": 1.4247996807098389,
+      "lr": 0.00018778950158847976
+    },
+    {
+      "step": 221,
+      "train_loss": 0.3711750074289739,
+      "grad_norm": 0.8409650325775146,
+      "lr": 0.00018443279255020152
+    },
+    {
+      "step": 241,
+      "train_loss": 0.3678420396754518,
+      "grad_norm": 1.176694393157959,
+      "lr": 0.00018070688039297403
+    },
+    {
+      "step": 261,
+      "train_loss": 0.3415815341286361,
+      "grad_norm": 1.0394095182418823,
+      "lr": 0.00017662805758264893
+    },
+    {
+      "step": 281,
+      "train_loss": 0.3255063872784376,
+      "grad_norm": 0.882743775844574,
+      "lr": 0.00017221415977357007
+    },
+    {
+      "step": 301,
+      "train_loss": 0.26565891481004655,
+      "grad_norm": 0.594077467918396,
+      "lr": 0.0001674844878177952
+    },
+    {
+      "step": 321,
+      "train_loss": 0.6244836446785484,
+      "grad_norm": 1.0687063932418823,
+      "lr": 0.0001624597233673808
+    },
+    {
+      "step": 341,
+      "train_loss": 0.6192156774923205,
+      "grad_norm": 1.1168606281280518,
+      "lr": 0.00015716183843877976
+    },
+    {
+      "step": 361,
+      "train_loss": 0.6242451483849436,
+      "grad_norm": 0.9816361665725708,
+      "lr": 0.00015161399933480402
+    },
+    {
+      "step": 381,
+      "train_loss": 0.5128139645094052,
+      "grad_norm": 1.0218325853347778,
+      "lr": 0.0001458404653442767
+    },
+    {
+      "step": 401,
+      "train_loss": 0.46923292710562237,
+      "grad_norm": 0.8486216068267822,
+      "lr": 0.00013986648266233452
+    },
+    {
+      "step": 421,
+      "train_loss": 0.43225759245979134,
+      "grad_norm": 1.2991254329681396,
+      "lr": 0.00013371817399524005
+    },
+    {
+      "step": 441,
+      "train_loss": 0.3513729573460296,
+      "grad_norm": 0.8080523610115051,
+      "lr": 0.00012742242433243396
+    },
+    {
+      "step": 461,
+      "train_loss": 0.2679149402247276,
+      "grad_norm": 0.4231473505496979,
+      "lr": 0.0001210067633853166
+    },
+    {
+      "step": 481,
+      "train_loss": 0.3621072700479999,
+      "grad_norm": 0.6210511326789856,
+      "lr": 0.0001144992452068246
+    },
+    {
+      "step": 501,
+      "train_loss": 0.3650358494487591,
+      "grad_norm": 0.7592785358428955,
+      "lr": 0.00010792832551819558
+    },
+    {
+      "step": 521,
+      "train_loss": 0.5240190418044222,
+      "grad_norm": 0.759511411190033,
+      "lr": 0.00010132273727933925
+    },
+    {
+      "step": 541,
+      "train_loss": 0.3770551295019686,
+      "grad_norm": 0.5532928109169006,
+      "lr": 9.471136504691436e-05
+    },
+    {
+      "step": 561,
+      "train_loss": 0.3899110035272315,
+      "grad_norm": 0.6560835242271423,
+      "lr": 8.812311866951198e-05
+    },
+    {
+      "step": 581,
+      "train_loss": 0.3305682056234218,
+      "grad_norm": 0.6283197402954102,
+      "lr": 8.15868068722433e-05
+    },
+    {
+      "step": 601,
+      "train_loss": 0.3786416780203581,
+      "grad_norm": 0.9394766688346863,
+      "lr": 7.513101128351454e-05
+    },
+    {
+      "step": 621,
+      "train_loss": 0.4124178580714215,
+      "grad_norm": 0.8692236542701721,
+      "lr": 6.878396145483841e-05
+    },
+    {
+      "step": 641,
+      "train_loss": 0.46167442377191037,
+      "grad_norm": 0.7424373626708984,
+      "lr": 6.257341142018798e-05
+    },
+    {
+      "step": 661,
+      "train_loss": 0.6421938496641815,
+      "grad_norm": 0.9866641759872437,
+      "lr": 5.652651833466755e-05
+    },
+    {
+      "step": 681,
+      "train_loss": 0.49873853681856417,
+      "grad_norm": 0.5307674407958984,
+      "lr": 5.0669723723183506e-05
+    },
+    {
+      "step": 701,
+      "train_loss": 0.46441864017106127,
+      "grad_norm": 0.5603678822517395,
+      "lr": 4.502863785838342e-05
+    },
+    {
+      "step": 721,
+      "train_loss": 0.39997991555719636,
+      "grad_norm": 0.7501682043075562,
+      "lr": 3.962792777344992e-05
+    },
+    {
+      "step": 741,
+      "train_loss": 0.3777746567502618,
+      "grad_norm": 0.7518085837364197,
+      "lr": 3.449120939944107e-05
+    },
+    {
+      "step": 761,
+      "train_loss": 0.1580134839314269,
+      "grad_norm": 0.3681333363056183,
+      "lr": 2.964094429883231e-05
+    },
+    {
+      "step": 781,
+      "train_loss": 0.281818158342503,
+      "grad_norm": 0.5382062792778015,
+      "lr": 2.5098341446819097e-05
+    },
+    {
+      "step": 801,
+      "train_loss": 0.43938753637485206,
+      "grad_norm": 0.5416151881217957,
+      "lr": 2.0883264489864475e-05
+    },
+    {
+      "step": 821,
+      "train_loss": 0.5887525075813755,
+      "grad_norm": 1.0519843101501465,
+      "lr": 1.7014144887027404e-05
+    },
+    {
+      "step": 841,
+      "train_loss": 0.4175274179142434,
+      "grad_norm": 0.6365114450454712,
+      "lr": 1.350790131388181e-05
+    },
+    {
+      "step": 861,
+      "train_loss": 0.41274796216748655,
+      "grad_norm": 0.6168161630630493,
+      "lr": 1.0379865681452971e-05
+    },
+    {
+      "step": 881,
+      "train_loss": 0.38236514061281923,
+      "grad_norm": 1.0132957696914673,
+      "lr": 7.643716093671827e-06
+    },
+    {
+      "step": 901,
+      "train_loss": 0.31246892700437456,
+      "grad_norm": 0.649171769618988,
+      "lr": 5.3114170365065164e-06
+    },
+    {
+      "step": 921,
+      "train_loss": 0.37139223114354536,
+      "grad_norm": 0.6562539935112,
+      "lr": 3.393167060309588e-06
+    },
+    {
+      "step": 941,
+      "train_loss": 0.8786975916009396,
+      "grad_norm": 1.49420166015625,
+      "lr": 1.8973541841521335e-06
+    },
+    {
+      "step": 961,
+      "train_loss": 0.36872353879880393,
+      "grad_norm": 0.745016872882843,
+      "lr": 8.305192171506049e-07
+    },
+    {
+      "step": 981,
+      "train_loss": 0.3610188746388303,
+      "grad_norm": 0.7082245349884033,
+      "lr": 1.973271571728441e-07
+    }
+  ]
+}
