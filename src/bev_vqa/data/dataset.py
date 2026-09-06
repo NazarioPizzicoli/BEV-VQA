@@ -121,7 +121,7 @@ class BaseBEVDataset(Dataset):
                 return_tensors="pt",
                 add_special_tokens=False,
                 truncation=True,
-                max_length=384,
+                max_length=220,
             )
             input_ids = tokenized_full.input_ids[0]
             attention_mask = tokenized_full.attention_mask[0]

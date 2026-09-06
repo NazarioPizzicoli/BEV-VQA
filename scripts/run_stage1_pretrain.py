@@ -21,6 +21,7 @@ import argparse
 import json
 import logging
 import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import random
 import sys
 import time
@@ -177,6 +178,7 @@ def parse_args():
     parser.add_argument("--fraction", type=float, default=1.0, help="Frazione del dataset (1.0 = tutto)")
     parser.add_argument("--num-workers", type=int, default=2)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--resume-from", type=str, default=None, help="Percorso checkpoint pesi del proiettore da cui ripartire")
     parser.add_argument("--report-path", type=str, default="outputs/stage1_pretrain_report.json")
     return parser.parse_args()
 
@@ -265,6 +267,11 @@ def main():
 
     # Stage 1: solo proiettore trainabile
     model.set_stage(1)
+
+    if args.resume_from is not None and os.path.exists(args.resume_from):
+        logger.info(f"Caricamento checkpoint pesi proiettore da: {args.resume_from}")
+        model.load_projector(args.resume_from)
+
     param_counts = model.count_trainable_parameters()
     logger.info(
         f"Parametri: Projector={param_counts['projector_trainable']:,} trainabili "
