@@ -1,0 +1,54 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "base_vram_gb": 6.1718784,
+  "peak_vram_gb": 7.948633088,
+  "total_parameters": 3115872256,
+  "trainable_parameters": 29933568,
+  "zero_shot_acc_overall": 19.6,
+  "zero_shot_per_category": {
+    "exist": 38.0,
+    "count": 0.0,
+    "object": 12.0,
+    "status": 6.0,
+    "comparison": 42.0
+  },
+  "sample_predictions": [
+    {
+      "question": "Are any moving bicycles visible?",
+      "ground_truth": "no",
+      "prediction": "No",
+      "is_match": true,
+      "type": "exist"
+    },
+    {
+      "question": "Are there any moving cars to the back of me?",
+      "ground_truth": "yes",
+      "prediction": "Noisy brakes",
+      "is_match": false,
+      "type": "exist"
+    },
+    {
+      "question": "Are there any things?",
+      "ground_truth": "yes",
+      "prediction": "Hazards",
+      "is_match": false,
+      "type": "exist"
+    },
+    {
+      "question": "Are there any moving cars to the front of me?",
+      "ground_truth": "yes",
+      "prediction": "Noisy beep",
+      "is_match": false,
+      "type": "exist"
+    },
+    {
+      "question": "Are any things visible?",
+      "ground_truth": "yes",
+      "prediction": "No",
+      "is_match": false,
+      "type": "exist"
+    }
+  ],
+  "finetuning_final_loss": 2.001992121189833,
+  "passed": true
+}
