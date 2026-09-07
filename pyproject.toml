@@ -22,6 +22,7 @@ dependencies = [
     # NLG metrics (DriveLM eval)
     "nltk>=3.8.0",
     "rouge-score>=0.1.2",
+    "pycocoevalcap>=1.2",
     # Viz
     "matplotlib>=3.7.0",
     "seaborn>=0.12.0",

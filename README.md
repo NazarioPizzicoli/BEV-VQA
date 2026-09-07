@@ -63,6 +63,17 @@ Evaluated on NuScenes-QA validation across all 5 balanced reasoning categories:
 | `exist` | 38.0% | **78.3%** | +40.3% |
 | `comparison` | 42.0% | **68.3%** | +26.3% |
 
+## DriveLM Generative Benchmark (Official NLG Metrics)
+
+Evaluated across perception, prediction, and planning questions on DriveLM validation:
+
+| Task / Category | Samples | BLEU-4 | ROUGE-L | CIDEr | METEOR |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Overall DriveLM** | **200** | **36.37%** | **64.37%** | **2.422** | **43.59%** |
+| `perception` (objects & scene layout) | 67 | 34.33% | 67.74% | 2.528 | 49.01% |
+| `prediction` (future vehicle behavior) | 67 | 51.11% | 58.83% | 2.237 | 37.32% |
+| `planning` (ego vehicle decision-making) | 66 | 32.07% | 66.58% | 2.411 | 44.46% |
+
 ## Setup & Inference
 
 ```bash
@@ -80,6 +91,9 @@ python scripts/run_inference.py --token <sample_token> --question "Are there any
 
 # 3. Valutazione su Campione di Validazione
 python scripts/run_inference.py --sample-val --num-samples 5
+
+# 4. Valutazione Generativa DriveLM (Metriche NLG)
+python scripts/evaluate_drivelm_nlg.py --num-samples 200
 ```
 
 ## Checkpoints
