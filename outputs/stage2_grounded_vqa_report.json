@@ -1,0 +1,97 @@
+{
+  "stage": "2_grounded",
+  "description": "Two-Stage Grounded VQA (Projector-First + Low-LR LoRA)",
+  "phase1_steps": 350,
+  "phase2_steps": 250,
+  "final_accuracy": 49.6,
+  "text_baseline_accuracy": 19.6,
+  "category_breakdown": {
+    "exist": 76.0,
+    "count": 16.0,
+    "object": 60.0,
+    "status": 36.0,
+    "comparison": 60.0
+  },
+  "contrastive_pairs_eval": {
+    "num_pairs": 40,
+    "changed_predictions_pct": 15.0,
+    "real_bev_accuracy": 38.8,
+    "swapped_bev_accuracy": 36.2,
+    "contrastive_delta": 2.6
+  },
+  "shuffle_test": {
+    "num_tested": 150,
+    "real_bev_accuracy": 52.67,
+    "shuffled_bev_accuracy": 57.33,
+    "visual_dependency_delta": -4.66,
+    "visual_grounded": false,
+    "examples": [
+      {
+        "question": "Are any moving bicycles visible?",
+        "ground_truth": "no",
+        "pred_real_bev": "no",
+        "match_real": true,
+        "pred_shuffled_bev": "no",
+        "match_shuffled": true
+      },
+      {
+        "question": "Are there any moving cars to the back of me?",
+        "ground_truth": "yes",
+        "pred_real_bev": "yes",
+        "match_real": true,
+        "pred_shuffled_bev": "yes",
+        "match_shuffled": true
+      },
+      {
+        "question": "Are there any things?",
+        "ground_truth": "yes",
+        "pred_real_bev": "yes",
+        "match_real": true,
+        "pred_shuffled_bev": "yes",
+        "match_shuffled": true
+      }
+    ]
+  },
+  "sample_predictions": [
+    {
+      "sample_token": "fd8420396768425eabec9bdddf7e64b6",
+      "category": "exist",
+      "question": "Are any moving bicycles visible?",
+      "ground_truth": "no",
+      "predicted": "no",
+      "match": true
+    },
+    {
+      "sample_token": "fd8420396768425eabec9bdddf7e64b6",
+      "category": "exist",
+      "question": "Are there any moving cars to the back of me?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    },
+    {
+      "sample_token": "6eb8a3ff0abf4f3a9380a48f2a0b87ef",
+      "category": "exist",
+      "question": "Are there any things?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    },
+    {
+      "sample_token": "b10f0cd792b64d16a1a5e8349b20504c",
+      "category": "exist",
+      "question": "Are there any moving cars to the front of me?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    },
+    {
+      "sample_token": "163b70e627854893b88575caf85a56ea",
+      "category": "exist",
+      "question": "Are any things visible?",
+      "ground_truth": "yes",
+      "predicted": "yes",
+      "match": true
+    }
+  ]
+}
