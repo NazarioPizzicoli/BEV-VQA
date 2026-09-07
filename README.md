@@ -72,8 +72,14 @@ uv venv --python 3.11
 source .venv/bin/activate
 uv pip install -e .
 
-# Esecuzione Stage 2 VQA Fine-Tuning
-python scripts/run_stage2_vqa_finetune.py --max-steps 1000 --val-steps 100
+# 1. Inferenza Interattiva (Demo REPL da terminale)
+python scripts/run_inference.py --interactive
+
+# 2. Query Singola su una specifica scena NuScenes
+python scripts/run_inference.py --token <sample_token> --question "Are there any cars ahead?"
+
+# 3. Valutazione su Campione di Validazione
+python scripts/run_inference.py --sample-val --num-samples 5
 ```
 
 ## Checkpoints
