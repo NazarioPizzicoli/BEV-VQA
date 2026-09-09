@@ -142,6 +142,7 @@ def main():
     parser.add_argument("--arch-type", type=str, default="deeper_conv")
     parser.add_argument("--num-tokens", type=int, default=32)
     parser.add_argument("--num-samples", type=int, default=200)
+    parser.add_argument("--bev-dir", type=str, default="/media/nazario.pizzicoli/Datos/dataset/bev_features")
     parser.add_argument("--max-new-tokens", type=int, default=40)
     parser.add_argument("--report-path", type=str, default="outputs/drivelm_nlg_report.json")
     parser.add_argument("--seed", type=int, default=42)
@@ -150,9 +151,10 @@ def main():
     ensure_nltk_resources()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    bev_base = Path(args.bev_dir)
     bev_dirs = [
-        Path("/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/val"),
-        Path("/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/train"),
+        bev_base / "val",
+        bev_base / "train",
     ]
 
     print(f"\n{BOLD}{CYAN}======================================================================{RESET}")

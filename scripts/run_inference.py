@@ -21,6 +21,7 @@ import sys
 import time
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+from collections import defaultdict
 
 import torch
 from transformers import AutoTokenizer

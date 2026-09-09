@@ -1,0 +1,353 @@
+{
+  "stage": 1,
+  "description": "BEV-Language Alignment Pretraining",
+  "llm_backbone": "Qwen/Qwen2.5-3B-Instruct",
+  "projector_arch": "deeper_conv",
+  "num_visual_tokens": 32,
+  "trainable_parameters": 6801408,
+  "frozen_llm_parameters": 3115872256,
+  "total_optimization_steps": 1200,
+  "effective_batch_size": 16,
+  "learning_rate": 0.0003,
+  "training_time_seconds": 3309.26,
+  "initial_val_loss": 2.84,
+  "final_val_loss": 2.1121,
+  "best_val_loss": 2.1466,
+  "val_loss_delta": -0.7279,
+  "qualitative_initial": [
+    {
+      "sample_token": "4f2578e3107f4ad79f88a61b28893916",
+      "ground_truth": "We are situated on a city street, possibly in the quieter hours of the day given the absence of heavy traffic or harsh sunlight. To the front and left, the architecture is urban residential or commercial with no visible signs of disrepair. Notably, the roads are clear with visible lane markings. The absence of any traffic signals in view suggests this isn't a primary intersection. Pedestrian presence is minimal; one individual is seen walking with a yellow bag, another with a shopping cart, both maintaining a safe distance from the roadway. The weather appears overcast, contributing to the subdued lighting. The Fort Point Market visible on the right suggests a commercial area, possibly frequented for supplies.",
+      "prediction": "I'm sorry, but there seems to be a misunderstanding. You've entered a series of \"tl;dr\" abbreviations instead of providing an image or description of a bird's-eye-view feature map. Could you please provide the image or describe what you see in the feature map?"
+    },
+    {
+      "sample_token": "1477ef1a6a3b42daa70ac218e6f6c6f9",
+      "ground_truth": "We find ourselves on a serene roadway flanked by greenery. To our left-front, a grassy knoll gently meets the pavement, edged by a sidewalk that runs alongside an academic or corporate building, suggestive of a campus or business park. The weather appears overcast, hinting at either early morning or late afternoon, with light traffic conditions. Directly ahead, the road is clear, providing a straight path bordered by tall, leafy trees that obscure any buildings beyond. On the right-front, the scene is mirrored by a similar environment, ensuring unobstructed passage for our vehicle. Looking at the left-rear, the same building accompanies us, its reflective windows silent spectators to our journey. Directly behind, the road stretches out empty, suggesting a quiet time of day or a less traveled route. To the right-rear, maintenance personnel in high-visibility clothing are present, indicating ongoing work, with a 'STOP' sign reversed towards us, not meant for our direction.",
+      "prediction": "I'm sorry, but there seems to be a misunderstanding. You've entered a series of \"tl;dr\" abbreviations instead of providing an image or description of a bird's-eye-view feature map. Could you please provide the image or describe what you see in the feature map?"
+    }
+  ],
+  "qualitative_final": [
+    {
+      "sample_token": "4f2578e3107f4ad79f88a61b28893916",
+      "ground_truth": "We are situated on a city street, possibly in the quieter hours of the day given the absence of heavy traffic or harsh sunlight. To the front and left, the architecture is urban residential or commercial with no visible signs of disrepair. Notably, the roads are clear with visible lane markings. The absence of any traffic signals in view suggests this isn't a primary intersection. Pedestrian presence is minimal; one individual is seen walking with a yellow bag, another with a shopping cart, both maintaining a safe distance from the roadway. The weather appears overcast, contributing to the subdued lighting. The Fort Point Market visible on the right suggests a commercial area, possibly frequented for supplies.",
+      "prediction": "The vehicle is positioned on a clear, urban road during daylight hours. To the left, there's a pedestrian crossing with a crosswalk sign, indicating pedestrians are expected to use this path. Directly ahead, the road stretches out with no immediate obstructions or traffic, and there are multiple lanes for vehicles. On the right, a large building with a parking lot is visible, suggesting a commercial or"
+    },
+    {
+      "sample_token": "1477ef1a6a3b42daa70ac218e6f6c6f9",
+      "ground_truth": "We find ourselves on a serene roadway flanked by greenery. To our left-front, a grassy knoll gently meets the pavement, edged by a sidewalk that runs alongside an academic or corporate building, suggestive of a campus or business park. The weather appears overcast, hinting at either early morning or late afternoon, with light traffic conditions. Directly ahead, the road is clear, providing a straight path bordered by tall, leafy trees that obscure any buildings beyond. On the right-front, the scene is mirrored by a similar environment, ensuring unobstructed passage for our vehicle. Looking at the left-rear, the same building accompanies us, its reflective windows silent spectators to our journey. Directly behind, the road stretches out empty, suggesting a quiet time of day or a less traveled route. To the right-rear, maintenance personnel in high-visibility clothing are present, indicating ongoing work, with a 'STOP' sign reversed towards us, not meant for our direction.",
+      "prediction": "The vehicle is positioned on a quiet urban street lined with trees and modern buildings. To the left, there's a pedestrian crossing with a group of people walking across, while to the right, a pedestrian is seen crossing the road. The road ahead is clear with no immediate traffic, and the lane markings indicate that it's safe for us to proceed. On our left, a parked car is visible,"
+    },
+    {
+      "sample_token": "101e831275d740e6b47a6b1e9ef8c7b2",
+      "ground_truth": "The vehicle is traversing a well-maintained urban road, flanked by lush greenery and modern architecture. The left-front view shows a footpath parallel to a grassy area, hinting at a recreational or residential zone. Directly ahead, the road, marked with freshly painted arrows, instructs drivers to proceed straight. To the right-front, the vicinity of a building labeled 'Alumni House' suggests the proximity to an educational institution. The weather appears overcast, suggesting a time of day where visibility is moderate but may require caution. The rear views reveal no immediate traffic or obstacles, indicating a clear path behind.",
+      "prediction": "The vehicle is positioned on a quiet, tree-lined road with a gentle curve. To the left, there's a pedestrian crossing marked by a white line and a sign indicating 'Pedestrian Crossing'. The road ahead is clear, with no immediate traffic or pedestrians in sight. On the right, a large building with a parking lot is visible, suggesting a residential area. The sky is overcast,"
+    }
+  ],
+  "checkpoints": {
+    "best_projector": "checkpoints/sota/stage1/stage1_projector_best.pt",
+    "latest_projector": "checkpoints/sota/stage1/stage1_projector_latest.pt",
+    "tokenizer": "checkpoints/sota/stage1/tokenizer"
+  },
+  "history_sample": [
+    {
+      "step": 1,
+      "train_loss": 2.382212221622467,
+      "grad_norm": 3.1392691135406494,
+      "lr": 4.9999999999999996e-06
+    },
+    {
+      "step": 25,
+      "train_loss": 1.9122125208377838,
+      "grad_norm": 1.641383409500122,
+      "lr": 0.000125
+    },
+    {
+      "step": 49,
+      "train_loss": 1.8279391378164291,
+      "grad_norm": 0.9193519949913025,
+      "lr": 0.000245
+    },
+    {
+      "step": 73,
+      "train_loss": 1.703895464539528,
+      "grad_norm": 0.7605029344558716,
+      "lr": 0.00029990375203389226
+    },
+    {
+      "step": 97,
+      "train_loss": 1.8040791898965836,
+      "grad_norm": 1.5791609287261963,
+      "lr": 0.00029922092646037093
+    },
+    {
+      "step": 121,
+      "train_loss": 1.9223898574709892,
+      "grad_norm": 0.47629493474960327,
+      "lr": 0.0002978855957428452
+    },
+    {
+      "step": 145,
+      "train_loss": 1.8581817671656609,
+      "grad_norm": 0.45161792635917664,
+      "lr": 0.00029590359894278456
+    },
+    {
+      "step": 169,
+      "train_loss": 1.7663194090127945,
+      "grad_norm": 0.37599343061447144,
+      "lr": 0.0002932836028279013
+    },
+    {
+      "step": 193,
+      "train_loss": 1.7542788162827492,
+      "grad_norm": 0.453726202249527,
+      "lr": 0.00029003706397458023
+    },
+    {
+      "step": 217,
+      "train_loss": 1.7691763117909431,
+      "grad_norm": 0.3714655637741089,
+      "lr": 0.00028617817867118575
+    },
+    {
+      "step": 241,
+      "train_loss": 1.717880830168724,
+      "grad_norm": 0.3412051200866699,
+      "lr": 0.00028172382084130416
+    },
+    {
+      "step": 265,
+      "train_loss": 1.64512699842453,
+      "grad_norm": 0.3302363157272339,
+      "lr": 0.0002766934682583697
+    },
+    {
+      "step": 289,
+      "train_loss": 1.5635401085019112,
+      "grad_norm": 0.5345523953437805,
+      "lr": 0.0002711091173743169
+    },
+    {
+      "step": 313,
+      "train_loss": 1.6571987718343735,
+      "grad_norm": 0.36573871970176697,
+      "lr": 0.00026499518713469334
+    },
+    {
+      "step": 337,
+      "train_loss": 1.6540535241365433,
+      "grad_norm": 0.3511863350868225,
+      "lr": 0.00025837841220082325
+    },
+    {
+      "step": 361,
+      "train_loss": 1.6787353530526161,
+      "grad_norm": 0.42825865745544434,
+      "lr": 0.0002512877260459366
+    },
+    {
+      "step": 385,
+      "train_loss": 1.6855137571692467,
+      "grad_norm": 0.4266929030418396,
+      "lr": 0.00024375413443645177
+    },
+    {
+      "step": 409,
+      "train_loss": 1.6034204214811325,
+      "grad_norm": 0.40143635869026184,
+      "lr": 0.00023581057985164856
+    },
+    {
+      "step": 433,
+      "train_loss": 1.6447944343090057,
+      "grad_norm": 0.4189112186431885,
+      "lr": 0.00022749179743458768
+    },
+    {
+      "step": 457,
+      "train_loss": 1.6186087280511856,
+      "grad_norm": 0.37818843126296997,
+      "lr": 0.00021883416310416838
+    },
+    {
+      "step": 481,
+      "train_loss": 1.5653568133711815,
+      "grad_norm": 0.5571607947349548,
+      "lr": 0.00020987553449249035
+    },
+    {
+      "step": 505,
+      "train_loss": 1.6280214041471481,
+      "grad_norm": 0.31921496987342834,
+      "lr": 0.00020065508540306087
+    },
+    {
+      "step": 529,
+      "train_loss": 1.5348606295883656,
+      "grad_norm": 0.4871070086956024,
+      "lr": 0.00019121313451371955
+    },
+    {
+      "step": 553,
+      "train_loss": 1.5265193991363049,
+      "grad_norm": 0.45563626289367676,
+      "lr": 0.00018159096907331877
+    },
+    {
+      "step": 577,
+      "train_loss": 1.601855292916298,
+      "grad_norm": 0.3769001364707947,
+      "lr": 0.000171830664363089
+    },
+    {
+      "step": 601,
+      "train_loss": 1.5975213944911957,
+      "grad_norm": 0.3793099522590637,
+      "lr": 0.00016197489971214027
+    },
+    {
+      "step": 625,
+      "train_loss": 1.5939330756664276,
+      "grad_norm": 0.4641719162464142,
+      "lr": 0.00015206677187161447
+    },
+    {
+      "step": 649,
+      "train_loss": 1.5741383992135525,
+      "grad_norm": 0.49523496627807617,
+      "lr": 0.0001421496065635584
+    },
+    {
+      "step": 673,
+      "train_loss": 1.6215895935893059,
+      "grad_norm": 0.37298622727394104,
+      "lr": 0.00013226676902856508
+    },
+    {
+      "step": 697,
+      "train_loss": 1.6145789846777916,
+      "grad_norm": 0.6577686667442322,
+      "lr": 0.00012246147440061006
+    },
+    {
+      "step": 721,
+      "train_loss": 1.526573285460472,
+      "grad_norm": 0.44981610774993896,
+      "lr": 0.0001127765987382661
+    },
+    {
+      "step": 745,
+      "train_loss": 1.5170925632119179,
+      "grad_norm": 0.39416930079460144,
+      "lr": 0.00010325449153860882
+    },
+    {
+      "step": 769,
+      "train_loss": 1.4826648533344269,
+      "grad_norm": 0.49448421597480774,
+      "lr": 9.393679055364053e-05
+    },
+    {
+      "step": 793,
+      "train_loss": 1.5638999715447426,
+      "grad_norm": 0.6560953855514526,
+      "lr": 8.486423971899558e-05
+    },
+    {
+      "step": 817,
+      "train_loss": 1.6433755978941917,
+      "grad_norm": 0.561313807964325,
+      "lr": 7.60765109910763e-05
+    },
+    {
+      "step": 841,
+      "train_loss": 1.5645765364170074,
+      "grad_norm": 0.48550504446029663,
+      "lr": 6.761203087168161e-05
+    },
+    {
+      "step": 865,
+      "train_loss": 1.4038680270314217,
+      "grad_norm": 0.6527379751205444,
+      "lr": 5.950781237869218e-05
+    },
+    {
+      "step": 889,
+      "train_loss": 1.5334860011935234,
+      "grad_norm": 0.4189212918281555,
+      "lr": 5.179929319756024e-05
+    },
+    {
+      "step": 913,
+      "train_loss": 1.476758074015379,
+      "grad_norm": 0.5224578380584717,
+      "lr": 4.452018072132821e-05
+    },
+    {
+      "step": 937,
+      "train_loss": 1.5825560092926025,
+      "grad_norm": 0.648348867893219,
+      "lr": 3.770230465677516e-05
+    },
+    {
+      "step": 961,
+      "train_loss": 1.5138119235634804,
+      "grad_norm": 0.5479955077171326,
+      "lr": 3.1375477841207605e-05
+    },
+    {
+      "step": 985,
+      "train_loss": 1.4088310450315475,
+      "grad_norm": 0.514907717704773,
+      "lr": 2.55673658785078e-05
+    },
+    {
+      "step": 1009,
+      "train_loss": 1.662279650568962,
+      "grad_norm": 0.4992423355579376,
+      "lr": 2.0303366164486795e-05
+    },
+    {
+      "step": 1033,
+      "train_loss": 1.6175358816981316,
+      "grad_norm": 0.5231617093086243,
+      "lr": 1.560649683053485e-05
+    },
+    {
+      "step": 1057,
+      "train_loss": 1.5090472474694252,
+      "grad_norm": 0.5084255337715149,
+      "lr": 1.1497296091189412e-05
+    },
+    {
+      "step": 1081,
+      "train_loss": 1.531399942934513,
+      "grad_norm": 0.5620298981666565,
+      "lr": 7.99373243574869e-06
+    },
+    {
+      "step": 1105,
+      "train_loss": 1.5367156267166138,
+      "grad_norm": 0.5257160067558289,
+      "lr": 5.11112605663977e-06
+    },
+    {
+      "step": 1129,
+      "train_loss": 1.4944377467036247,
+      "grad_norm": 0.5271462798118591,
+      "lr": 2.8620818581151505e-06
+    },
+    {
+      "step": 1153,
+      "train_loss": 1.5213682055473328,
+      "grad_norm": 0.4760185182094574,
+      "lr": 1.25643433821373e-06
+    },
+    {
+      "step": 1177,
+      "train_loss": 1.4314425364136696,
+      "grad_norm": 0.5083262920379639,
+      "lr": 3.0120458500301203e-07
+    }
+  ]
+}

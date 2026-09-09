@@ -1,5 +1,5 @@
 # Paths to data on external drive
-bev_features_dir: /media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh
+bev_features_dir: /media/nazario.pizzicoli/Datos/dataset/bev_features
 unified_datasets_dir: /media/nazario.pizzicoli/Datos/vqa_datasets/unified
 
 # Stage 1: Pretrain descriptions

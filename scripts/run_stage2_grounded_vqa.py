@@ -132,8 +132,13 @@ def evaluate_contrastive_pairs(
             gt1 = normalize_answer(it1["answer"])
             gt2 = normalize_answer(it2["answer"])
 
-            bev1 = val_dataset._load_bev_features(it1["sample_token"]).to(device)
-            bev2 = val_dataset._load_bev_features(it2["sample_token"]).to(device)
+            feat1 = val_dataset._load_bev_features(it1["sample_token"])
+            feat2 = val_dataset._load_bev_features(it2["sample_token"])
+            if feat1 is None or feat2 is None:
+                continue
+
+            bev1 = feat1.unsqueeze(0).to(device) if feat1.dim() == 3 else feat1.to(device)
+            bev2 = feat2.unsqueeze(0).to(device) if feat2.dim() == 3 else feat2.to(device)
 
             prompt = (
                 f"<|im_start|>system\n{VQA_SYSTEM_PROMPT}<|im_end|>\n"

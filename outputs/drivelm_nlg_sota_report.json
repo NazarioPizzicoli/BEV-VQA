@@ -1,0 +1,88 @@
+{
+  "dataset": "DriveLM",
+  "checkpoint": "checkpoints/sota/stage2/best_model",
+  "num_evaluated": 300,
+  "overall_metrics": {
+    "bleu_1": 30.18,
+    "bleu_2": 25.66,
+    "bleu_3": 22.81,
+    "bleu_4": 20.48,
+    "rouge_l": 60.96,
+    "cider": 2.201,
+    "meteor": 39.62
+  },
+  "category_metrics": {
+    "perception": {
+      "bleu_1": 24.38,
+      "bleu_2": 20.64,
+      "bleu_3": 18.16,
+      "bleu_4": 16.19,
+      "rouge_l": 58.79,
+      "cider": 2.273,
+      "meteor": 42.82
+    },
+    "prediction": {
+      "bleu_1": 22.5,
+      "bleu_2": 18.47,
+      "bleu_3": 15.56,
+      "bleu_4": 11.85,
+      "rouge_l": 69.81,
+      "cider": 2.555,
+      "meteor": 42.43
+    },
+    "planning": {
+      "bleu_1": 38.99,
+      "bleu_2": 33.79,
+      "bleu_3": 30.73,
+      "bleu_4": 28.34,
+      "rouge_l": 54.28,
+      "cider": 1.673,
+      "meteor": 33.61
+    }
+  },
+  "sample_previews": [
+    {
+      "sample_token": "0b7e715ec73e4e6992ac058a6847e05e",
+      "category": "prediction",
+      "question": "What object would consider <c3,CAM_FRONT_RIGHT,552.5,692.8> to be most relevant to its decision?",
+      "ground_truth": "The ego vehicle.",
+      "predicted": "The ego vehicle."
+    },
+    {
+      "sample_token": "9bf5bb3ce72f462a9269dce96f28e424",
+      "category": "prediction",
+      "question": "What is the future state of <c2,CAM_BACK,890.0,623.3>?",
+      "ground_truth": "Stationary.",
+      "predicted": "Stationary."
+    },
+    {
+      "sample_token": "4246e57f018745c9b2bc68feb3d71b58",
+      "category": "prediction",
+      "question": "Would <c4,CAM_BACK_RIGHT,417.5,608.2> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "315acde975fc485f9e7b1983811e8926",
+      "category": "planning",
+      "question": "In this scenario, what are safe actions to take for the ego vehicle?",
+      "ground_truth": "Keep going at the same speed, decelerate gradually without braking.",
+      "predicted": "Keep going at the same speed."
+    },
+    {
+      "sample_token": "d2170a4a449542fc8a79c03aca5b288d",
+      "category": "prediction",
+      "question": "What object would consider <c2,CAM_BACK_LEFT,325.8,624.2> to be most relevant to its decision?",
+      "ground_truth": "None.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "a49262c15fd440b49a239dc7f8c2e0c9",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_FRONT,1511.7,545.0>?",
+      "ground_truth": "Moderate right turn.",
+      "predicted": "Brake suddenly."
+    }
+  ],
+  "latency_seconds": 143.5
+}

@@ -1,0 +1,307 @@
+{
+  "checkpoint": "checkpoints/sota/stage2/best_model",
+  "balanced_evaluation": {
+    "total_samples": 500,
+    "overall_accuracy": 43.4,
+    "category_accuracies": {
+      "status": 47.0,
+      "count": 9.0,
+      "exist": 72.0,
+      "comparison": 53.0,
+      "object": 36.0
+    },
+    "sample_predictions": [
+      {
+        "sample_token": "852e22dbdbbf422e99224c488d7618bf",
+        "category": "status",
+        "question": "There is a bus; what status is it?",
+        "ground_truth": "moving",
+        "prediction": "moving",
+        "correct": true
+      },
+      {
+        "sample_token": "d1d38dddb8174acf9cb776ec6c941024",
+        "category": "count",
+        "question": "How many stopped cars are there?",
+        "ground_truth": "0",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "2535c690e94140188d033d310499a4d5",
+        "category": "exist",
+        "question": "Are there any other cars of the same status as the truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "18a5b211c20b4fbd9512fc2bdd22f901",
+        "category": "status",
+        "question": "There is a bicycle that is to the front left of the stopped car; what status is it?",
+        "ground_truth": "without rider",
+        "prediction": "with rider",
+        "correct": false
+      },
+      {
+        "sample_token": "530efca94dbc4f8e8c11a39a194be844",
+        "category": "exist",
+        "question": "There is a truck; are there any things to the front right of it?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "bb9c0abebf574b4892f1e0fab92004d1",
+        "category": "comparison",
+        "question": "There is a truck that is to the front left of the bus; is it the same status as the car to the back of the moving truck?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "3fc868d0c6984ae6855406f386d4fc69",
+        "category": "exist",
+        "question": "Are there any other cars that in the same status as the construction vehicle?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "b380f7433ef54209be12e5f830b1126c",
+        "category": "object",
+        "question": "The parked thing to the back of the parked construction vehicle is what?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "2bdb1731909b44278640890b57f92c48",
+        "category": "status",
+        "question": "There is a motorcycle; what status is it?",
+        "ground_truth": "without rider",
+        "prediction": "with rider",
+        "correct": false
+      },
+      {
+        "sample_token": "70308748f324468193d6189ab556f8e5",
+        "category": "comparison",
+        "question": "There is a thing that is to the front of the truck; does it have the same status as the motorcycle?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "745713b3baae4ea18de5c74eb4d06bb8",
+        "category": "count",
+        "question": "What number of cars are there?",
+        "ground_truth": "2",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "ffea14e6b78649839de381f51f4f665f",
+        "category": "status",
+        "question": "There is a bicycle to the back right of the moving truck; what status is it?",
+        "ground_truth": "without rider",
+        "prediction": "with rider",
+        "correct": false
+      },
+      {
+        "sample_token": "456ec36cb4a44ca78f36fbd90c0c34fa",
+        "category": "comparison",
+        "question": "There is a car to the front of the with rider thing; is its status the same as the motorcycle?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "f00e0c9a763b4b11b88becf115af6387",
+        "category": "count",
+        "question": "What number of cars are to the front of me?",
+        "ground_truth": "9",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "f4692d3fbdfc4d16b1f02590ad832b10",
+        "category": "count",
+        "question": "How many things are there?",
+        "ground_truth": "9",
+        "prediction": "10",
+        "correct": false
+      }
+    ]
+  },
+  "natural_evaluation": {
+    "total_samples": 500,
+    "overall_accuracy": 45.8,
+    "category_accuracies": {
+      "count": 13.89,
+      "exist": 69.48,
+      "status": 45.35,
+      "comparison": 51.47,
+      "object": 39.29
+    },
+    "sample_predictions": [
+      {
+        "sample_token": "284234f5451d495fa01bd24bd04993dc",
+        "category": "count",
+        "question": "How many parked things are there?",
+        "ground_truth": "10",
+        "prediction": "10",
+        "correct": true
+      },
+      {
+        "sample_token": "aae0304d89854d818cb48c0aa52a4ebd",
+        "category": "exist",
+        "question": "Are there any parked cars to the back right of me?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "a80dc57ecf7c438c8eb933d75b7fb210",
+        "category": "exist",
+        "question": "There is a stopped car; are there any cars to the back of it?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "357116a604d548c9bb406cdcc3a8f85e",
+        "category": "count",
+        "question": "What number of other things are there of the same status as the bus?",
+        "ground_truth": "10",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "07cc7c2f5d22463398a2cda8670d08e9",
+        "category": "status",
+        "question": "There is a truck to the back of the stopped bus; what is its status?",
+        "ground_truth": "parked",
+        "prediction": "stopped",
+        "correct": false
+      },
+      {
+        "sample_token": "51265d17eeb54973aa1b9be24d3058e2",
+        "category": "status",
+        "question": "There is a motorcycle that is to the back right of me; what status is it?",
+        "ground_truth": "with rider",
+        "prediction": "with rider",
+        "correct": true
+      },
+      {
+        "sample_token": "29ac0fcfafd84f309c87aadf3115c950",
+        "category": "exist",
+        "question": "Are there any stopped things to the back left of me?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "2945e6bfeea7425c8adf44f3225122d3",
+        "category": "exist",
+        "question": "Are there any construction vehicles to the back of me?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "2de99b77e26e4b9d92b4644a6d674907",
+        "category": "comparison",
+        "question": "There is a construction vehicle; is its status the same as the trailer that is to the front left of the parked construction vehicle?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "36decc5fa3744f0886c634e4e58022bb",
+        "category": "exist",
+        "question": "There is a with rider bicycle; are there any with rider things to the front right of it?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "6bfa08277a1e4ec4b85872ee56f288e5",
+        "category": "exist",
+        "question": "Are there any moving trailers?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "7c976cd4bd81403b8294e51b81d52f4d",
+        "category": "comparison",
+        "question": "There is a trailer to the front left of the construction vehicle; is its status the same as the construction vehicle?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "dcc2a36949a34d9d9c3de0b735d79798",
+        "category": "object",
+        "question": "There is a thing that is to the front left of the moving truck and the front left of the stopped car; what is it?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "4dfb0052fe944420acddf5d376755dff",
+        "category": "count",
+        "question": "What number of other things are in the same status as the trailer?",
+        "ground_truth": "7",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "68d9e485a01b44d2932acdaf2cfa6650",
+        "category": "comparison",
+        "question": "Do the truck and the thing to the back right of the truck have the same status?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      }
+    ]
+  },
+  "shuffle_test": {
+    "real_bev_accuracy": 43.4,
+    "shuffled_bev_accuracy": 43.6,
+    "visual_grounding_delta": -0.2,
+    "shuffled_category_accuracies": {
+      "status": 46.0,
+      "count": 14.0,
+      "exist": 71.0,
+      "comparison": 50.0,
+      "object": 37.0
+    }
+  },
+  "comparisons": {
+    "Text-Only LLM (Zero-Shot)": {
+      "overall": 19.6,
+      "exist": 38.0,
+      "count": 0.0,
+      "object": 12.0,
+      "status": 6.0,
+      "comparison": 42.0
+    },
+    "CenterPoint + MCAN": {
+      "overall": 61.2,
+      "exist": 78.4,
+      "count": 48.9,
+      "object": 48.2,
+      "status": 62.1,
+      "comparison": 68.3
+    },
+    "BeLLA (State-of-the-Art)": {
+      "overall": 66.8,
+      "exist": 82.5,
+      "count": 55.4,
+      "object": 53.7,
+      "status": 66.2,
+      "comparison": 76.1
+    }
+  }
+}
