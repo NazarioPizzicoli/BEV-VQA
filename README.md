@@ -214,15 +214,3 @@ python scripts/train_sota_nuscenes_boost.py \
 | **Pretrained Projector** | BEV Representation | Aligned DeeperConv projector weights | `checkpoints/sota/stage1/stage1_projector_best.pt` |
 
 ---
-
-## Citation & Acknowledgments
-
-If you find this work useful in your research, please cite:
-
-```bibtex
-@article{bevvlm2026,
-  title={BEV-VLM: High-Efficiency Multimodal Bird's-Eye-View Vision-Language Model for Autonomous Driving},
-  author={Pizzicoli, Nazario},
-  year={2026}
-}
-```
