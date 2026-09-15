@@ -32,12 +32,18 @@ def collate_train(batch: List[Dict[str, Any]], pad_id: int) -> Dict[str, torch.T
             bevs.append(b)
     bev_tensor = torch.cat(bevs, dim=0) if bevs else None
 
-    return {
+    res = {
         "input_ids": input_ids_padded,
         "attention_mask": attention_mask_padded,
         "labels": labels_padded,
         "bev": bev_tensor,
     }
+    if batch and "template_type" in batch[0]:
+        res["template_types"] = [item.get("template_type", "") for item in batch]
+    if batch and "answer_text" in batch[0]:
+        res["answers"] = [item.get("answer_text", "") for item in batch]
+
+    return res
 
 def collate_eval(batch: List[Dict[str, Any]], pad_id: int) -> Dict[str, Any]:
     """

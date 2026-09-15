@@ -1,0 +1,88 @@
+{
+  "dataset": "DriveLM",
+  "checkpoint": "checkpoints/sota_drivelm/best_model",
+  "num_evaluated": 200,
+  "overall_metrics": {
+    "bleu_1": 53.94,
+    "bleu_2": 49.09,
+    "bleu_3": 45.06,
+    "bleu_4": 41.62,
+    "rouge_l": 65.39,
+    "cider": 2.658,
+    "meteor": 45.76
+  },
+  "category_metrics": {
+    "perception": {
+      "bleu_1": 53.12,
+      "bleu_2": 48.23,
+      "bleu_3": 43.51,
+      "bleu_4": 39.49,
+      "rouge_l": 67.84,
+      "cider": 2.76,
+      "meteor": 50.82
+    },
+    "prediction": {
+      "bleu_1": 70.5,
+      "bleu_2": 69.49,
+      "bleu_3": 69.24,
+      "bleu_4": 69.32,
+      "rouge_l": 71.61,
+      "cider": 3.102,
+      "meteor": 48.34
+    },
+    "planning": {
+      "bleu_1": 47.9,
+      "bleu_2": 43.18,
+      "bleu_3": 40.11,
+      "bleu_4": 37.83,
+      "rouge_l": 56.99,
+      "cider": 2.036,
+      "meteor": 38.33
+    }
+  },
+  "sample_previews": [
+    {
+      "sample_token": "825d52c255ca46fc9ae7a7fc43d44816",
+      "category": "planning",
+      "question": "What is the traffic signal that the ego vehicle should pay attention to?",
+      "ground_truth": "Red light.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "7c7637690d8247a3b1f079420a33655d",
+      "category": "perception",
+      "question": "What is the observed status of object <c2,CAM_FRONT,706.7,557.5>?",
+      "ground_truth": "Moving.",
+      "predicted": "Moving."
+    },
+    {
+      "sample_token": "3bae34beb13648d6822fd39c94da2749",
+      "category": "planning",
+      "question": "In this scenario, what are dangerous actions to take for the ego vehicle?",
+      "ground_truth": "Accelerate and go ahead.",
+      "predicted": "Brake suddenly, back up."
+    },
+    {
+      "sample_token": "bbd5199ba215415fae929f2762f87a7c",
+      "category": "prediction",
+      "question": "What object would consider <c1,CAM_BACK,810.0,492.5> to be most relevant to its decision?",
+      "ground_truth": "The ego vehicle.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "cc4fe0cb5e094d798902dc19ea800510",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c3,CAM_FRONT_LEFT,678.3,686.7>?",
+      "ground_truth": "Sharp left turn.",
+      "predicted": "Sharp left turn."
+    },
+    {
+      "sample_token": "caa8be4d272d49719693a75c0eb68737",
+      "category": "perception",
+      "question": "What are objects to the front right of the ego car?",
+      "ground_truth": "There are many barriers to the front right of the ego car.",
+      "predicted": "There are many cars and one truck to the front right of the ego car."
+    }
+  ],
+  "latency_seconds": 113.0
+}

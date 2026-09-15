@@ -22,7 +22,7 @@ from typing import Dict, List, Optional, Tuple
 import torch
 from tqdm import tqdm
 
-from bev_vqa.data.dataset import build_tokenizer, normalize_answer, VQA_SYSTEM_PROMPT
+from bev_vqa.data.dataset import build_tokenizer, normalize_answer, VQA_SYSTEM_PROMPT, BEV_TOKEN
 from bev_vqa.models.projector import ProjectorConfig
 from bev_vqa.models.vlm import BEVVLM, BEVVLMConfig
 
@@ -34,6 +34,12 @@ GREEN = "\033[92m"
 YELLOW = "\033[93m"
 BOLD = "\033[1m"
 RESET = "\033[0m"
+
+SOTA_NUSCENES_SYSTEM_PROMPT = (
+    "You are an autonomous driving perception system. You are given a bird's-eye-view "
+    "feature map of the scene. Answer the question about the scene strictly with a single "
+    "word, number, or exact category name."
+)
 
 PUBLISHED_BASELINES = {
     "Text-Only LLM (Zero-Shot)": {
@@ -85,6 +91,7 @@ def run_evaluation(
     device: torch.device,
     desc: str = "Evaluating",
     max_new_tokens: int = 10,
+    num_tokens: int = 32,
     shuffled_tokens: Optional[List[str]] = None,
 ) -> Tuple[float, Dict[str, float], List[Dict]]:
     model.eval()
@@ -109,11 +116,12 @@ def run_evaluation(
             gt = normalize_answer(it["answer"])
             cat = it.get("template_type", "unknown")
 
-            prompt = (
-                f"<|im_start|>system\n{VQA_SYSTEM_PROMPT}<|im_end|>\n"
-                f"<|im_start|>user\n<|bev|>\n{q}<|im_end|>\n"
-                f"<|im_start|>assistant\n"
-            )
+            bev_placeholder = BEV_TOKEN * num_tokens
+            messages = [
+                {"role": "system", "content": VQA_SYSTEM_PROMPT},
+                {"role": "user", "content": f"{bev_placeholder}\n{q}"}
+            ]
+            prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
             tokens = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to(device)
 
             out = model.generate(
@@ -161,24 +169,29 @@ def main():
     parser.add_argument("--llm-path", type=str, default="Qwen/Qwen2.5-3B-Instruct")
     parser.add_argument("--arch-type", type=str, default="deeper_conv")
     parser.add_argument("--num-tokens", type=int, default=32)
+    parser.add_argument("--use-dual-pooling", action=argparse.BooleanOptionalAction, default=False, help="Use dual pooling (Avg+Max) for 64-token models")
     parser.add_argument("--balanced-samples-per-cat", type=int, default=100, help="Campioni per categoria per il test bilanciato (100 * 5 = 500)")
     parser.add_argument("--natural-samples", type=int, default=500, help="Campioni per la distribuzione naturale")
     parser.add_argument("--run-shuffle", action="store_true", default=True, help="Esegui lo shuffle test sul dataset bilanciato")
+    parser.add_argument("--lora-r", type=int, default=32)
+    parser.add_argument("--lora-alpha", type=int, default=64)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--report-path", type=str, default="outputs/nuscenes_qa_sota_report.json")
     args = parser.parse_args()
 
     random.seed(args.seed)
     torch.manual_seed(args.seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     bev_dir = Path(args.bev_dir)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     print(f"\n{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"{BOLD}{CYAN}  BENCHMARK COMPLETO NUSCENES-QA: BILANCIATO vs NATURALE{RESET}")
+    print(f"{BOLD}{CYAN}  BENCHMARK NUSCENES-QA SOTA EVALUATION{RESET}")
     print(f"{BOLD}{CYAN}======================================================================{RESET}")
     print(f"  Checkpoint:           {args.checkpoint}")
-    print(f"  BEV Features Dir:     {args.bev_dir}")
     print(f"  Dispositivo:          {device}")
+    print(f"  Architettura:         {args.arch_type} ({args.num_tokens} tokens, Dual Pooling={args.use_dual_pooling})")
+    print(f"  LoRA Config:          r={args.lora_r}, alpha={args.lora_alpha}")
     print(f"  Campioni Bilanciati:  {args.balanced_samples_per_cat * 5} (5 categorie x {args.balanced_samples_per_cat})")
     print(f"  Campioni Naturali:    {args.natural_samples}")
     print(f"{CYAN}----------------------------------------------------------------------{RESET}\n")
@@ -187,7 +200,9 @@ def main():
     tokenizer = build_tokenizer(args.llm_path)
     cfg = BEVVLMConfig(
         llm_name_or_path=args.llm_path,
-        projector_config=ProjectorConfig(arch_type=args.arch_type, num_tokens=args.num_tokens),
+        projector_config=ProjectorConfig(arch_type=args.arch_type, num_tokens=args.num_tokens, use_dual_pooling=args.use_dual_pooling),
+        lora_r=args.lora_r,
+        lora_alpha=args.lora_alpha,
     )
     model = BEVVLM(cfg, tokenizer).to(device)
     model.load_checkpoint(args.checkpoint)
@@ -212,7 +227,7 @@ def main():
 
     logger.info(f"\n>>> 1. Valutazione su Distribuzione Bilanciata ({len(balanced_items)} campioni)...")
     bal_acc, bal_cat_accs, bal_samples = run_evaluation(
-        model, tokenizer, balanced_items, bev_dir, device, desc="Balanced Eval"
+        model, tokenizer, balanced_items, bev_dir, device, desc="Balanced Eval", num_tokens=args.num_tokens
     )
 
     # Shuffle Test
@@ -229,7 +244,7 @@ def main():
                 shuffled_tokens[i], shuffled_tokens[j] = shuffled_tokens[j], shuffled_tokens[i]
 
         shuf_acc, shuf_cat_accs, _ = run_evaluation(
-            model, tokenizer, balanced_items, bev_dir, device, desc="Shuffle Test", shuffled_tokens=shuffled_tokens
+            model, tokenizer, balanced_items, bev_dir, device, desc="Shuffle Test", num_tokens=args.num_tokens, shuffled_tokens=shuffled_tokens
         )
         delta_grounding = round(bal_acc - shuf_acc, 2)
         shuffle_data = {
@@ -243,7 +258,7 @@ def main():
     logger.info(f"\n>>> 3. Valutazione su Distribuzione Naturale ({args.natural_samples} campioni)...")
     natural_items = random.sample(all_questions, min(args.natural_samples, len(all_questions)))
     nat_acc, nat_cat_accs, nat_samples = run_evaluation(
-        model, tokenizer, natural_items, bev_dir, device, desc="Natural Eval"
+        model, tokenizer, natural_items, bev_dir, device, desc="Natural Eval", num_tokens=args.num_tokens
     )
 
     # Stampa tabella riassuntiva

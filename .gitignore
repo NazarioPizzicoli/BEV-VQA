@@ -61,3 +61,7 @@ outputs/**/*.pth
 .DS_Store
 *.swp
 *~
+
+# Temporary inference debug outputs except the demo image
+outputs/inference/*.png
+!outputs/inference/cbfd955556f24d8e850a3cbfb5c5acc7_20260915_124925.png

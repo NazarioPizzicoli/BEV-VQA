@@ -33,7 +33,7 @@ from pycocoevalcap.rouge.rouge import Rouge
 import torch
 from tqdm import tqdm
 
-from bev_vqa.data.dataset import build_tokenizer, normalize_answer, VQA_SYSTEM_PROMPT
+from bev_vqa.data.dataset import build_tokenizer, normalize_answer, VQA_SYSTEM_PROMPT, BEV_TOKEN
 from bev_vqa.models.projector import ProjectorConfig
 from bev_vqa.models.vlm import BEVVLM, BEVVLMConfig
 
@@ -44,6 +44,12 @@ GREEN = "\033[92m"
 YELLOW = "\033[93m"
 BOLD = "\033[1m"
 RESET = "\033[0m"
+
+DRIVELM_SYSTEM_PROMPT = (
+    "You are an autonomous driving perception and planning assistant. "
+    "Analyze the bird's-eye-view (BEV) features of the scene and provide accurate, "
+    "concise, and clear answers regarding perception, prediction, and planning decisions."
+)
 
 
 def ensure_nltk_resources():
@@ -76,7 +82,7 @@ def load_drivelm_data(json_path: str, bev_dirs: List[Path], max_samples: int = 2
         by_type[q.get("template_type", "other")].append(q)
 
     random.seed(seed)
-    target_types = ["perception", "prediction", "planning"]
+    target_types = ["perception", "prediction", "planning", "behavior"]
     n_per_type = max_samples // len(target_types)
 
     sampled = []
@@ -136,14 +142,16 @@ def compute_nlg_metrics(references: List[str], hypotheses: List[str]) -> Dict[st
 
 def main():
     parser = argparse.ArgumentParser(description="DriveLM Generative NLG Evaluation")
-    parser.add_argument("--checkpoint", type=str, default="checkpoints/stage2/best_model")
+    parser.add_argument("--checkpoint", type=str, default="checkpoints/sota_drivelm_v2/best_model")
     parser.add_argument("--drivelm-val-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_val.json")
     parser.add_argument("--llm-path", type=str, default="Qwen/Qwen2.5-3B-Instruct")
     parser.add_argument("--arch-type", type=str, default="deeper_conv")
     parser.add_argument("--num-tokens", type=int, default=32)
-    parser.add_argument("--num-samples", type=int, default=200)
+    parser.add_argument("--num-samples", type=int, default=1600)
     parser.add_argument("--bev-dir", type=str, default="/media/nazario.pizzicoli/Datos/dataset/bev_features")
-    parser.add_argument("--max-new-tokens", type=int, default=40)
+    parser.add_argument("--max-new-tokens", type=int, default=96)
+    parser.add_argument("--lora-r", type=int, default=32)
+    parser.add_argument("--lora-alpha", type=int, default=64)
     parser.add_argument("--report-path", type=str, default="outputs/drivelm_nlg_report.json")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
@@ -163,6 +171,7 @@ def main():
     print(f"  Checkpoint:           {args.checkpoint}")
     print(f"  Campioni di Test:     {args.num_samples}")
     print(f"  Max Token Generati:   {args.max_new_tokens}")
+    print(f"  LoRA r/alpha:         r={args.lora_r}, alpha={args.lora_alpha}")
     print(f"  Dispositivo:          {device}")
     print(f"{CYAN}----------------------------------------------------------------------{RESET}\n")
 
@@ -171,6 +180,8 @@ def main():
     cfg = BEVVLMConfig(
         llm_name_or_path=args.llm_path,
         projector_config=ProjectorConfig(arch_type=args.arch_type, num_tokens=args.num_tokens),
+        lora_r=args.lora_r,
+        lora_alpha=args.lora_alpha,
     )
     model = BEVVLM(cfg, tokenizer).to(device)
     model.projector.float()
@@ -213,11 +224,12 @@ def main():
                 bev = bev.unsqueeze(0)
             bev = bev.to(device)
 
-            prompt_text = (
-                f"<|im_start|>system\n{VQA_SYSTEM_PROMPT}<|im_end|>\n"
-                f"<|im_start|>user\n<|bev|>\n{q}<|im_end|>\n"
-                f"<|im_start|>assistant\n"
-            )
+            bev_placeholder = BEV_TOKEN * args.num_tokens
+            messages = [
+                {"role": "system", "content": DRIVELM_SYSTEM_PROMPT},
+                {"role": "user", "content": f"{bev_placeholder}\n{q}"}
+            ]
+            prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
             tokens = tokenizer(prompt_text, return_tensors="pt", add_special_tokens=False).to(device)
 
             gen_ids = model.generate(
@@ -258,7 +270,7 @@ def main():
 
     # Calcolo metriche per categoria
     category_metrics = {}
-    for cat in ["perception", "prediction", "planning"]:
+    for cat in ["perception", "prediction", "planning", "behavior"]:
         if cat in cat_refs and len(cat_refs[cat]) > 0:
             category_metrics[cat] = compute_nlg_metrics(cat_refs[cat], cat_hyps[cat])
 

@@ -34,6 +34,7 @@ class ProjectorConfig:
     # Parametri per DeeperConv:
     hidden_channels: int = 256
     num_conv_layers: int = 4
+    use_dual_pooling: bool = False     # Parallel Avg + Max pooling projected back to C
     # Parametri per Q-Former:
     qformer_hidden_size: int = 768
     qformer_num_layers: int = 3
@@ -56,7 +57,7 @@ class DeeperConvProjector(nn.Module):
     """
     BeLLA-style Deeper Conv projector.
     Convoluzioni progressive strided per preservare gerarchia spaziale,
-    pooling adattivo a N token e proiezione lineare nello spazio del LLM.
+    pooling adattivo a N token (singolo o duale Avg+Max) e proiezione lineare nello spazio del LLM.
     """
     def __init__(self, config: ProjectorConfig):
         super().__init__()
@@ -75,11 +76,19 @@ class DeeperConvProjector(nn.Module):
             ])
         self.conv_stack = nn.Sequential(*layers)
 
-        # Risoluzione spaziale target per ottenere esattamente num_tokens
+        # Risoluzione spaziale target per ottenere esattamente num_tokens (es. 64 -> 8x8)
         self.pool_shape = get_spatial_pool_shape(config.num_tokens)
-        self.pool = nn.AdaptiveAvgPool2d(self.pool_shape)
+        self.use_dual_pooling = getattr(config, "use_dual_pooling", False)
+        if self.use_dual_pooling:
+            self.avg_pool = nn.AdaptiveAvgPool2d(self.pool_shape)
+            self.max_pool = nn.AdaptiveMaxPool2d(self.pool_shape)
+            self.pool_proj = nn.Conv2d(
+                config.hidden_channels * 2, config.hidden_channels, kernel_size=1
+            )
+        else:
+            self.pool = nn.AdaptiveAvgPool2d(self.pool_shape)
 
-        # Positional embedding spaziale per dare identità unica ai 32 token
+        # Positional embedding spaziale per dare identità unica agli N token
         self.pos_embed = nn.Parameter(torch.zeros(1, config.num_tokens, config.hidden_channels))
         nn.init.normal_(self.pos_embed, std=0.02)
 
@@ -99,7 +108,13 @@ class DeeperConvProjector(nn.Module):
             visual_tokens: [B, num_tokens, d_llm]
         """
         x = self.conv_stack(bev)           # [B, hidden_channels, H_conv, W_conv]
-        x = self.pool(x)                   # [B, hidden_channels, h_pool, w_pool]
+        if self.use_dual_pooling:
+            avg_x = self.avg_pool(x)
+            max_x = self.max_pool(x)
+            x = torch.cat([avg_x, max_x], dim=1)  # [B, 2 * hidden_channels, h_pool, w_pool]
+            x = self.pool_proj(x)                 # [B, hidden_channels, h_pool, w_pool]
+        else:
+            x = self.pool(x)                      # [B, hidden_channels, h_pool, w_pool]
 
         B, C, h, w = x.shape
         x = x.view(B, C, h * w).transpose(1, 2)  # [B, num_tokens, hidden_channels]

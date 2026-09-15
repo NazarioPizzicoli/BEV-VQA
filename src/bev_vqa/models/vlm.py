@@ -5,15 +5,16 @@ Combines Projector, LLM (Qwen2.5-3B-Instruct) and LoRA.
 
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Dict, Any
+from typing import List, Optional, Tuple, Dict, Any, Union
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from transformers import AutoModelForCausalLM, PreTrainedModel, AutoTokenizer
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from peft import LoraConfig, get_peft_model, TaskType
 
-from bev_vqa.models.projector import ProjectorConfig, build_projector
+from bev_vqa.models.projector import ProjectorConfig, build_projector, get_spatial_pool_shape
 
 logger = logging.getLogger(__name__)
 
@@ -227,22 +228,27 @@ class BEVVLM(nn.Module):
         input_ids: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
         labels: Optional[torch.Tensor] = None,
-    ) -> CausalLMOutputWithPast:
+        return_aligned_labels: bool = False,
+    ) -> Union[CausalLMOutputWithPast, Tuple[CausalLMOutputWithPast, Optional[torch.Tensor]]]:
         """
         Forward pass end-to-end.
         """
-        inputs_embeds, attention_mask, labels = self.prepare_multimodal_inputs(
+        inputs_embeds, attention_mask, aligned_labels = self.prepare_multimodal_inputs(
             bev=bev,
             input_ids=input_ids,
             attention_mask=attention_mask,
             labels=labels,
         )
 
-        return self.llm(
+        out = self.llm(
             inputs_embeds=inputs_embeds,
             attention_mask=attention_mask,
-            labels=labels,
+            labels=aligned_labels,
         )
+
+        if return_aligned_labels:
+            return out, aligned_labels
+        return out
 
     @torch.no_grad()
     def generate(
@@ -273,11 +279,28 @@ class BEVVLM(nn.Module):
         torch.save(self.projector.state_dict(), save_path)
         logger.info(f"Pesi del proiettore salvati in: {save_path}")
 
-    def load_projector(self, load_path: str):
-        """Carica i pesi del solo proiettore."""
+    def load_projector(self, load_path: str, strict: bool = False):
+        """Carica i pesi del solo proiettore con supporto a interpolazione pos_embed e pesi flessibili."""
         state_dict = torch.load(load_path, map_location="cpu")
-        self.projector.load_state_dict(state_dict)
-        logger.info(f"Pesi del proiettore caricati da: {load_path}")
+        if hasattr(self.projector, "pos_embed") and "pos_embed" in state_dict:
+            old_pe = state_dict["pos_embed"]
+            new_pe = self.projector.pos_embed
+            if old_pe.shape != new_pe.shape:
+                try:
+                    C = old_pe.shape[-1]
+                    N_old = old_pe.shape[1]
+                    N_new = new_pe.shape[1]
+                    old_h, old_w = get_spatial_pool_shape(N_old)
+                    new_h, new_w = get_spatial_pool_shape(N_new)
+                    pe_2d = old_pe.view(1, old_h, old_w, C).permute(0, 3, 1, 2)
+                    pe_interp = F.interpolate(pe_2d, size=(new_h, new_w), mode="bilinear", align_corners=False)
+                    state_dict["pos_embed"] = pe_interp.permute(0, 2, 3, 1).reshape(1, N_new, C)
+                    logger.info(f"Interpolated pos_embed from {old_h}x{old_w} ({N_old}) to {new_h}x{new_w} ({N_new})")
+                except Exception as e:
+                    logger.warning(f"Could not interpolate pos_embed ({e}), keeping newly initialized pos_embed.")
+                    state_dict.pop("pos_embed")
+        res = self.projector.load_state_dict(state_dict, strict=strict)
+        logger.info(f"Pesi del proiettore caricati da: {load_path} (load result={res})")
 
     def save_checkpoint(self, save_dir: str):
         """Salva il checkpoint completo: proiettore + adattatori LoRA."""
