@@ -59,7 +59,7 @@ def test_projector_gradient_flow(arch_type):
     else:
         out = proj(bev)
         
-    loss = out.sum()
+    loss = (out ** 2).sum()
     loss.backward()
     
     assert bev.grad is not None
