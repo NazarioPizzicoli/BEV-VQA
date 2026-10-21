@@ -1,5 +1,5 @@
 """
-Execution backends for LLM-as-a-Judge: Local HuggingFace models and OpenAI/Gemini-compatible APIs.
+Execution backends for LLM-as-a-Judge: Local HuggingFace models and local vLLM / REST endpoints.
 """
 
 from abc import ABC, abstractmethod
@@ -79,22 +79,19 @@ class LocalHFBackend(BaseJudgeBackend):
 
 
 class APIJudgeBackend(BaseJudgeBackend):
-    """Executes judge inference via standard OpenAI-compatible REST API (GPT-4o, Gemini, vLLM, etc.)."""
+    """Executes judge inference via local vLLM or standard REST endpoint."""
 
     def __init__(
         self,
-        model_name: str = "gpt-4o",
+        model_name: str = "local-judge",
         api_key: Optional[str] = None,
-        base_url: str = "https://api.openai.com/v1",
+        base_url: str = "http://localhost:8000/v1",
         timeout: float = 30.0,
     ) -> None:
         super().__init__(model_name=model_name)
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY", "")
+        self.api_key = api_key or os.environ.get("JUDGE_API_KEY", "")
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
-
-        if not self.api_key and "api.openai.com" in self.base_url:
-            logger.warning("No API key provided for OpenAI-compatible endpoint. Ensure environment variable is set.")
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         import requests

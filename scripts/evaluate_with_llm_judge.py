@@ -50,7 +50,7 @@ def parse_args():
         type=str,
         default="local",
         choices=["local", "api"],
-        help="Execution backend: 'local' (HuggingFace) or 'api' (OpenAI/Gemini-compatible)",
+        help="Execution backend: 'local' (HuggingFace) or 'api' (Local vLLM / REST endpoint)",
     )
     parser.add_argument(
         "--judge-model",
@@ -61,8 +61,8 @@ def parse_args():
     parser.add_argument(
         "--api-base-url",
         type=str,
-        default="https://api.openai.com/v1",
-        help="Base URL for API backend",
+        default="http://localhost:8000/v1",
+        help="Base URL for local REST / vLLM API backend",
     )
     parser.add_argument(
         "--api-key",
