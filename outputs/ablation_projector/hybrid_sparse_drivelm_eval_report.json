@@ -1,0 +1,131 @@
+{
+  "checkpoint": "checkpoints/ablation_projector/hybrid_sparse/drivelm/best_model",
+  "num_evaluated": 1600,
+  "overall_metrics": {
+    "bleu_1": 65.64,
+    "bleu_2": 61.6,
+    "bleu_3": 58.15,
+    "bleu_4": 54.88,
+    "rouge_l": 73.75,
+    "cider": 3.498,
+    "meteor": 61.82,
+    "BLEU-1": 65.64,
+    "BLEU-2": 61.6,
+    "BLEU-3": 58.15,
+    "BLEU-4": 54.88,
+    "ROUGE-L": 73.75,
+    "CIDEr": 3.498,
+    "METEOR": 61.82
+  },
+  "category_metrics": {
+    "perception": {
+      "bleu_1": 49.45,
+      "bleu_2": 42.9,
+      "bleu_3": 37.64,
+      "bleu_4": 33.17,
+      "rouge_l": 70.48,
+      "cider": 2.925,
+      "meteor": 56.49,
+      "BLEU-1": 49.45,
+      "BLEU-2": 42.9,
+      "BLEU-3": 37.64,
+      "BLEU-4": 33.17,
+      "ROUGE-L": 70.48,
+      "CIDEr": 2.925,
+      "METEOR": 56.49
+    },
+    "prediction": {
+      "bleu_1": 65.91,
+      "bleu_2": 60.78,
+      "bleu_3": 55.66,
+      "bleu_4": 50.16,
+      "rouge_l": 75.26,
+      "cider": 3.436,
+      "meteor": 54.97,
+      "BLEU-1": 65.91,
+      "BLEU-2": 60.78,
+      "BLEU-3": 55.66,
+      "BLEU-4": 50.16,
+      "ROUGE-L": 75.26,
+      "CIDEr": 3.436,
+      "METEOR": 54.97
+    },
+    "planning": {
+      "bleu_1": 56.19,
+      "bleu_2": 51.56,
+      "bleu_3": 48.33,
+      "bleu_4": 45.72,
+      "rouge_l": 61.8,
+      "cider": 2.412,
+      "meteor": 46.6,
+      "BLEU-1": 56.19,
+      "BLEU-2": 51.56,
+      "BLEU-3": 48.33,
+      "BLEU-4": 45.72,
+      "ROUGE-L": 61.8,
+      "CIDEr": 2.412,
+      "METEOR": 46.6
+    },
+    "behavior": {
+      "bleu_1": 82.74,
+      "bleu_2": 80.62,
+      "bleu_3": 78.54,
+      "bleu_4": 76.26,
+      "rouge_l": 87.44,
+      "cider": 0.0,
+      "meteor": 89.21,
+      "BLEU-1": 82.74,
+      "BLEU-2": 80.62,
+      "BLEU-3": 78.54,
+      "BLEU-4": 76.26,
+      "ROUGE-L": 87.44,
+      "CIDEr": 0.0,
+      "METEOR": 89.21
+    }
+  },
+  "sample_previews": [
+    {
+      "sample_token": "ef5a936f8c6c4e058bdf221243d4afe9",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving with normal speed.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "5fbf646e371a44fcb6ebd6b9e6fa0f1f",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c2,CAM_BACK,852.5,527.5>?",
+      "ground_truth": "Back up.",
+      "predicted": "Back up."
+    },
+    {
+      "sample_token": "820fd5651e324e3ba36bc9e4f05883d9",
+      "category": "planning",
+      "question": "What actions could the ego vehicle take based on <c3,CAM_BACK_RIGHT,775.8,654.2>? Why take this action and what's the probability?",
+      "ground_truth": "The action is to keep going at the same speed. The reason is to avoid a collision, with a high probability.",
+      "predicted": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high."
+    },
+    {
+      "sample_token": "26436a07886b47999d2c55f781d6a469",
+      "category": "perception",
+      "question": "Are there moving trucks to the front left of the ego car?",
+      "ground_truth": "Yes.",
+      "predicted": "Yes."
+    },
+    {
+      "sample_token": "53d6c4ed220c4d83916627f92815c067",
+      "category": "perception",
+      "question": "What is the visual description of <c6,CAM_FRONT,341.5,695.0>?",
+      "ground_truth": "Left turn arrow.",
+      "predicted": "Red light."
+    },
+    {
+      "sample_token": "d42aea2572994e80a18415154b3ac119",
+      "category": "prediction",
+      "question": "Would <c1,CAM_FRONT,253.3,478.3> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    }
+  ],
+  "latency_seconds": 1224.74
+}

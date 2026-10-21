@@ -20,9 +20,14 @@ import unittest
 
 import torch
 
+TEST_DIR = Path(__file__).resolve().parent
+REPO_ROOT = TEST_DIR.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 from bev_vqa.data.dataset import BEVQADataset, build_tokenizer
 from bev_vqa.data.sampler import DriveLMCategoryBalancedSampler, DRIVELM_CATEGORY_RATIOS
 from bev_vqa.training.metrics import compute_nlg_metrics
+
 
 
 VAL_JSON_PATH = "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_val.json"
@@ -180,12 +185,22 @@ class TestDriveLMPipeline(unittest.TestCase):
         if not self.has_dataset:
             self.skipTest(f"Dataset path {VAL_JSON_PATH} not found.")
 
-        test_output_dir = Path("checkpoints/test_pipeline_unit_dry_run")
-        test_report = Path("outputs/test_pipeline_unit_dry_run.json")
+        test_output_dir = REPO_ROOT / "checkpoints/test_pipeline_unit_dry_run"
+        test_report = REPO_ROOT / "outputs/test_pipeline_unit_dry_run.json"
+
+
+        if torch.cuda.is_available():
+            free_mem = None
+            try:
+                free_mem, _ = torch.cuda.mem_get_info()
+            except Exception:
+                pass
+            if free_mem is not None and free_mem < 5 * 1024 ** 3:
+                self.skipTest(f"Insufficient GPU VRAM to launch secondary 3B model ({free_mem / (1024**2):.0f} MB free < 5000 MB; GPU occupied).")
 
         cmd = [
             sys.executable,
-            "scripts/train_sota_drivelm_v2.py",
+            str(REPO_ROOT / "scripts" / "train_sota_drivelm_v2.py"),
             "--dry-run",
             "--output-dir", str(test_output_dir),
             "--report-path", str(test_report),
@@ -196,8 +211,10 @@ class TestDriveLMPipeline(unittest.TestCase):
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=300,
+                timeout=600,
+                cwd=str(REPO_ROOT),
             )
+
             self.assertEqual(
                 res.returncode, 0,
                 f"Dry run failed with exit code {res.returncode}.\nSTDOUT:\n{res.stdout[-1000:]}\nSTDERR:\n{res.stderr[-1000:]}"

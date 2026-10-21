@@ -1,0 +1,42 @@
+{
+  "task": "NuScenes-QA SOTA Boost Training (Interventions 1, 2, 3)",
+  "interventions": {
+    "intervention_1": "Grid 8x4 (32 tokens) DeeperConvProjector with Dual Pooling (Avg+Max=True)",
+    "intervention_2": "Category-Balanced Batching / Sampling (Count 30%, Status 30%, Object 20%, Exist 10%, Comp 10%)",
+    "intervention_3": "Ordinal Gaussian Label Smoothing (sigma=0.9) + Status Class Weighting"
+  },
+  "llm_backbone": "Qwen/Qwen2.5-3B-Instruct",
+  "num_tokens": 32,
+  "spatial_shape": [
+    8,
+    4
+  ],
+  "use_dual_pooling": true,
+  "lora_r": 32,
+  "lora_alpha": 64,
+  "total_steps": 2,
+  "effective_batch_size": 16,
+  "lr_projector": 0.0001,
+  "lr_lora": 0.00015,
+  "early_stopped": false,
+  "dry_run": true,
+  "training_time_seconds": 1.61,
+  "initial_val_accuracy": 0.0,
+  "best_val_accuracy": 0.0,
+  "checkpoints": {
+    "best_model": "checkpoints/ablation_projector/question_aware/nuscenes_qa/best_model",
+    "latest_model": "checkpoints/ablation_projector/question_aware/nuscenes_qa/latest_model"
+  },
+  "history": [
+    {
+      "step": 1,
+      "loss": 3.2338702976703644,
+      "lr_lora": 0.00015
+    },
+    {
+      "step": 2,
+      "loss": 0.5621557533740997,
+      "lr_lora": 0.0
+    }
+  ]
+}

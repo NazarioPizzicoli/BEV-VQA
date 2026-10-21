@@ -11,10 +11,17 @@ Test Coverage:
 
 from collections import Counter
 import math
+from pathlib import Path
+import sys
+import unittest
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+TEST_DIR = Path(__file__).resolve().parent
+REPO_ROOT = TEST_DIR.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 from bev_vqa.models.projector import ProjectorConfig, DeeperConvProjector, get_spatial_pool_shape
 from bev_vqa.data.sampler import CategoryBalancedSampler, DEFAULT_CATEGORY_RATIOS
 from bev_vqa.training.losses import (
@@ -23,6 +30,7 @@ from bev_vqa.training.losses import (
     get_status_weight,
     STATUS_WEIGHTS,
 )
+
 
 
 class DummyTokenizer:
@@ -128,6 +136,21 @@ def test_intervention_1_pos_embed_interpolation():
     new_pe = pe_interp.permute(0, 2, 3, 1).reshape(1, 64, 256)
 
     assert new_pe.shape == (1, 64, 256)
+    assert torch.isfinite(new_pe).all()
+
+
+def test_intervention_1_anisotropic_pos_embed_interpolation_4x8_to_8x4():
+    """Verifica interpolazione 2D tra griglie anisotrope aventi lo stesso numero di token (4x8 -> 8x4)."""
+    old_h, old_w = (4, 8)
+    new_h, new_w = (8, 4)
+    assert old_h * old_w == new_h * new_w == 32
+
+    old_pe = torch.randn(1, 32, 256)
+    pe_2d = old_pe.view(1, old_h, old_w, 256).permute(0, 3, 1, 2)
+    pe_interp = F.interpolate(pe_2d, size=(new_h, new_w), mode="bilinear", align_corners=False)
+    new_pe = pe_interp.permute(0, 2, 3, 1).reshape(1, 32, 256)
+
+    assert new_pe.shape == (1, 32, 256)
     assert torch.isfinite(new_pe).all()
 
 
@@ -336,23 +359,207 @@ def test_intervention_3_real_qwen_tokenizer_no_collision():
     assert losses["7"] < losses["1"], f"loss(7) {losses['7']} >= loss(1) {losses['1']}"
 
 
+
+
+def test_spatial_shapes_forward_backward():
+    """Verifica esplicitamente le forme dei tensori e i gradienti per le griglie spaziali (4, 8), (8, 4) e (8, 8)."""
+    for spatial_shape in [(4, 8), (8, 4), (8, 8)]:
+        expected_tokens = spatial_shape[0] * spatial_shape[1]
+        for use_dual in [False, True]:
+            cfg = ProjectorConfig(
+                in_channels=128,
+                projector_output_size=512,
+                hidden_channels=64,
+                num_conv_layers=2,
+                spatial_shape=spatial_shape,
+                use_dual_pooling=use_dual,
+            )
+            proj = DeeperConvProjector(cfg)
+            assert proj.pool_shape == spatial_shape
+            assert proj.num_tokens == expected_tokens
+            assert proj.config.num_tokens == expected_tokens
+            assert tuple(proj.pool_shape_tensor.tolist()) == spatial_shape
+            assert proj.pos_embed.shape == (1, expected_tokens, 64)
+
+            bev = torch.randn(2, 128, 32, 32, requires_grad=True)
+            out = proj(bev)
+            assert out.shape == (2, expected_tokens, 512)
+            assert torch.isfinite(out).all()
+
+            loss = out.sum()
+            loss.backward()
+            assert bev.grad is not None
+            assert torch.isfinite(bev.grad).all()
+            assert proj.pos_embed.grad is not None
+            assert torch.isfinite(proj.pos_embed.grad).all()
+
+
+def test_projector_checkpoint_shape_persistence_and_interpolation():
+    """Verifica che un checkpoint salvato conservi pool_shape_tensor e consenta il corretto reload."""
+    cfg_4x8 = ProjectorConfig(spatial_shape=(4, 8), projector_output_size=256, hidden_channels=32, num_conv_layers=1)
+    proj_4x8 = DeeperConvProjector(cfg_4x8)
+    sd_4x8 = proj_4x8.state_dict()
+    assert "pool_shape_tensor" in sd_4x8
+    assert tuple(sd_4x8["pool_shape_tensor"].tolist()) == (4, 8)
+
+    # Caricamento in un modello 8x4
+    cfg_8x4 = ProjectorConfig(spatial_shape=(8, 4), projector_output_size=256, hidden_channels=32, num_conv_layers=1)
+    proj_8x4 = DeeperConvProjector(cfg_8x4)
+
+    old_pe = sd_4x8["pos_embed"]
+    old_shape = tuple(sd_4x8["pool_shape_tensor"].tolist())
+    new_shape = proj_8x4.pool_shape
+    pe_2d = old_pe.view(1, old_shape[0], old_shape[1], 32).permute(0, 3, 1, 2)
+    pe_interp = F.interpolate(pe_2d, size=new_shape, mode="bilinear", align_corners=False)
+    new_pe = pe_interp.permute(0, 2, 3, 1).reshape(1, 32, 32)
+    assert new_pe.shape == proj_8x4.pos_embed.shape
+    assert torch.isfinite(new_pe).all()
+
+
+def test_load_projector_method_with_anisotropic_and_isotropic_grids():
+    """Testa il metodo load_projector simulando BEVVLM su file di checkpoint temporanei."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir) / "proj.pt"
+
+        # 1. Salva un proiettore (4, 8) senza pool_shape_tensor (emulando vecchio checkpoint Stage 1)
+        cfg_4x8 = ProjectorConfig(spatial_shape=(4, 8), projector_output_size=512, hidden_channels=64, num_conv_layers=2)
+        proj_4x8 = DeeperConvProjector(cfg_4x8)
+        sd_legacy = proj_4x8.state_dict()
+        sd_legacy.pop("pool_shape_tensor")  # Rimuovi buffer per simulare legacy
+        torch.save(sd_legacy, tmp_path)
+
+        # 2. Inizializza un proiettore target (8, 4)
+        cfg_8x4 = ProjectorConfig(spatial_shape=(8, 4), projector_output_size=512, hidden_channels=64, num_conv_layers=2)
+        proj_8x4 = DeeperConvProjector(cfg_8x4)
+
+        # Simula oggetto modello con metodo load_projector
+        class DummyModel:
+            def __init__(self, p):
+                self.projector = p
+        from bev_vqa.models.vlm import BEVVLM
+        dummy = DummyModel(proj_8x4)
+
+        BEVVLM.load_projector(dummy, str(tmp_path), strict=False)
+
+        assert dummy.projector.pos_embed.shape == (1, 32, 64)
+        assert dummy.projector.pool_shape == (8, 4)
+        assert tuple(dummy.projector.pool_shape_tensor.tolist()) == (8, 4)
+
+        # 3. Ora salva da 8x4 (include pool_shape_tensor) e ricarica in 8x4: non deve fallire
+        torch.save(dummy.projector.state_dict(), tmp_path)
+        dummy2 = DummyModel(DeeperConvProjector(cfg_8x4))
+        BEVVLM.load_projector(dummy2, str(tmp_path), strict=False)
+        assert dummy2.projector.pos_embed.shape == (1, 32, 64)
+        assert tuple(dummy2.projector.pool_shape_tensor.tolist()) == (8, 4)
+
+
+def test_l2_norm_adaptive_pooling_forward_backward():
+    """Verifica che il pooling basato su norma L2 funzioni per 8x4 con gradienti finiti."""
+    # Test sia con gamma fisso che learnable
+    for learnable in [False, True]:
+        cfg = ProjectorConfig(
+            spatial_shape=(8, 4),
+            projector_output_size=256,
+            hidden_channels=32,
+            num_conv_layers=2,
+            use_l2_pooling=True,
+            l2_pooling_gamma=1.5,
+            l2_pooling_learnable=learnable,
+        )
+        proj = DeeperConvProjector(cfg)
+        assert proj.use_l2_pooling is True
+        assert proj.pool_shape == (8, 4)
+
+        bev = torch.randn(2, 128, 32, 32, requires_grad=True)
+        out = proj(bev)
+        assert out.shape == (2, 32, 256)
+        assert torch.isfinite(out).all()
+
+        loss = out.sum()
+        loss.backward()
+        assert bev.grad is not None
+        assert torch.isfinite(bev.grad).all()
+        if learnable:
+            assert proj.l2_gamma.grad is not None
+            assert torch.isfinite(proj.l2_gamma.grad).all()
+
+
+def test_l2_pooling_foreground_energy_preservation():
+    """Verifica che il pooling L2 preservi le feature ad alta energia (ostacoli) senza diluizione da sfondo vuoto."""
+    cfg_l2 = ProjectorConfig(spatial_shape=(1, 1), projector_output_size=64, hidden_channels=16, num_conv_layers=1, use_l2_pooling=True)
+    cfg_uni = ProjectorConfig(spatial_shape=(1, 1), projector_output_size=64, hidden_channels=16, num_conv_layers=1, use_l2_pooling=False)
+    proj_l2 = DeeperConvProjector(cfg_l2)
+    proj_uni = DeeperConvProjector(cfg_uni)
+
+    # In un bin 2x2, posizioniamo un ostacolo forte (norma elevata) in (0, 0) e asfalto vuoto altrove
+    feature = torch.zeros(1, 16, 2, 2)
+    feature[0, :, 0, 0] = 5.0
+    feature[0, :, 0, 1] = 0.01
+    feature[0, :, 1, 0] = 0.01
+    feature[0, :, 1, 1] = 0.01
+
+    # Calcolo manuale pooling su feature
+    salience = torch.linalg.vector_norm(feature.float(), dim=1, keepdim=True)
+    out_l2 = proj_l2.pool(feature * salience) / (proj_l2.pool(salience) + 1e-6)
+    out_uni = proj_uni.pool(feature)
+
+    # Il segnale L2 deve trattenere quasi il 100% dell'intensità dell'ostacolo (circa 4.97 vs 1.25 di uniform)
+    val_l2 = out_l2[0, 0, 0, 0].item()
+    val_uni = out_uni[0, 0, 0, 0].item()
+    assert val_l2 > 4.5, f"L2 pooling doveva preservare l'ostacolo, ottenuto {val_l2}"
+    assert val_uni < 1.5, f"Uniform pooling doveva diluire l'ostacolo, ottenuto {val_uni}"
+
+
+class TestBoostInterventions(unittest.TestCase):
+    """TestCase wrapper enabling automated test discovery by unittest."""
+
+    def test_intervention_1_isotropic_dual_pooling_forward_backward(self):
+        test_intervention_1_isotropic_dual_pooling_forward_backward()
+
+    def test_intervention_1_backward_compatibility_32_tokens(self):
+        test_intervention_1_backward_compatibility_32_tokens()
+
+    def test_intervention_1_pos_embed_interpolation(self):
+        test_intervention_1_pos_embed_interpolation()
+
+    def test_intervention_1_anisotropic_pos_embed_interpolation_4x8_to_8x4(self):
+        test_intervention_1_anisotropic_pos_embed_interpolation_4x8_to_8x4()
+
+    def test_spatial_shapes_forward_backward(self):
+        test_spatial_shapes_forward_backward()
+
+    def test_projector_checkpoint_shape_persistence_and_interpolation(self):
+        test_projector_checkpoint_shape_persistence_and_interpolation()
+
+    def test_load_projector_method_with_anisotropic_and_isotropic_grids(self):
+        test_load_projector_method_with_anisotropic_and_isotropic_grids()
+
+    def test_intervention_2_category_balanced_sampling(self):
+        test_intervention_2_category_balanced_sampling()
+
+    def test_intervention_2_sampler_set_epoch(self):
+        test_intervention_2_sampler_set_epoch()
+
+    def test_intervention_3_ordinal_gaussian_smoothing_monotonicity(self):
+        test_intervention_3_ordinal_gaussian_smoothing_monotonicity()
+
+    def test_intervention_3_status_class_weighting(self):
+        test_intervention_3_status_class_weighting()
+
+    def test_intervention_3_backward_pass(self):
+        test_intervention_3_backward_pass()
+
+    def test_intervention_3_real_qwen_tokenizer_no_collision(self):
+        test_intervention_3_real_qwen_tokenizer_no_collision()
+
+    def test_l2_norm_adaptive_pooling_forward_backward(self):
+        test_l2_norm_adaptive_pooling_forward_backward()
+
+    def test_l2_pooling_foreground_energy_preservation(self):
+        test_l2_pooling_foreground_energy_preservation()
+
+
 if __name__ == "__main__":
-    print("Running Intervention 1 Tests...")
-    test_intervention_1_isotropic_dual_pooling_forward_backward()
-    test_intervention_1_backward_compatibility_32_tokens()
-    test_intervention_1_pos_embed_interpolation()
-    print("Intervention 1 Tests PASSED!")
+    unittest.main()
 
-    print("Running Intervention 2 Tests...")
-    test_intervention_2_category_balanced_sampling()
-    test_intervention_2_sampler_set_epoch()
-    print("Intervention 2 Tests PASSED!")
-
-    print("Running Intervention 3 Tests...")
-    test_intervention_3_ordinal_gaussian_smoothing_monotonicity()
-    test_intervention_3_status_class_weighting()
-    test_intervention_3_backward_pass()
-    test_intervention_3_real_qwen_tokenizer_no_collision()
-    print("Intervention 3 Tests PASSED!")
-
-    print("\nALL INTERVENTION TESTS PASSED SUCCESSFULLY!")

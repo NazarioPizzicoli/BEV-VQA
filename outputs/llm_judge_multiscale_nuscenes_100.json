@@ -1,0 +1,250 @@
+{
+  "summary": {
+    "benchmark": "nuscenes_qa",
+    "judge_model": "Qwen/Qwen2.5-3B-Instruct",
+    "total_evaluated": 15,
+    "overall_metrics": {
+      "mean_factual_accuracy": 5.27,
+      "llm_judge_accuracy": 40.0
+    },
+    "category_metrics": {
+      "status": {
+        "count": 4,
+        "mean_factual_accuracy": 3.0,
+        "llm_judge_accuracy": 25.0
+      },
+      "count": {
+        "count": 4,
+        "mean_factual_accuracy": 2.0,
+        "llm_judge_accuracy": 0.0
+      },
+      "exist": {
+        "count": 3,
+        "mean_factual_accuracy": 10.0,
+        "llm_judge_accuracy": 100.0
+      },
+      "comparison": {
+        "count": 3,
+        "mean_factual_accuracy": 9.0,
+        "llm_judge_accuracy": 66.67
+      },
+      "object": {
+        "count": 1,
+        "mean_factual_accuracy": 2.0,
+        "llm_judge_accuracy": 0.0
+      }
+    }
+  },
+  "detailed_verdicts": [
+    {
+      "sample_token": "852e22dbdbbf422e99224c488d7618bf",
+      "category": "status",
+      "question": "There is a bus; what status is it?",
+      "ground_truth": "moving",
+      "prediction": "moving",
+      "critique": "The predicted status 'moving' matches the ground truth 'moving', so there is no factual error.",
+      "scores": {
+        "factual_accuracy": 10.0
+      },
+      "is_pass": true,
+      "verdict": "CORRECT",
+      "raw_output": "{\n  \"critique\": \"The predicted status 'moving' matches the ground truth 'moving', so there is no factual error.\",\n  \"factual_accuracy\": 10,\n  \"is_correct\": true\n}"
+    },
+    {
+      "sample_token": "d1d38dddb8174acf9cb776ec6c941024",
+      "category": "count",
+      "question": "How many stopped cars are there?",
+      "ground_truth": "0",
+      "prediction": "2",
+      "critique": "The model predicted 2 stopped cars, but the ground truth states there are 0 stopped cars.",
+      "scores": {
+        "factual_accuracy": 2.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The model predicted 2 stopped cars, but the ground truth states there are 0 stopped cars.\",\n  \"factual_accuracy\": 2,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "2535c690e94140188d033d310499a4d5",
+      "category": "exist",
+      "question": "Are there any other cars of the same status as the truck?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "critique": "The predicted answer 'yes' matches the ground truth 'yes', indicating the model correctly identified the presence of other cars with the same status as the truck.",
+      "scores": {
+        "factual_accuracy": 10.0
+      },
+      "is_pass": true,
+      "verdict": "CORRECT",
+      "raw_output": "{\n  \"critique\": \"The predicted answer 'yes' matches the ground truth 'yes', indicating the model correctly identified the presence of other cars with the same status as the truck.\",\n  \"factual_accuracy\": 10,\n  \"is_correct\": true\n}"
+    },
+    {
+      "sample_token": "18a5b211c20b4fbd9512fc2bdd22f901",
+      "category": "status",
+      "question": "There is a bicycle that is to the front left of the stopped car; what status is it?",
+      "ground_truth": "without rider",
+      "prediction": "with rider",
+      "critique": "The bicycle has a rider, which contradicts the ground truth of 'without rider'.",
+      "scores": {
+        "factual_accuracy": 2.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The bicycle has a rider, which contradicts the ground truth of 'without rider'.\",\n  \"factual_accuracy\": 2,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "530efca94dbc4f8e8c11a39a194be844",
+      "category": "exist",
+      "question": "There is a truck; are there any things to the front right of it?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "critique": "The prediction matches the ground truth exactly, using the same phrasing.",
+      "scores": {
+        "factual_accuracy": 10.0
+      },
+      "is_pass": true,
+      "verdict": "CORRECT",
+      "raw_output": "{\n  \"critique\": \"The prediction matches the ground truth exactly, using the same phrasing.\",\n  \"factual_accuracy\": 10,\n  \"is_correct\": true\n}"
+    },
+    {
+      "sample_token": "bb9c0abebf574b4892f1e0fab92004d1",
+      "category": "comparison",
+      "question": "There is a truck that is to the front left of the bus; is it the same status as the car to the back of the moving truck?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "critique": "The truck is described as being in the front left position relative to the bus, and the car is mentioned to be at the back of the moving truck. Since the truck is moving and the car is behind it, they should both be considered 'moving' if the context implies the truck is moving.",
+      "scores": {
+        "factual_accuracy": 7.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The truck is described as being in the front left position relative to the bus, and the car is mentioned to be at the back of the moving truck. Since the truck is moving and the car is behind it, they should both be considered 'moving' if the context implies the truck is moving.\",\n  \"factual_accuracy\": 7,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "3fc868d0c6984ae6855406f386d4fc69",
+      "category": "exist",
+      "question": "Are there any other cars that in the same status as the construction vehicle?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "critique": "The predicted answer 'yes' matches the ground truth 'yes', indicating the model correctly identified the presence of other cars in the same status as the construction vehicle.",
+      "scores": {
+        "factual_accuracy": 10.0
+      },
+      "is_pass": true,
+      "verdict": "CORRECT",
+      "raw_output": "{\n  \"critique\": \"The predicted answer 'yes' matches the ground truth 'yes', indicating the model correctly identified the presence of other cars in the same status as the construction vehicle.\",\n  \"factual_accuracy\": 10,\n  \"is_correct\": true\n}"
+    },
+    {
+      "sample_token": "b380f7433ef54209be12e5f830b1126c",
+      "category": "object",
+      "question": "The parked thing to the back of the parked construction vehicle is what?",
+      "ground_truth": "truck",
+      "prediction": "car",
+      "critique": "The predicted answer 'car' does not match the ground truth 'truck'. A car cannot be parked behind a construction vehicle and still be considered the 'parked thing' to its back.",
+      "scores": {
+        "factual_accuracy": 2.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The predicted answer 'car' does not match the ground truth 'truck'. A car cannot be parked behind a construction vehicle and still be considered the 'parked thing' to its back.\",\n  \"factual_accuracy\": 2,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "2bdb1731909b44278640890b57f92c48",
+      "category": "status",
+      "question": "There is a motorcycle; what status is it?",
+      "ground_truth": "without rider",
+      "prediction": "with rider",
+      "critique": "The predicted answer 'with rider' contradicts the ground truth 'without rider', as the ground truth specifies the motorcycle has no rider.",
+      "scores": {
+        "factual_accuracy": 0.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The predicted answer 'with rider' contradicts the ground truth 'without rider', as the ground truth specifies the motorcycle has no rider.\",\n  \"factual_accuracy\": 0,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "70308748f324468193d6189ab556f8e5",
+      "category": "comparison",
+      "question": "There is a thing that is to the front of the truck; does it have the same status as the motorcycle?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "critique": "The predicted answer 'no' matches the ground truth, indicating the objects have different statuses.",
+      "scores": {
+        "factual_accuracy": 10.0
+      },
+      "is_pass": true,
+      "verdict": "CORRECT",
+      "raw_output": "{\n  \"critique\": \"The predicted answer 'no' matches the ground truth, indicating the objects have different statuses.\",\n  \"factual_accuracy\": 10,\n  \"is_correct\": true\n}"
+    },
+    {
+      "sample_token": "745713b3baae4ea18de5c74eb4d06bb8",
+      "category": "count",
+      "question": "What number of cars are there?",
+      "ground_truth": "2",
+      "prediction": "4",
+      "critique": "The model predicted 4 cars, while the ground truth specifies 2 cars. This is a factual error.",
+      "scores": {
+        "factual_accuracy": 2.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The model predicted 4 cars, while the ground truth specifies 2 cars. This is a factual error.\",\n  \"factual_accuracy\": 2,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "ffea14e6b78649839de381f51f4f665f",
+      "category": "status",
+      "question": "There is a bicycle to the back right of the moving truck; what status is it?",
+      "ground_truth": "without rider",
+      "prediction": "with rider",
+      "critique": "The predicted answer 'with rider' contradicts the ground truth 'without rider', as the ground truth specifies the bicycle does not have a rider.",
+      "scores": {
+        "factual_accuracy": 0.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The predicted answer 'with rider' contradicts the ground truth 'without rider', as the ground truth specifies the bicycle does not have a rider.\",\n  \"factual_accuracy\": 0,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "456ec36cb4a44ca78f36fbd90c0c34fa",
+      "category": "comparison",
+      "question": "There is a car to the front of the with rider thing; is its status the same as the motorcycle?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "critique": "The status of the car to the front of the with rider thing is different from the motorcycle, which is what 'no' means.",
+      "scores": {
+        "factual_accuracy": 10.0
+      },
+      "is_pass": true,
+      "verdict": "CORRECT",
+      "raw_output": "{\n  \"critique\": \"The status of the car to the front of the with rider thing is different from the motorcycle, which is what 'no' means.\",\n  \"factual_accuracy\": 10,\n  \"is_correct\": true\n}"
+    },
+    {
+      "sample_token": "f00e0c9a763b4b11b88becf115af6387",
+      "category": "count",
+      "question": "What number of cars are to the front of me?",
+      "ground_truth": "9",
+      "prediction": "1",
+      "critique": "The prediction states there is only 1 car in front, while the ground truth specifies 9 cars. This is a significant discrepancy.",
+      "scores": {
+        "factual_accuracy": 2.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The prediction states there is only 1 car in front, while the ground truth specifies 9 cars. This is a significant discrepancy.\",\n  \"factual_accuracy\": 2,\n  \"is_correct\": false\n}"
+    },
+    {
+      "sample_token": "f4692d3fbdfc4d16b1f02590ad832b10",
+      "category": "count",
+      "question": "How many things are there?",
+      "ground_truth": "9",
+      "prediction": "8",
+      "critique": "The prediction is off by one, which is a factual error.",
+      "scores": {
+        "factual_accuracy": 2.0
+      },
+      "is_pass": false,
+      "verdict": "INCORRECT",
+      "raw_output": "{\n  \"critique\": \"The prediction is off by one, which is a factual error.\",\n  \"factual_accuracy\": 2,\n  \"is_correct\": false\n}"
+    }
+  ]
+}

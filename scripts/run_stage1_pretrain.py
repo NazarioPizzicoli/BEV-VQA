@@ -21,6 +21,12 @@ import argparse
 import json
 import logging
 import os
+from bev_vqa.utils.io import get_default_paths
+
+_PATHS = get_default_paths()
+
+from bev_vqa.utils.seed import set_seed
+from bev_vqa.constants import Colors
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import random
 import sys
@@ -46,19 +52,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger("stage1_pretrain")
 
-GREEN = "\033[92m"
-CYAN = "\033[96m"
-YELLOW = "\033[93m"
-BOLD = "\033[1m"
-RESET = "\033[0m"
 
 
-def set_seed(seed: int = 42):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
+
+
+
+
+
+
 
 
 def evaluate_val_loss(
@@ -158,9 +159,9 @@ def generate_qualitative_samples(
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Stage 1 Pretraining: BEV-Language Alignment")
-    parser.add_argument("--train-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/omnidrive_descriptions_train.json")
-    parser.add_argument("--val-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/omnidrive_descriptions_val.json")
-    parser.add_argument("--bev-dir", type=str, default="/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh")
+    parser.add_argument("--train-json", type=str, default=get_default_paths().get("omnidrive_train", "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/omnidrive_descriptions_train.json"))
+    parser.add_argument("--val-json", type=str, default=get_default_paths().get("omnidrive_val", "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/omnidrive_descriptions_val.json"))
+    parser.add_argument("--bev-dir", type=str, default=get_default_paths()["bev_dir"])
     parser.add_argument("--output-dir", type=str, default="checkpoints/stage1")
     parser.add_argument("--llm-path", type=str, default="Qwen/Qwen2.5-3B-Instruct")
     parser.add_argument("--arch-type", type=str, default="deeper_conv", choices=["deeper_conv", "qformer"])
@@ -172,7 +173,7 @@ def parse_args():
     parser.add_argument("--warmup-ratio", type=float, default=0.05)
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--max-steps", type=int, default=None, help="Numero massimo di passi di ottimizzazione")
-    parser.add_argument("--val-steps", type=int, default=100, help="Frequenza valutazione validation loss")
+    parser.add_argument("--val-steps", type=int, default=100, help="Frequenza Validation loss evaluation")
     parser.add_argument("--val-batches", type=int, default=25, help="Batch di validazione per step")
     parser.add_argument("--save-steps", type=int, default=500, help="Frequenza salvataggio checkpoint periodico")
     parser.add_argument("--fraction", type=float, default=1.0, help="Frazione del dataset (1.0 = tutto)")
@@ -194,10 +195,10 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print(f"\n{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"{BOLD}{CYAN}  STAGE 1 PRETRAINING: BEV-LANGUAGE ALIGNMENT (BLOCK 4){RESET}")
-    print(f"{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"  Dispositivo:             {device}")
+    print(f"\n{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}  STAGE 1 PRETRAINING: BEV-LANGUAGE ALIGNMENT (BLOCK 4){Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"  Device:             {device}")
     print(f"  LLM Backbone:            {args.llm_path}")
     print(f"  Architettura Projector:  {args.arch_type} ({args.num_tokens} visual tokens)")
     print(f"  Batch size per step:     {args.batch_size}")
@@ -205,7 +206,7 @@ def main():
     print(f"  Learning Rate:           {args.lr}")
     print(f"  Frazione dataset:        {args.fraction * 100:.1f}%")
     print(f"  Output Checkpoint:       {output_dir}")
-    print(f"{CYAN}----------------------------------------------------------------------{RESET}\n")
+    print(f"{Colors.CYAN}----------------------------------------------------------------------{Colors.RESET}\n")
 
     # 1. Caricamento Tokenizer
     logger.info("Inizializzazione Tokenizer...")
@@ -254,7 +255,7 @@ def main():
     )
 
     # 3. Istanziazione Modello BEVVLM
-    logger.info("Inizializzazione modello BEVVLM...")
+    logger.info("Model initialization BEVVLM...")
     cfg = BEVVLMConfig(
         llm_name_or_path=args.llm_path,
         projector_config=ProjectorConfig(
@@ -306,7 +307,7 @@ def main():
     init_val_loss = evaluate_val_loss(model, val_loader, device, max_batches=args.val_batches)
     logger.info(f"Initial Validation Loss: {init_val_loss:.4f}")
 
-    logger.info("Generazione qualitativa pre-training (Projector non allineato)...")
+    logger.info("Qualitative generation pre-training (Projector not aligned)...")
     init_qualitative = generate_qualitative_samples(model, tokenizer, val_dataset, device, num_samples=2)
     for q in init_qualitative:
         logger.info(f"  [Sample {q['sample_token'][:8]}]")
@@ -314,7 +315,7 @@ def main():
         logger.info(f"    PRED: {q['prediction'][:100]}...")
 
     # 5. Training Loop
-    logger.info(f"{BOLD}Inizio Training Stage 1...{RESET}")
+    logger.info(f"{Colors.BOLD}Start Training Stage 1...{Colors.RESET}")
     global_step = 0
     accumulated_loss = 0.0
     history = []
@@ -386,7 +387,7 @@ def main():
                         best_val_loss = val_loss
                         best_path = output_dir / 'stage1_projector_best.pt'
                         model.save_projector(str(best_path))
-                        logger.info(f"  {GREEN}★ Nuovo record Val Loss ({val_loss:.4f})! Salvato: {best_path}{RESET}")
+                        logger.info(f"  {Colors.GREEN}★ New Val Loss record ({val_loss:.4f})! Saved: {best_path}{Colors.RESET}")
 
                 # Salvataggio periodico
                 if global_step % args.save_steps == 0:
@@ -400,22 +401,22 @@ def main():
     pbar.close()
     elapsed = time.time() - start_time
 
-    # 6. Valutazione Finale & Generazione Qualitativa
+    # 6. Evaluation Finale & Qualitative generation
     logger.info("\nCalcolo Validation Loss finale...")
     final_val_loss = evaluate_val_loss(model, val_loader, device, max_batches=args.val_batches * 2)
     logger.info(f"Final Validation Loss: {final_val_loss:.4f} (Miglioramento: {init_val_loss - final_val_loss:+.4f})")
 
-    logger.info("Generazione qualitativa post-training...")
+    logger.info("Qualitative generation post-training...")
     final_qualitative = generate_qualitative_samples(model, tokenizer, val_dataset, device, num_samples=3)
 
-    print(f"\n{BOLD}{GREEN}======================================================================{RESET}")
-    print(f"{BOLD}{GREEN}  QUALITATIVE SAMPLES AFTER STAGE 1 PRETRAINING{RESET}")
-    print(f"{BOLD}{GREEN}======================================================================{RESET}")
+    print(f"\n{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}  QUALITATIVE SAMPLES AFTER STAGE 1 PRETRAINING{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
     for i, q in enumerate(final_qualitative):
-        print(f"\n{BOLD}Sample #{i+1} [Token: {q['sample_token'][:12]}]{RESET}")
-        print(f"  {BOLD}Ground Truth:{RESET} {q['ground_truth']}")
-        print(f"  {BOLD}Model Pred:  {RESET} {q['prediction']}")
-    print(f"{GREEN}----------------------------------------------------------------------{RESET}\n")
+        print(f"\n{Colors.BOLD}Sample #{i+1} [Token: {q['sample_token'][:12]}]{Colors.RESET}")
+        print(f"  {Colors.BOLD}Ground Truth:{Colors.RESET} {q['ground_truth']}")
+        print(f"  {Colors.BOLD}Model Pred:  {Colors.RESET} {q['prediction']}")
+    print(f"{Colors.GREEN}----------------------------------------------------------------------{Colors.RESET}\n")
 
     # Salvataggio pesi finali
     final_path = output_dir / "stage1_projector_latest.pt"
@@ -426,7 +427,7 @@ def main():
     # Salva tokenizer con token <|bev|> configurato
     tokenizer_dir = output_dir / "tokenizer"
     tokenizer.save_pretrained(tokenizer_dir)
-    logger.info(f"Tokenizer salvato in: {tokenizer_dir}")
+    logger.info(f"Tokenizer Saved to: {tokenizer_dir}")
 
     # Salva Report JSON
     report = {
@@ -457,9 +458,9 @@ def main():
 
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
-    logger.info(f"Report completo salvato in: {report_path}")
+    logger.info(f"Report completo Saved to: {report_path}")
 
-    print(f"\n{BOLD}{GREEN}✓ STAGE 1 PRETRAINING COMPLETATO CON SUCCESSO!{RESET}")
+    print(f"\n{Colors.BOLD}{Colors.GREEN}✓ STAGE 1 PRETRAINING COMPLETATO CON SUCCESSO!{Colors.RESET}")
     print(f"  Tempo totale:    {elapsed / 60:.1f} minuti")
     print(f"  Val Loss:        {init_val_loss:.4f} -> {final_val_loss:.4f}")
     print(f"  Best Projector:  {output_dir / 'stage1_projector_best.pt'}")

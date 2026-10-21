@@ -61,6 +61,9 @@ outputs/**/*.pth
 .DS_Store
 *.swp
 *~
+.pytest_cache/
+.ruff_cache/
+to-do.md
 
 # Temporary inference debug outputs except the demo image
 outputs/inference/*.png

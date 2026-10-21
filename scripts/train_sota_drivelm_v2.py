@@ -9,7 +9,7 @@ Features:
 - LoRA: r=32, alpha=64, lr=1.5e-4 on all linear modules
 - Projector: DeeperConv (lr=1.0e-4) initialized from Stage 1 pretraining
 - Precision: Mixed Precision with dynamic GradScaler + Anti-NaN defense
-- Periodic NLG validation (BLEU-1..4, ROUGE-L, CIDEr, METEOR) via bev_vqa.training.metrics
+- Periodic NLG validation (BLEU-1..4, ROUGE-L, CIDEr, METEOR) via src.training.metrics
 - Checkpointing: Saves best_model when CIDEr/BLEU-4 reaches a new record
 - Supports --dry-run to test 2 steps before launching long runs
 """
@@ -20,6 +20,12 @@ import json
 import logging
 import math
 import os
+from bev_vqa.utils.io import get_default_paths
+
+_PATHS = get_default_paths()
+
+from bev_vqa.utils.seed import set_seed
+from bev_vqa.constants import Colors, DRIVELM_SYSTEM_PROMPT
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import random
 import sys
@@ -46,24 +52,8 @@ from bev_vqa.training.metrics import compute_nlg_metrics
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("train_sota_drivelm_v2")
 
-CYAN = "\033[96m"
-GREEN = "\033[92m"
-YELLOW = "\033[93m"
-BOLD = "\033[1m"
-RESET = "\033[0m"
-
-DRIVELM_SYSTEM_PROMPT = (
-    "You are an autonomous driving perception and planning assistant. "
-    "Analyze the bird's-eye-view (BEV) features of the scene and provide accurate, "
-    "concise, and clear answers regarding perception, prediction, and planning decisions."
-)
 
 
-def set_seed(seed: int = 42):
-    random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
 
 
 def load_drivelm_validation_pool(
@@ -105,7 +95,7 @@ def load_drivelm_validation_pool(
         sampled = random.sample(valid_any, min(samples_per_type * 4, len(valid_any)))
 
     random.shuffle(sampled)
-    logger.info(f"Pool di validazione DriveLM: {len(sampled)} campioni pronti ({dict((t, len(by_type[t])) for t in target_types)}).")
+    logger.info(f"Pool di validazione DriveLM: {len(sampled)} ready samples ({dict((t, len(by_type[t])) for t in target_types)}).")
     return sampled
 
 
@@ -163,11 +153,7 @@ def evaluate_val_drivelm(
             prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
             tokens = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to(device)
 
-            autocast_ctx = (
-                torch.amp.autocast("cuda", dtype=torch.float16)
-                if device.type == "cuda"
-                else torch.amp.autocast("cpu", dtype=torch.bfloat16)
-            )
+            autocast_ctx = torch.amp.autocast("cuda", dtype=torch.float16, enabled=(device.type == "cuda"))
 
             with autocast_ctx:
                 out = model.generate(
@@ -214,7 +200,13 @@ def parse_args():
     parser.add_argument("--output-dir", type=str, default="checkpoints/sota_drivelm_v2")
     parser.add_argument("--llm-path", type=str, default="Qwen/Qwen2.5-3B-Instruct")
     parser.add_argument("--arch-type", type=str, default="deeper_conv")
+    parser.add_argument("--pos-embed-type", type=str, default="1d_learned", choices=["1d_learned", "2d_cartesian_metric", "2d_polar_metric", "2d_separable_learned"])
     parser.add_argument("--num-tokens", type=int, default=32)
+    parser.add_argument("--spatial-shape", type=int, nargs=2, default=None, metavar=("H", "W"), help="Explicit spatial pooling grid (H, W), e.g. 4 8 or 8 4 or 8 8")
+    parser.add_argument("--use-dual-pooling", action=argparse.BooleanOptionalAction, default=False, help="Enable Dual Pooling (Avg + Max)")
+    parser.add_argument("--use-l2-pooling", action=argparse.BooleanOptionalAction, default=False, help="Enable L2-norm salience weighted pooling")
+    parser.add_argument("--l2-pooling-gamma", type=float, default=1.0, help="L2 pooling salience gamma/temperature")
+    parser.add_argument("--l2-pooling-learnable", action=argparse.BooleanOptionalAction, default=False, help="Make L2 gamma learnable")
     parser.add_argument("--lora-r", type=int, default=32)
     parser.add_argument("--lora-alpha", type=int, default=64)
     parser.add_argument("--max-length", type=int, default=384, help="Sequence max length for prompt + answer")
@@ -234,6 +226,7 @@ def parse_args():
     parser.add_argument("--report-path", type=str, default="outputs/sota_drivelm_v2_report.json")
     parser.add_argument("--no-balanced-sampler", action="store_true", help="Disable CategoryBalancedSampler")
     parser.add_argument("--dry-run", action="store_true", help="Run 2 steps to verify end-to-end pipeline")
+    parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu", help="Device to use (cuda/cpu)")
     return parser.parse_args()
 
 
@@ -242,11 +235,11 @@ def main():
     set_seed(args.seed)
 
     if args.dry_run:
-        print(f"\n{BOLD}{YELLOW}>>> DRY RUN MODE ACTIVATED: 2 training steps, 1 validation check <<<{RESET}\n")
+        print(f"\n{Colors.BOLD}{Colors.YELLOW}>>> DRY RUN MODE ACTIVATED: 2 training steps, 1 validation check <<<{Colors.RESET}\n")
         args.max_steps = 2
         args.grad_accum = 1
         args.val_steps = 1
-        args.val_samples_per_type = 2
+        args.val_samples_per_type = 1
         args.save_steps = 2
         args.warmup_steps = 1
         args.num_workers = 0
@@ -257,13 +250,18 @@ def main():
     report_path.parent.mkdir(parents=True, exist_ok=True)
     bev_dir = Path(args.bev_dir)
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(args.device)
 
-    print(f"\n{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"{BOLD}{CYAN}  SOTA DRIVELM V2 GENERATIVE TRAINING (BLEU/ROUGE/CIDER/METEOR){RESET}")
-    print(f"{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"  Dispositivo:                {device}")
+    spatial_shape = tuple(args.spatial_shape) if args.spatial_shape is not None else None
+    num_tokens = (spatial_shape[0] * spatial_shape[1]) if spatial_shape is not None else args.num_tokens
+    grid_desc = f"{spatial_shape[0]}x{spatial_shape[1]} ({num_tokens} tokens)" if spatial_shape else f"{num_tokens} tokens"
+
+    print(f"\n{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}  SOTA DRIVELM V2 GENERATIVE TRAINING (BLEU/ROUGE/CIDER/METEOR){Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"  Device:                {device}")
     print(f"  Dataset:                    DriveLM Train ({args.train_json})")
+    print(f"  Griglia Spaziale:           {grid_desc} (Dual Pooling={args.use_dual_pooling})")
     print(f"  Max Length:                 {args.max_length} tokens (full answer supervision)")
     print(f"  LoRA Configurazione:        r={args.lora_r}, alpha={args.lora_alpha}")
     print(f"  Balanced Sampler:           {not args.no_balanced_sampler} (DriveLMCategoryBalancedSampler)")
@@ -271,19 +269,20 @@ def main():
     print(f"  Max Steps / Patience:       {args.max_steps} step (Patience = {args.patience})")
     print(f"  Effective Batch Size:       {args.batch_size * args.grad_accum}")
     print(f"  Directory Checkpoints:      {output_dir}")
-    print(f"{CYAN}----------------------------------------------------------------------{RESET}\n")
+    print(f"{Colors.CYAN}----------------------------------------------------------------------{Colors.RESET}\n")
 
     tokenizer = build_tokenizer(args.llm_path)
 
     # 1. Dataset DriveLM Train
     logger.info("Caricamento dataset DriveLM train...")
+    train_fraction = 0.01 if args.dry_run else 1.0
     train_dataset = BEVQADataset(
         json_path=args.train_json,
         bev_dir=bev_dir,
         tokenizer=tokenizer,
         split="train",
-        num_bev_tokens=args.num_tokens,
-        fraction=1.0,
+        num_bev_tokens=num_tokens,
+        fraction=train_fraction,
         system_prompt=DRIVELM_SYSTEM_PROMPT,
         max_length=args.max_length,
     )
@@ -299,7 +298,7 @@ def main():
             sampler=sampler,
             num_workers=args.num_workers,
             collate_fn=lambda b: collate_train(b, pad_id=tokenizer.pad_token_id),
-            pin_memory=torch.cuda.is_available(),
+            pin_memory=(device.type == "cuda"),
             drop_last=True,
         )
     else:
@@ -309,10 +308,10 @@ def main():
             shuffle=True,
             num_workers=args.num_workers,
             collate_fn=lambda b: collate_train(b, pad_id=tokenizer.pad_token_id),
-            pin_memory=torch.cuda.is_available(),
+            pin_memory=(device.type == "cuda"),
             drop_last=True,
         )
-    logger.info(f"Dataset DriveLM Train: {len(train_dataset):,} campioni pronti.")
+    logger.info(f"Dataset DriveLM Train: {len(train_dataset):,} ready samples.")
 
     # 2. Pool di Validazione
     val_pool = load_drivelm_validation_pool(
@@ -321,12 +320,24 @@ def main():
         samples_per_type=args.val_samples_per_type,
         seed=args.seed,
     )
+    if args.dry_run:
+        val_pool = val_pool[:1]
 
     # 3. Costruzione Modello
-    logger.info(f"Costruzione BEV-VLM (Projector: {args.arch_type}, LoRA r={args.lora_r}, alpha={args.lora_alpha})...")
+    logger.info(f"Costruzione BEV-VLM (Projector: {args.arch_type}, Griglia: {grid_desc}, Dual Pooling={args.use_dual_pooling}, LoRA r={args.lora_r}, alpha={args.lora_alpha})...")
+    projector_cfg = ProjectorConfig(
+        arch_type=args.arch_type,
+        pos_embed_type=args.pos_embed_type,
+        num_tokens=num_tokens,
+        use_dual_pooling=args.use_dual_pooling,
+        spatial_shape=spatial_shape,
+        use_l2_pooling=args.use_l2_pooling,
+        l2_pooling_gamma=args.l2_pooling_gamma,
+        l2_pooling_learnable=args.l2_pooling_learnable,
+    )
     cfg = BEVVLMConfig(
         llm_name_or_path=args.llm_path,
-        projector_config=ProjectorConfig(arch_type=args.arch_type, num_tokens=args.num_tokens),
+        projector_config=projector_cfg,
         lora_r=args.lora_r,
         lora_alpha=args.lora_alpha,
         lora_dropout=0.05,
@@ -355,7 +366,7 @@ def main():
         {"params": list(model.projector.parameters()), "lr": args.lr_projector, "weight_decay": args.weight_decay},
         {"params": [p for n, p in model.llm.named_parameters() if p.requires_grad], "lr": args.lr_lora, "weight_decay": args.weight_decay},
     ])
-    scaler = torch.amp.GradScaler("cuda", enabled=torch.cuda.is_available())
+    scaler = torch.amp.GradScaler("cuda", enabled=(device.type == "cuda"))
 
     scheduler = get_cosine_schedule_with_warmup(
         optimizer,
@@ -363,18 +374,22 @@ def main():
         num_training_steps=args.max_steps,
     )
 
-    # Baseline Zero-Shot iniziale
-    logger.info("Valutazione metrica iniziale pre-training su DriveLM...")
-    init_metrics, init_cat = evaluate_val_drivelm(
-        model, tokenizer, val_pool, bev_dir, device, num_tokens=args.num_tokens
-    )
-    logger.info(
-        f"Metriche Iniziali: BLEU-4={init_metrics['bleu_4']:.2f}% | "
-        f"ROUGE-L={init_metrics['rouge_l']:.2f}% | CIDEr={init_metrics['cider']:.3f} | METEOR={init_metrics['meteor']:.2f}%"
-    )
+    # Baseline Zero-Shot iniziale (salvo in dry-run per velocizzare il test)
+    if not args.dry_run:
+        logger.info("Initial metric evaluation pre-training su DriveLM...")
+        init_metrics, init_cat = evaluate_val_drivelm(
+            model, tokenizer, val_pool, bev_dir, device, num_tokens=num_tokens
+        )
+        logger.info(
+            f"Metriche Iniziali: BLEU-4={init_metrics['bleu_4']:.2f}% | "
+            f"ROUGE-L={init_metrics['rouge_l']:.2f}% | CIDEr={init_metrics['cider']:.3f} | METEOR={init_metrics['meteor']:.2f}%"
+        )
+    else:
+        init_metrics = {"bleu_1": 0.0, "bleu_4": 0.0, "rouge_l": 0.0, "meteor": 0.0, "cider": 0.0}
+        init_cat = {}
 
     # 5. Training Loop con Early Stopping
-    logger.info(f"\n{BOLD}{GREEN}>>> INIZIO SOTA TRAINING DRIVELM V2 ({args.max_steps} step max)...{RESET}")
+    logger.info(f"\n{Colors.BOLD}{Colors.GREEN}>>> START SOTA TRAINING DRIVELM V2 ({args.max_steps} step max)...{Colors.RESET}")
     global_step = 0
     accum_loss = 0.0
     best_cider = init_metrics["cider"]
@@ -404,11 +419,7 @@ def main():
         attention_mask = batch["attention_mask"].to(device)
         labels = batch["labels"].to(device)
 
-        autocast_ctx = (
-            torch.amp.autocast("cuda", dtype=torch.float16)
-            if device.type == "cuda"
-            else torch.amp.autocast("cpu", dtype=torch.bfloat16)
-        )
+        autocast_ctx = torch.amp.autocast("cuda", dtype=torch.float16, enabled=(device.type == "cuda"))
 
         with autocast_ctx:
             out = model(bev=bev, input_ids=input_ids, attention_mask=attention_mask, labels=labels)
@@ -481,15 +492,16 @@ def main():
                     early_stopped = True
                     break
 
+                val_max_new_tokens = 16 if args.dry_run else 64
                 val_metrics, val_by_cat = evaluate_val_drivelm(
-                    model, tokenizer, val_pool, bev_dir, device, num_tokens=args.num_tokens
+                    model, tokenizer, val_pool, bev_dir, device, num_tokens=num_tokens, max_new_tokens=val_max_new_tokens
                 )
 
                 logger.info(
                     f"\n[Step {global_step}/{args.max_steps}] "
-                    f"BLEU-4: {BOLD}{val_metrics['bleu_4']:.2f}%{RESET} | "
+                    f"BLEU-4: {Colors.BOLD}{val_metrics['bleu_4']:.2f}%{Colors.RESET} | "
                     f"ROUGE-L: {val_metrics['rouge_l']:.2f}% | "
-                    f"CIDEr: {BOLD}{val_metrics['cider']:.3f}{RESET} (Record: {best_cider:.3f}) | "
+                    f"CIDEr: {Colors.BOLD}{val_metrics['cider']:.3f}{Colors.RESET} (Record: {best_cider:.3f}) | "
                     f"METEOR: {val_metrics['meteor']:.2f}% | Loss: {cur_loss:.4f}"
                 )
                 history[-1]["val_metrics"] = val_metrics
@@ -504,12 +516,12 @@ def main():
                     best_dir = output_dir / "best_model"
                     model.save_checkpoint(str(best_dir))
                     tokenizer.save_pretrained(str(best_dir / "tokenizer"))
-                    logger.info(f"  {GREEN}★ RECORD DRIVELM V2 (CIDEr: {best_cider:.3f}, BLEU-4: {best_bleu4:.2f}%)! Salvato in: {best_dir}{RESET}")
+                    logger.info(f"  {Colors.GREEN}★ DRIVELM V2 RECORD (CIDEr: {best_cider:.3f}, BLEU-4: {best_bleu4:.2f}%)! Saved to: {best_dir}{Colors.RESET}")
                 else:
                     patience_counter += 1
                     logger.info(f"  Nessun miglioramento. Patience: {patience_counter}/{args.patience}")
                     if patience_counter >= args.patience:
-                        logger.info(f"\n{YELLOW}★ Early Stopping attivato dopo {args.patience} check consecutivi.{RESET}")
+                        logger.info(f"\n{Colors.YELLOW}★ Early Stopping attivato dopo {args.patience} check consecutivi.{Colors.RESET}")
                         early_stopped = True
                         break
 
@@ -517,7 +529,7 @@ def main():
             if global_step % args.save_steps == 0:
                 step_dir = output_dir / f"checkpoint_step_{global_step}"
                 model.save_checkpoint(str(step_dir))
-                logger.info(f"  Checkpoint salvato in: {step_dir}")
+                logger.info(f"  Checkpoint Saved to: {step_dir}")
 
     pbar.close()
     elapsed = time.time() - start_time
@@ -529,6 +541,9 @@ def main():
     report = {
         "task": "DriveLM SOTA Dedicated Generative Training v2",
         "llm_backbone": args.llm_path,
+        "spatial_shape": spatial_shape,
+        "num_tokens": num_tokens,
+        "use_dual_pooling": args.use_dual_pooling,
         "max_length": args.max_length,
         "lora_r": args.lora_r,
         "lora_alpha": args.lora_alpha,
@@ -550,16 +565,16 @@ def main():
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
 
-    print(f"\n{BOLD}{GREEN}======================================================================{RESET}")
-    print(f"{BOLD}{GREEN}  TRAINING SOTA DRIVELM V2 COMPLETATO CON SUCCESSO!{RESET}")
-    print(f"{BOLD}{GREEN}======================================================================{RESET}")
+    print(f"\n{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}  TRAINING SOTA DRIVELM V2 COMPLETATO CON SUCCESSO!{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
     print(f"  Passi completati:     {global_step}/{args.max_steps}")
     print(f"  Tempo totale:         {elapsed:.1f}s ({elapsed / 3600.0:.3f} ore)")
     print(f"  Miglior CIDEr:        {best_cider:.3f}")
     print(f"  Miglior BLEU-4:       {best_bleu4:.2f}%")
     print(f"  Best Checkpoint:      {output_dir / 'best_model'}")
     print(f"  Report:               {report_path}")
-    print(f"{GREEN}======================================================================{RESET}\n")
+    print(f"{Colors.GREEN}======================================================================{Colors.RESET}\n")
 
 
 if __name__ == "__main__":

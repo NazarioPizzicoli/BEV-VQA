@@ -15,6 +15,12 @@ import json
 import logging
 import math
 import os
+from bev_vqa.utils.io import get_default_paths
+
+_PATHS = get_default_paths()
+
+from bev_vqa.utils.seed import set_seed
+from bev_vqa.constants import Colors
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import random
 import sys
@@ -48,19 +54,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger("nuscenes_boost")
 
-GREEN = "\033[92m"
-CYAN = "\033[96m"
-YELLOW = "\033[93m"
-BOLD = "\033[1m"
-RESET = "\033[0m"
 
 
-def set_seed(seed: int = 42):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
+
+
+
+
+
+
 
 
 def evaluate_val_accuracy(
@@ -145,15 +146,20 @@ def evaluate_val_accuracy(
 
 def parse_args():
     parser = argparse.ArgumentParser(description="SOTA NuScenes-QA Boost Training with Interventions 1, 2, 3")
-    parser.add_argument("--train-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_train.json")
-    parser.add_argument("--val-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_val.json")
-    parser.add_argument("--bev-dir", type=str, default="/media/nazario.pizzicoli/Datos/dataset/bev_features")
+    parser.add_argument("--train-json", type=str, default=_PATHS.get('nuscenes_qa_train', ''))
+    parser.add_argument("--val-json", type=str, default=_PATHS.get('nuscenes_qa_val', ''))
+    parser.add_argument("--bev-dir", type=str, default=_PATHS.get('bev_dir', ''))
     parser.add_argument("--stage1-projector", type=str, default="checkpoints/sota/stage1/stage1_projector_best.pt")
     parser.add_argument("--output-dir", type=str, default="checkpoints/sota_nuscenes_boost")
     parser.add_argument("--llm-path", type=str, default="Qwen/Qwen2.5-3B-Instruct")
     parser.add_argument("--arch-type", type=str, default="deeper_conv")
+    parser.add_argument("--pos-embed-type", type=str, default="1d_learned", choices=["1d_learned", "2d_cartesian_metric", "2d_polar_metric", "2d_separable_learned"])
     parser.add_argument("--num-tokens", type=int, default=64, help="Intervention 1: 64 tokens (8x8 isotropic grid)")
+    parser.add_argument("--spatial-shape", type=int, nargs=2, default=None, metavar=("H", "W"), help="Explicit spatial pooling grid (H, W), e.g. 4 8 or 8 4 or 8 8")
     parser.add_argument("--use-dual-pooling", action=argparse.BooleanOptionalAction, default=True, help="Intervention 1: Dual Pooling (Avg + Max)")
+    parser.add_argument("--use-l2-pooling", action=argparse.BooleanOptionalAction, default=False, help="Enable L2-norm salience weighted pooling")
+    parser.add_argument("--l2-pooling-gamma", type=float, default=1.0, help="L2 pooling salience gamma/temperature")
+    parser.add_argument("--l2-pooling-learnable", action=argparse.BooleanOptionalAction, default=False, help="Make L2 gamma learnable")
     parser.add_argument("--lora-r", type=int, default=32)
     parser.add_argument("--lora-alpha", type=int, default=64)
     parser.add_argument("--batch-size", type=int, default=1)
@@ -168,6 +174,7 @@ def parse_args():
     parser.add_argument("--patience", type=int, default=8)
     parser.add_argument("--save-steps", type=int, default=1000)
     parser.add_argument("--resume-from", type=str, default=None)
+    parser.add_argument("--initial-step", type=int, default=0, help="Initial global step when resuming")
     parser.add_argument("--count-sigma", type=float, default=0.9, help="Intervention 3: Gaussian smoothing sigma (0.8-1.0)")
     parser.add_argument("--num-workers", type=int, default=2)
     parser.add_argument("--seed", type=int, default=42)
@@ -188,32 +195,37 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print(f"\n{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"{BOLD}{CYAN}  SOTA NUSCENES-QA BOOST TRAINING (INTERVENTIONS 1, 2, 3){RESET}")
-    print(f"{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"  Dispositivo:                {device}")
-    print(f"  Intervention 1 (Projector): {args.num_tokens} tokens (8x8 isotropic) | Dual Pooling={args.use_dual_pooling}")
+    spatial_shape = tuple(args.spatial_shape) if args.spatial_shape is not None else None
+    num_tokens = (spatial_shape[0] * spatial_shape[1]) if spatial_shape is not None else args.num_tokens
+    grid_desc = f"{spatial_shape[0]}x{spatial_shape[1]} ({num_tokens} tokens)" if spatial_shape else f"{num_tokens} tokens"
+
+    print(f"\n{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}  SOTA NUSCENES-QA BOOST TRAINING (INTERVENTIONS 1, 2, 3){Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"  Device:                {device}")
+    print(f"  Intervention 1 (Projector): {grid_desc} | Dual Pooling={args.use_dual_pooling}")
     print(f"  Intervention 2 (Sampling):  Category-Balanced (Count 30%, Status 30%, Object 20%, Exist 10%, Comp 10%)")
     print(f"  Intervention 3 (Loss):      Ordinal Gaussian Smoothing (sigma={args.count_sigma}) + Status Class Weights")
     print(f"  LoRA Configurazione:        r={args.lora_r}, alpha={args.lora_alpha}")
     print(f"  Effective Batch Size:       {args.batch_size * args.grad_accum}")
     print(f"  Dry-Run Mode:               {args.dry_run}")
     print(f"  Directory Checkpoints:      {output_dir}")
-    print(f"{CYAN}----------------------------------------------------------------------{RESET}\n")
+    print(f"{Colors.CYAN}----------------------------------------------------------------------{Colors.RESET}\n")
 
     tokenizer = build_tokenizer(args.llm_path)
 
     # 1. Dataset e Sampler Bilanciato (Intervention 2)
     logger.info("Caricamento dataset NuScenes-QA train naturale...")
+    train_fraction = 0.02 if args.dry_run else 1.0
     train_dataset = BEVQADataset(
         json_path=args.train_json,
         bev_dir=bev_dir,
         tokenizer=tokenizer,
         split="train",
-        num_bev_tokens=args.num_tokens,
-        fraction=1.0,
+        num_bev_tokens=num_tokens,
+        fraction=train_fraction,
     )
-    logger.info(f"Dataset NuScenes-QA Naturale: {len(train_dataset):,} campioni caricati.")
+    logger.info(f"Dataset NuScenes-QA Naturale: {len(train_dataset):,} samples caricati.")
 
     # Sampler bilanciato per categorie
     balanced_sampler = CategoryBalancedSampler(
@@ -247,18 +259,24 @@ def main():
 
     val_eval_items = []
     target_cats = ["exist", "count", "object", "status", "comparison"]
+    samples_per_cat = 1 if args.dry_run else args.val_samples_per_cat
     for cat in target_cats:
         pool = val_by_cat[cat]
-        val_eval_items.extend(random.sample(pool, min(args.val_samples_per_cat, len(pool))))
+        val_eval_items.extend(random.sample(pool, min(samples_per_cat, len(pool))))
     random.shuffle(val_eval_items)
-    logger.info(f"Pool di validazione: {len(val_eval_items)} campioni pronti.")
+    logger.info(f"Pool di validazione: {len(val_eval_items)} ready samples.")
 
-    # 3. Costruzione Modello con Projector 64-token + Dual Pooling (Intervention 1)
-    logger.info(f"Inizializzazione BEV-VLM (Projector={args.num_tokens} tokens, Dual Pooling={args.use_dual_pooling})...")
+    # 3. Costruzione Modello con Projector (Intervention 1)
+    logger.info(f"Inizializzazione BEV-VLM (Projector={grid_desc}, Dual Pooling={args.use_dual_pooling})...")
     projector_cfg = ProjectorConfig(
         arch_type=args.arch_type,
-        num_tokens=args.num_tokens,
+        pos_embed_type=args.pos_embed_type,
+        num_tokens=num_tokens,
         use_dual_pooling=args.use_dual_pooling,
+        spatial_shape=spatial_shape,
+        use_l2_pooling=args.use_l2_pooling,
+        l2_pooling_gamma=args.l2_pooling_gamma,
+        l2_pooling_learnable=args.l2_pooling_learnable,
     )
     cfg = BEVVLMConfig(
         llm_name_or_path=args.llm_path,
@@ -299,30 +317,61 @@ def main():
     ])
     scaler = torch.amp.GradScaler("cuda", enabled=(device.type == "cuda"), init_scale=2048.0)
 
+    # Baseline Zero-Shot iniziale e recupero best_acc precedente
+    prev_best_acc = 0.0
+    prev_history = []
+    if args.resume_from:
+        prev_report_candidates = [
+            output_dir / "train_report.json",
+            Path(args.resume_from).parent / "train_report.json",
+            Path(args.resume_from) / "train_report.json",
+        ]
+        for p_rep in prev_report_candidates:
+            if p_rep.exists():
+                try:
+                    with open(p_rep) as f:
+                        prev_data = json.load(f)
+                        prev_best_acc = float(prev_data.get("best_val_accuracy", 0.0))
+                        prev_history = prev_data.get("history", [])
+                    logger.info(f"Migliore accuratezza precedente caricata da {p_rep}: {prev_best_acc:.2f}% (history: {len(prev_history)} record)")
+                    break
+                except Exception as e:
+                    logger.warning(f"Impossibile leggere report precedente: {e}")
+
+    if not args.dry_run:
+        logger.info("Initial pre-training accuracy evaluation...")
+        init_acc, init_cat_accs = evaluate_val_accuracy(
+            model, tokenizer, val_eval_items, bev_dir, device, num_tokens=num_tokens
+        )
+        logger.info(f"Accuratezza Iniziale: {init_acc:.2f}% (Categorie: {init_cat_accs})")
+    else:
+        init_acc = 0.0
+        init_cat_accs = {}
+
+    best_acc = max(init_acc, prev_best_acc)
+    if init_acc > prev_best_acc and not args.dry_run:
+        best_dir = output_dir / "best_model"
+        model.save_checkpoint(str(best_dir))
+        tokenizer.save_pretrained(str(best_dir / "tokenizer"))
+        logger.info(f"Accuratezza iniziale ({init_acc:.2f}%) supera il record precedente ({prev_best_acc:.2f}%): saved best_model in {best_dir}")
+    global_step = args.initial_step
+    steps_to_train = 2 if args.dry_run else max(1, args.max_steps - global_step)
+    max_steps = (global_step + 2) if args.dry_run else args.max_steps
+
     scheduler = get_cosine_schedule_with_warmup(
         optimizer,
-        num_warmup_steps=args.warmup_steps,
-        num_training_steps=args.max_steps,
+        num_warmup_steps=min(args.warmup_steps, max(1, steps_to_train // 10)),
+        num_training_steps=steps_to_train,
     )
-
-    # Baseline Zero-Shot iniziale
-    logger.info("Valutazione accuratezza iniziale pre-training...")
-    init_acc, init_cat_accs = evaluate_val_accuracy(
-        model, tokenizer, val_eval_items, bev_dir, device, num_tokens=args.num_tokens
-    )
-    logger.info(f"Accuratezza Iniziale: {init_acc:.2f}% (Categorie: {init_cat_accs})")
 
     # 5. Training Loop con Early Stopping
-    max_steps = 2 if args.dry_run else args.max_steps
-    logger.info(f"\n{BOLD}{GREEN}>>> INIZIO SOTA BOOST TRAINING NUSCENES-QA ({max_steps} step)...{RESET}")
-    global_step = 0
+    logger.info(f"\n{Colors.BOLD}{Colors.GREEN}>>> START SOTA BOOST TRAINING NUSCENES-QA ({global_step} -> {max_steps} step, Best Record: {best_acc:.2f}%)...{Colors.RESET}")
     accum_loss = 0.0
-    best_acc = init_acc
     patience_counter = 0
-    history = []
+    history = list(prev_history) if prev_history else []
     start_time = time.time()
 
-    pbar = tqdm(total=max_steps, desc="SOTA NuScenes-QA Boost", ncols=130)
+    pbar = tqdm(total=max_steps, initial=global_step, desc="SOTA NuScenes-QA Boost", ncols=130)
     train_iter = iter(train_loader)
     sub_step = 0
     early_stopped = False
@@ -441,15 +490,11 @@ def main():
                     break
 
                 val_acc, val_cats = evaluate_val_accuracy(
-                    model, tokenizer, val_eval_items, bev_dir, device, num_tokens=args.num_tokens
+                    model, tokenizer, val_eval_items, bev_dir, device, num_tokens=num_tokens
                 )
-                if val_acc == 0.0:
-                    logger.error(f"[Step {global_step}] Emergenza: Accuratezza di validazione crollata a 0%! Interruzione.")
-                    early_stopped = True
-                    break
 
                 logger.info(
-                    f"\n[Step {global_step}/{max_steps}] Val Acc: {BOLD}{val_acc:.2f}%{RESET} "
+                    f"\n[Step {global_step}/{max_steps}] Val Acc: {Colors.BOLD}{val_acc:.2f}%{Colors.RESET} "
                     f"(Record: {best_acc:.2f}%) | Loss: {cur_loss:.4f}"
                 )
                 logger.info(f"  Categorie: {val_cats}")
@@ -463,12 +508,12 @@ def main():
                     best_dir = output_dir / "best_model"
                     model.save_checkpoint(str(best_dir))
                     tokenizer.save_pretrained(str(best_dir / "tokenizer"))
-                    logger.info(f"  {GREEN}★ NUOVO RECORD ACCURACY ({val_acc:.2f}%, +{delta_gain:.2f}%)! Salvato in: {best_dir}{RESET}")
+                    logger.info(f"  {Colors.GREEN}★ NEW ACCURACY RECORD ({val_acc:.2f}%, +{delta_gain:.2f}%)! Saved to: {best_dir}{Colors.RESET}")
                 else:
                     patience_counter += 1
                     logger.info(f"  Nessun miglioramento. Patience counter: {patience_counter}/{args.patience}")
                     if patience_counter >= args.patience:
-                        logger.info(f"\n{YELLOW}★ Early Stopping attivato dopo {args.patience} check consecutivi.{RESET}")
+                        logger.info(f"\n{Colors.YELLOW}★ Early Stopping attivato dopo {args.patience} check consecutivi.{Colors.RESET}")
                         early_stopped = True
                         break
 
@@ -476,26 +521,33 @@ def main():
             if not args.dry_run and global_step % args.save_steps == 0:
                 step_dir = output_dir / f"checkpoint_step_{global_step}"
                 model.save_checkpoint(str(step_dir))
-                logger.info(f"  Checkpoint periodico salvato in: {step_dir}")
+                logger.info(f"  Checkpoint periodico Saved to: {step_dir}")
 
     pbar.close()
     elapsed = time.time() - start_time
 
-    # Salvataggio modello finale
+    # Saving final model
     latest_dir = output_dir / "latest_model"
     model.save_checkpoint(str(latest_dir))
     tokenizer.save_pretrained(str(latest_dir / "tokenizer"))
+
+    # Assicura la presenza di best_model (indispensabile per successive eval anche in dry-run)
+    best_dir = output_dir / "best_model"
+    if not best_dir.exists():
+        model.save_checkpoint(str(best_dir))
+        tokenizer.save_pretrained(str(best_dir / "tokenizer"))
 
     # Salva report JSON
     report = {
         "task": "NuScenes-QA SOTA Boost Training (Interventions 1, 2, 3)",
         "interventions": {
-            "intervention_1": f"Isotropic {args.num_tokens}-token DeeperConvProjector with Dual Pooling (Avg+Max)",
+            "intervention_1": f"Grid {grid_desc} DeeperConvProjector with Dual Pooling (Avg+Max={args.use_dual_pooling})",
             "intervention_2": "Category-Balanced Batching / Sampling (Count 30%, Status 30%, Object 20%, Exist 10%, Comp 10%)",
             "intervention_3": f"Ordinal Gaussian Label Smoothing (sigma={args.count_sigma}) + Status Class Weighting",
         },
         "llm_backbone": args.llm_path,
-        "num_tokens": args.num_tokens,
+        "num_tokens": num_tokens,
+        "spatial_shape": spatial_shape,
         "use_dual_pooling": args.use_dual_pooling,
         "lora_r": args.lora_r,
         "lora_alpha": args.lora_alpha,
@@ -509,25 +561,25 @@ def main():
         "initial_val_accuracy": init_acc,
         "best_val_accuracy": best_acc,
         "checkpoints": {
-            "best_model": str(output_dir / "best_model"),
+            "best_model": str(best_dir),
             "latest_model": str(latest_dir),
         },
         "history": history,
     }
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
-    logger.info(f"Report boost salvato in: {report_path}")
+    logger.info(f"Report boost Saved to: {report_path}")
 
-    print(f"\n{BOLD}{GREEN}======================================================================{RESET}")
-    print(f"{BOLD}{GREEN}  TRAINING SOTA NUSCENES-QA BOOST COMPLETATO!{RESET}")
-    print(f"{BOLD}{GREEN}======================================================================{RESET}")
+    print(f"\n{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}  TRAINING SOTA NUSCENES-QA BOOST COMPLETATO!{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
     print(f"  Passi completati:    {global_step}/{max_steps}")
     print(f"  Tempo:               {elapsed:.1f} secondi")
     print(f"  Accuratezza Iniziale: {init_acc:.2f}%")
-    print(f"  Migliore Accuratezza: {BOLD}{best_acc:.2f}%{RESET}")
+    print(f"  Migliore Accuratezza: {Colors.BOLD}{best_acc:.2f}%{Colors.RESET}")
     print(f"  Best Checkpoint:     {output_dir / 'best_model'}")
     print(f"  Report:              {report_path}")
-    print(f"{GREEN}======================================================================{RESET}\n")
+    print(f"{Colors.GREEN}======================================================================{Colors.RESET}\n")
 
 
 if __name__ == "__main__":

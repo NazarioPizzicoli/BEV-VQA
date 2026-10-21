@@ -12,11 +12,11 @@ Strategia in due fasi per superare il bias statistico e certificare il grounding
   - Attivazione LoRA (Stage 2) con learning rate asimmetrico:
     lr_projector = 1e-4, lr_lora = 1.5e-5 (oltre 10 volte inferiore al proiettore).
   - Adatta la sintassi e la concisione dell'LLM senza distruggere la rappresentazione visiva.
-- Metriche di Valutazione:
+- Evaluation Metrics:
   - Accuratezza bilanciata su NuScenes-QA (5 categorie).
   - Test su Coppie Contrastanti (stessa domanda, scene diverse, risposte opposte):
-    misura diretta di quante volte il modello cambia risposta al variare della BEV.
-  - Shuffle Test globale (BEV reale vs permutata).
+    direct measure of how many times il modello cambia risposta al variare della BEV.
+  - Global Shuffle Test (BEV reale vs permutata).
 """
 
 import argparse
@@ -24,6 +24,12 @@ from collections import defaultdict
 import json
 import logging
 import os
+from bev_vqa.utils.io import get_default_paths
+
+_PATHS = get_default_paths()
+
+from bev_vqa.utils.seed import set_seed
+from bev_vqa.constants import Colors
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import random
 import sys
@@ -33,14 +39,13 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, ConcatDataset
 from tqdm import tqdm
 from transformers import get_cosine_schedule_with_warmup
 
 from bev_vqa.data.collate import collate_train
 from bev_vqa.data.dataset import (
     BEVQADataset,
-    BEVMixedDataset,
     build_tokenizer,
     normalize_answer,
     VQA_SYSTEM_PROMPT,
@@ -55,11 +60,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger("grounded_vqa")
 
-GREEN = "\033[92m"
-CYAN = "\033[96m"
-YELLOW = "\033[93m"
-BOLD = "\033[1m"
-RESET = "\033[0m"
+
+
+
+
+
 
 TEXT_BASELINE_ACC = {
     "overall": 19.6,
@@ -71,17 +76,12 @@ TEXT_BASELINE_ACC = {
 }
 
 
-def set_seed(seed: int = 42):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
+
 
 
 def build_contrastive_pairs(val_dataset: BEVQADataset, max_pairs: int = 50) -> List[Tuple[Dict, Dict]]:
     """
-    Estrae coppie di campioni di validazione con la STESSA identica domanda
+    Extracts pairs of samples di validazione con la STESSA identica domanda
     ma con risposte diverse in scene diverse (es. yes vs no, oppure car vs truck).
     """
     by_question = defaultdict(list)
@@ -115,7 +115,7 @@ def evaluate_contrastive_pairs(
     max_new_tokens: int = 10,
 ) -> Dict:
     """
-    Valuta se il modello cambia attivamente la predizione quando riceve la BEV corretta vs scambiata.
+    Evaluates if the model actively changes la predizione quando riceve la BEV corretta vs scambiata.
     """
     model.eval()
     if torch.cuda.is_available():
@@ -210,7 +210,7 @@ def evaluate_vqa_accuracy(
     max_samples: int = 150,
     max_new_tokens: int = 10,
 ) -> Dict:
-    """Valutazione bilanciata sulle 5 categorie."""
+    """Balanced evaluation on the 5 categories."""
     model.eval()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
@@ -308,7 +308,7 @@ def run_shuffle_test(
     num_samples: int = 150,
 ) -> Dict:
     """Shuffle Test bilanciato."""
-    logger.info(f"Esecuzione Shuffle Test su {num_samples} campioni...")
+    logger.info(f"Running Shuffle Test on {num_samples} samples...")
     model.eval()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
@@ -421,11 +421,11 @@ def run_shuffle_test(
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Stage 2 Grounded VQA Training")
-    parser.add_argument("--nuscenes-train-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_train.json")
-    parser.add_argument("--nuscenes-val-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_val.json")
-    parser.add_argument("--drivelm-train-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_train.json")
-    parser.add_argument("--drivelm-val-json", type=str, default="/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_val.json")
-    parser.add_argument("--bev-dir", type=str, default="/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh")
+    parser.add_argument("--nuscenes-train-json", type=str, default=_PATHS.get('nuscenes_qa_train', ''))
+    parser.add_argument("--nuscenes-val-json", type=str, default=_PATHS.get('nuscenes_qa_val', ''))
+    parser.add_argument("--drivelm-train-json", type=str, default=_PATHS.get('drivelm_train', ''))
+    parser.add_argument("--drivelm-val-json", type=str, default=_PATHS.get('drivelm_val', ''))
+    parser.add_argument("--bev-dir", type=str, default=get_default_paths()["bev_dir"])
     parser.add_argument("--stage1-projector", type=str, default="checkpoints/stage1/stage1_projector_best.pt")
     parser.add_argument("--output-dir", type=str, default="checkpoints/stage2_grounded")
     parser.add_argument("--llm-path", type=str, default="Qwen/Qwen2.5-3B-Instruct")
@@ -433,7 +433,7 @@ def parse_args():
     parser.add_argument("--num-tokens", type=int, default=32)
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--grad-accum", type=int, default=16)
-    parser.add_argument("--phase1-steps", type=int, default=400, help="Passi di solo Projector con LLM congelato")
+    parser.add_argument("--phase1-steps", type=int, default=400, help="Passi di solo Projector con FROZEN LLM")
     parser.add_argument("--phase2-steps", type=int, default=300, help="Passi congiunti Projector + LoRA con LR basso")
     parser.add_argument("--lr-phase1", type=float, default=3e-4)
     parser.add_argument("--lr-phase2-proj", type=float, default=1e-4)
@@ -457,15 +457,15 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print(f"\n{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"{BOLD}{CYAN}  STAGE 2 GROUNDED VQA TRAINING (ELIMINATING LANGUAGE SHORTCUTS){RESET}")
-    print(f"{BOLD}{CYAN}======================================================================{RESET}")
-    print(f"  Dispositivo:                {device}")
-    print(f"  Fase 1 (Projector-Only):    {args.phase1_steps} step (lr={args.lr_phase1:.1e}, LLM congelato)")
+    print(f"\n{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}  STAGE 2 GROUNDED VQA TRAINING (ELIMINATING LANGUAGE SHORTCUTS){Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}======================================================================{Colors.RESET}")
+    print(f"  Device:                {device}")
+    print(f"  Fase 1 (Projector-Only):    {args.phase1_steps} step (lr={args.lr_phase1:.1e}, FROZEN LLM)")
     print(f"  Fase 2 (Joint LoRA Delicato): {args.phase2_steps} step (lr_proj={args.lr_phase2_proj:.1e}, lr_lora={args.lr_phase2_lora:.1e})")
     print(f"  Batch size effettivo:       {args.batch_size * args.grad_accum} (batch={args.batch_size}, accum={args.grad_accum})")
     print(f"  Output Checkpoint:          {output_dir}")
-    print(f"{CYAN}----------------------------------------------------------------------{RESET}\n")
+    print(f"{Colors.CYAN}----------------------------------------------------------------------{Colors.RESET}\n")
 
     tokenizer = build_tokenizer(args.llm_path)
 
@@ -484,8 +484,8 @@ def main():
         split="train",
         fraction=1.0,
     )
-    train_dataset = BEVMixedDataset([nuscenes_train, drivelm_train])
-    logger.info(f"Dataset Misto Totale Train: {len(train_dataset):,} campioni")
+    train_dataset = ConcatDataset([nuscenes_train, drivelm_train])
+    logger.info(f"Total Mixed Train Dataset: {len(train_dataset):,} samples")
 
     logger.info("Caricamento dataset di validazione NuScenes-QA val...")
     nuscenes_val = BEVQADataset(
@@ -508,7 +508,7 @@ def main():
         drop_last=True,
     )
 
-    # Inizializzazione Modello
+    # Model initialization
     cfg = BEVVLMConfig(
         llm_name_or_path=args.llm_path,
         projector_config=ProjectorConfig(arch_type=args.arch_type, num_tokens=args.num_tokens),
@@ -522,7 +522,7 @@ def main():
 
     model.llm.gradient_checkpointing_enable()
 
-    # Valutazione iniziale di riferimento
+    # Initial reference evaluation
     model.set_stage(1)
     init_eval = evaluate_vqa_accuracy(model, tokenizer, nuscenes_val, device, max_samples=args.eval_samples)
     init_contrast = evaluate_contrastive_pairs(model, tokenizer, contrast_pairs, nuscenes_val, device)
@@ -531,7 +531,7 @@ def main():
     # =========================================================================
     # FASE 1: PROJECTOR-ONLY VQA TRAINING (LLM FROZEN)
     # =========================================================================
-    logger.info(f"\n{BOLD}{GREEN}>>> INIZIO FASE 1: Projector-Centric Grounding ({args.phase1_steps} step, LLM CONGELATO)...{RESET}")
+    logger.info(f"\n{Colors.BOLD}{Colors.GREEN}>>> START PHASE 1: Projector-Centric Grounding ({args.phase1_steps} step, FROZEN LLM)...{Colors.RESET}")
     model.set_stage(1)
     opt_phase1 = torch.optim.AdamW(model.projector.parameters(), lr=args.lr_phase1, weight_decay=0.01)
     sched_phase1 = get_cosine_schedule_with_warmup(opt_phase1, num_warmup_steps=20, num_training_steps=args.phase1_steps)
@@ -594,7 +594,7 @@ def main():
                 if composite_score > best_score:
                     best_score = composite_score
                     model.save_checkpoint(str(output_dir / "best_model_phase1"))
-                    logger.info(f"  {GREEN}★ Nuovo miglior checkpoint Fase 1 salvato!{RESET}")
+                    logger.info(f"  {Colors.GREEN}★ New best checkpoint Fase 1 salvato!{Colors.RESET}")
 
             if cur_opt >= args.phase1_steps:
                 stop_p1 = True
@@ -607,7 +607,7 @@ def main():
     # =========================================================================
     # FASE 2: JOINT TRAINING CON LORA DELICATO
     # =========================================================================
-    logger.info(f"\n{BOLD}{GREEN}>>> INIZIO FASE 2: Joint Alignment ({args.phase2_steps} step, LoRA LR={args.lr_phase2_lora:.1e})...{RESET}")
+    logger.info(f"\n{Colors.BOLD}{Colors.GREEN}>>> START PHASE 2: Joint Alignment ({args.phase2_steps} step, LoRA LR={args.lr_phase2_lora:.1e})...{Colors.RESET}")
     model.set_stage(2)
     model.llm.gradient_checkpointing_enable()
 
@@ -671,7 +671,7 @@ def main():
                 if composite_score > best_score:
                     best_score = composite_score
                     model.save_checkpoint(str(output_dir / "best_model"))
-                    logger.info(f"  {GREEN}★ Nuovo miglior checkpoint globale salvato!{RESET}")
+                    logger.info(f"  {Colors.GREEN}★ New best checkpoint globale salvato!{Colors.RESET}")
 
             if cur_opt >= args.phase2_steps:
                 stop_p2 = True
@@ -682,9 +682,9 @@ def main():
     pbar.close()
 
     # =========================================================================
-    # VALUTAZIONE FINALE COMPLETA & SHUFFLE TEST
+    # COMPLETE FINAL EVALUATION & SHUFFLE TEST
     # =========================================================================
-    logger.info("\nCaricamento del miglior modello per benchmark finale...")
+    logger.info("\nLoading the best model per benchmark finale...")
     if (output_dir / "best_model").exists():
         model.load_checkpoint(str(output_dir / "best_model"))
     elif (output_dir / "best_model_phase1").exists():
@@ -694,18 +694,18 @@ def main():
     final_contrast = evaluate_contrastive_pairs(model, tokenizer, contrast_pairs, val_dataset=nuscenes_val, device=device)
     shuffle_results = run_shuffle_test(model, tokenizer, nuscenes_val, device, num_samples=150)
 
-    print(f"\n{BOLD}{GREEN}======================================================================{RESET}")
-    print(f"{BOLD}{GREEN}  RISULTATI FINALI STAGE 2 GROUNDED VQA (GROUNDING VERIFICATO){RESET}")
-    print(f"{BOLD}{GREEN}======================================================================{RESET}")
-    print(f"  Accuratezza Finale VLM:         {BOLD}{final_eval['overall_accuracy']:.1f}%{RESET} (Baseline: {TEXT_BASELINE_ACC['overall']}%)")
-    print(f"  Sensibilità Visiva su Coppie:   {BOLD}{final_contrast['changed_predictions_pct']:.1f}%{RESET} delle risposte cambiano con la BEV")
+    print(f"\n{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}  RISULTATI FINALI STAGE 2 GROUNDED VQA (GROUNDING VERIFICATO){Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.GREEN}======================================================================{Colors.RESET}")
+    print(f"  Accuratezza Finale VLM:         {Colors.BOLD}{final_eval['overall_accuracy']:.1f}%{Colors.RESET} (Baseline: {TEXT_BASELINE_ACC['overall']}%)")
+    print(f"  Sensibilità Visiva su Coppie:   {Colors.BOLD}{final_contrast['changed_predictions_pct']:.1f}%{Colors.RESET} delle risposte cambiano con la BEV")
     print(f"  Accuratezza BEV Reale (Coppie): {final_contrast['real_bev_accuracy']:.1f}%")
     print(f"  Accuratezza BEV Scambiata:      {final_contrast['swapped_bev_accuracy']:.1f}%")
-    print(f"  Delta Dipendenza Visiva Coppie: {GREEN if final_contrast['contrastive_delta'] > 0 else YELLOW}{final_contrast['contrastive_delta']:+.1f}%{RESET}")
-    print(f"\n  Shuffle Test Globale (150 campioni bilanciati):")
+    print(f"  Delta Dipendenza Visiva Coppie: {Colors.GREEN if final_contrast['contrastive_delta'] > 0 else Colors.YELLOW}{final_contrast['contrastive_delta']:+.1f}%{Colors.RESET}")
+    print(f"\n  Global Shuffle Test (150 samples balanced):")
     print(f"  - BEV Reale:                    {shuffle_results['real_bev_accuracy']:.1f}%")
     print(f"  - BEV Shuffled:                 {shuffle_results['shuffled_bev_accuracy']:.1f}%")
-    print(f"  - Delta Visivo Globale:         {GREEN if shuffle_results['visual_grounded'] else YELLOW}{shuffle_results['visual_dependency_delta']:+.1f}%{RESET}")
+    print(f"  - Delta Visivo Globale:         {Colors.GREEN if shuffle_results['visual_grounded'] else Colors.YELLOW}{shuffle_results['visual_dependency_delta']:+.1f}%{Colors.RESET}")
 
     print(f"\n  Dettaglio Categorie NuScenes-QA:")
     print(f"  {'Categoria':<15} | {'VLM Acc':<10} | {'Text Baseline':<15} | {'Delta':<10}")
@@ -715,8 +715,8 @@ def main():
             continue
         vlm_v = final_eval["category_accuracies"].get(cat, 0.0)
         d = round(vlm_v - base_v, 1)
-        c_str = GREEN if d > 0 else RESET
-        print(f"  {cat:<15} | {vlm_v:>8.1f}% | {base_v:>13.1f}% | {c_str}{d:>+8.1f}%{RESET}")
+        c_str = Colors.GREEN if d > 0 else Colors.RESET
+        print(f"  {cat:<15} | {vlm_v:>8.1f}% | {base_v:>13.1f}% | {c_str}{d:>+8.1f}%{Colors.RESET}")
 
     # Salva ultimo modello e tokenizer
     model.save_checkpoint(str(output_dir / "latest_model"))
@@ -737,7 +737,7 @@ def main():
 
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
-    logger.info(f"Report Grounded VQA salvato in: {report_path}")
+    logger.info(f"Report Grounded VQA Saved to: {report_path}")
 
 
 if __name__ == "__main__":

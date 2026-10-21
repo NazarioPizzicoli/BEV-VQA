@@ -25,10 +25,9 @@ import torch
 # Ensure src/ is on sys.path
 TEST_DIR = Path(__file__).resolve().parent
 REPO_ROOT = TEST_DIR.parent
-if str(REPO_ROOT / "src") not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT / "src"))
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+
 
 from bev_vqa.utils.visualization import (
     build_multimodal_debug_figure,
@@ -38,6 +37,7 @@ from bev_vqa.utils.visualization import (
     render_ansi_camera_mosaic,
     SURROUND_CAMERAS,
 )
+
 from scripts.inference_interactive import (
     BEVInferencePipeline,
     run_headless_inference,

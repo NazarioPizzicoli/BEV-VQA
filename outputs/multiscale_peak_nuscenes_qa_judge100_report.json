@@ -1,0 +1,2505 @@
+{
+  "checkpoint": "checkpoints/ablation_projector/multiscale_peak/nuscenes_qa/best_model",
+  "balanced_evaluation": {
+    "total_samples": 100,
+    "overall_accuracy": 53.0,
+    "category_accuracies": {
+      "status": 60.0,
+      "comparison": 60.0,
+      "count": 20.0,
+      "object": 45.0,
+      "exist": 80.0
+    },
+    "sample_predictions": [
+      {
+        "sample_token": "9fbc6ac2c75c479cbc125a7a50bbaf64",
+        "category": "status",
+        "question": "What is the status of the bicycle to the front left of the without rider thing?",
+        "ground_truth": "with rider",
+        "prediction": "with rider",
+        "correct": true
+      },
+      {
+        "sample_token": "04d183cb9667437a97c5a960c3a43adb",
+        "category": "comparison",
+        "question": "There is a truck; is it the same status as the construction vehicle that is to the front left of the parked truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "006cbdb235c64999b6f5cfbb63ec88c4",
+        "category": "count",
+        "question": "What number of other things are there of the same status as the trailer?",
+        "ground_truth": "6",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "78c80690450a4e8aba63e1f2ca27c207",
+        "category": "object",
+        "question": "What is the moving thing?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "f177de608c51420c904470e3f7610f0b",
+        "category": "exist",
+        "question": "There is a stopped bus; are there any cars to the back left of it?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "8cf7909610bb4c8bb97d8618e3b3e25f",
+        "category": "object",
+        "question": "There is a moving thing to the back of me; what is it?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "35afe50d131847739f3221c6ffb88d42",
+        "category": "comparison",
+        "question": "There is a truck that is to the back of the parked bus; is it the same status as the trailer?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "2945e6bfeea7425c8adf44f3225122d3",
+        "category": "exist",
+        "question": "Are there any parked things to the back of me?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "5ddf6aeb821146de8fd98fd73dfe02df",
+        "category": "object",
+        "question": "What is the without rider thing to the back of the stopped bus?",
+        "ground_truth": "bicycle",
+        "prediction": "bicycle",
+        "correct": true
+      },
+      {
+        "sample_token": "ae7d650f8a4744c18869109f59666897",
+        "category": "status",
+        "question": "What status is the bus?",
+        "ground_truth": "moving",
+        "prediction": "moving",
+        "correct": true
+      },
+      {
+        "sample_token": "d5f7ce1b4817415bb884f5d970eda7be",
+        "category": "count",
+        "question": "How many trucks are there?",
+        "ground_truth": "4",
+        "prediction": "4",
+        "correct": true
+      },
+      {
+        "sample_token": "b9db804449d34414ba98868e9034abd3",
+        "category": "exist",
+        "question": "There is a with rider bicycle; are there any things to the back of it?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "9f7941301fc440459a1a6dd8182d4f91",
+        "category": "count",
+        "question": "What number of other things are in the same status as the truck?",
+        "ground_truth": "8",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "49e0e239c3f048418bb250ef9376120e",
+        "category": "object",
+        "question": "What is the without rider thing to the front left of me?",
+        "ground_truth": "bicycle",
+        "prediction": "bicycle",
+        "correct": true
+      },
+      {
+        "sample_token": "ce9df8d818354073b48c2b0e5e8ff7b5",
+        "category": "count",
+        "question": "What number of trucks are there?",
+        "ground_truth": "7",
+        "prediction": "3",
+        "correct": false
+      },
+      {
+        "sample_token": "d43144192b63485894f7ef174cdbecac",
+        "category": "object",
+        "question": "There is a stopped thing that is to the back right of the parked car; what is it?",
+        "ground_truth": "bus",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "6b3c851413064994bb0babae7e74efad",
+        "category": "exist",
+        "question": "Are there any other trailers of the same status as the trailer?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "99be6149064e4e4c90948a0d01af1f12",
+        "category": "comparison",
+        "question": "Is the status of the construction vehicle the same as the car that is to the back of the parked construction vehicle?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "19ccc1fa32844e0c9e4eb9d7e741a43f",
+        "category": "exist",
+        "question": "Are any moving motorcycles visible?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "c56adbccfeff449f959f25cc41f8b1e5",
+        "category": "count",
+        "question": "What number of other things are there of the same status as the truck?",
+        "ground_truth": "3",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "51265d17eeb54973aa1b9be24d3058e2",
+        "category": "exist",
+        "question": "Is there another bicycle of the same status as the bus to the front of the moving bus?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "f8883f89a30a4cafb79e49f6f533e4f5",
+        "category": "status",
+        "question": "What status is the bicycle?",
+        "ground_truth": "without rider",
+        "prediction": "with rider",
+        "correct": false
+      },
+      {
+        "sample_token": "3a56f761366a4338a35bccfe7b08befb",
+        "category": "object",
+        "question": "What is the without rider thing?",
+        "ground_truth": "motorcycle",
+        "prediction": "bicycle",
+        "correct": false
+      },
+      {
+        "sample_token": "28cce0b8fdb7437db096beb047179453",
+        "category": "count",
+        "question": "What number of parked things are there?",
+        "ground_truth": "7",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "ca025b0fd09d40f8bc1dacec54d6b937",
+        "category": "comparison",
+        "question": "There is a trailer; is it the same status as the bus to the front of the stopped thing?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "645e0c2f9b724c5b95fe434930c2682a",
+        "category": "comparison",
+        "question": "Do the construction vehicle and the truck have the same status?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "c7916de2cc5e4feab4a819194a428260",
+        "category": "object",
+        "question": "What is the parked thing that is to the back right of the moving truck and the front of me?",
+        "ground_truth": "trailer",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "291e7331922541cea98122b607d24831",
+        "category": "exist",
+        "question": "Is there another thing of the same status as the bus to the back right of the parked construction vehicle?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "0f3fbd162e444ecd9e3b7136c33deb54",
+        "category": "object",
+        "question": "There is a moving thing that is to the back right of me; what is it?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "dd873a094c5b47649b79c3f9dc36dfb2",
+        "category": "count",
+        "question": "What number of moving cars are to the back right of me?",
+        "ground_truth": "3",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "96d621f9ae4d44f0bf45688877a2d8fc",
+        "category": "status",
+        "question": "There is a motorcycle to the back right of the bus; what status is it?",
+        "ground_truth": "with rider",
+        "prediction": "with rider",
+        "correct": true
+      },
+      {
+        "sample_token": "5253c29c4cf64f01b43f64c9e5dfedb4",
+        "category": "exist",
+        "question": "Are any things visible?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "95e59c7864c94bd5bf895a51373d6d54",
+        "category": "status",
+        "question": "There is a trailer; what status is it?",
+        "ground_truth": "moving",
+        "prediction": "parked",
+        "correct": false
+      },
+      {
+        "sample_token": "cc6d0652e2eb4240b6f07ad1be99109c",
+        "category": "status",
+        "question": "What status is the bicycle to the back of the with rider thing?",
+        "ground_truth": "without rider",
+        "prediction": "without rider",
+        "correct": true
+      },
+      {
+        "sample_token": "9e597bf087df4d7fae593e7793e87e4e",
+        "category": "status",
+        "question": "There is a bus to the front left of the moving truck; what status is it?",
+        "ground_truth": "stopped",
+        "prediction": "stopped",
+        "correct": true
+      },
+      {
+        "sample_token": "092051710b7b4d9294e98dcb3f0f7be1",
+        "category": "count",
+        "question": "What number of stopped things are to the front of the moving truck?",
+        "ground_truth": "1",
+        "prediction": "1",
+        "correct": true
+      },
+      {
+        "sample_token": "c855b62fda9748c0a719c329b6e216ec",
+        "category": "status",
+        "question": "What is the status of the construction vehicle to the back right of the parked truck?",
+        "ground_truth": "parked",
+        "prediction": "parked",
+        "correct": true
+      },
+      {
+        "sample_token": "b7859e2fa4b24192b675a8a67bec5790",
+        "category": "count",
+        "question": "What number of cars are to the front of me?",
+        "ground_truth": "2",
+        "prediction": "2",
+        "correct": true
+      },
+      {
+        "sample_token": "ba8eeec4aec74e2e8cfbdd78af5484c1",
+        "category": "object",
+        "question": "The without rider thing is what?",
+        "ground_truth": "bicycle",
+        "prediction": "bicycle",
+        "correct": true
+      },
+      {
+        "sample_token": "bc01f04e234f47a1b985aa16654f86e4",
+        "category": "object",
+        "question": "What is the thing that is to the back right of the bus and the front left of me?",
+        "ground_truth": "motorcycle",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "699b319a28f6467cb12ff4ce51d6ff91",
+        "category": "object",
+        "question": "There is a thing that is both to the back of me and the back right of the with rider thing; what is it?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "c54d5bb693884c459e245a0abd3e4952",
+        "category": "exist",
+        "question": "Is there another truck of the same status as the truck to the back of the stopped thing?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "fd5b6a5c4933435e94c3d4ae7ccd08d2",
+        "category": "comparison",
+        "question": "There is a trailer; is its status the same as the thing that is to the back right of the trailer?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "2dccb688659f42818954fa72a2cc4649",
+        "category": "comparison",
+        "question": "There is a bus; is it the same status as the construction vehicle that is to the front of the moving bus?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "a633a5ca3bd94f9d99f0251f03e28170",
+        "category": "comparison",
+        "question": "Do the car to the front left of the parked thing and the car that is to the back of the parked thing have the same status?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "2a47cd19bfa0462f91c9ba26fd69c1c0",
+        "category": "count",
+        "question": "How many without rider things are to the back of the stopped truck?",
+        "ground_truth": "4",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "bd5f50d1b5ce496f9c86018e9681c854",
+        "category": "object",
+        "question": "What is the parked thing that is to the front of the construction vehicle?",
+        "ground_truth": "truck",
+        "prediction": "truck",
+        "correct": true
+      },
+      {
+        "sample_token": "b103a06d72194214a8bb1b39b2c1cddf",
+        "category": "comparison",
+        "question": "There is a car that is to the front left of the stopped truck; is its status the same as the truck?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "ae5004bf4ebb4db0a84cb3c27bd398d1",
+        "category": "comparison",
+        "question": "Is the status of the truck the same as the bus?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "a33c811a7be742f09c0149144c15f63c",
+        "category": "object",
+        "question": "The stopped thing is what?",
+        "ground_truth": "bus",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "6832e717621341568c759151b5974512",
+        "category": "exist",
+        "question": "Are any trucks visible?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "d90f206c2a2e405e912ee046b0b27d85",
+        "category": "status",
+        "question": "The construction vehicle to the back of the motorcycle is in what status?",
+        "ground_truth": "stopped",
+        "prediction": "parked",
+        "correct": false
+      },
+      {
+        "sample_token": "4207bb5acb624c199bee66bf8bc73d0e",
+        "category": "object",
+        "question": "There is a without rider thing that is to the front left of me; what is it?",
+        "ground_truth": "bicycle",
+        "prediction": "bicycle",
+        "correct": true
+      },
+      {
+        "sample_token": "46a2d2d638b64d89b1b01984d999f47b",
+        "category": "exist",
+        "question": "Are there any things to the back right of the with rider motorcycle?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "073394e5ed044800b3e4d7e077716219",
+        "category": "count",
+        "question": "What number of moving things are there?",
+        "ground_truth": "10",
+        "prediction": "4",
+        "correct": false
+      },
+      {
+        "sample_token": "f9161a733a9c4303ac28a12159a38e0d",
+        "category": "exist",
+        "question": "There is a stopped car; are there any parked construction vehicles to the front left of it?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "ecaea9ca526a43a984e46bff7ea85204",
+        "category": "status",
+        "question": "There is a truck; what status is it?",
+        "ground_truth": "stopped",
+        "prediction": "stopped",
+        "correct": true
+      },
+      {
+        "sample_token": "2cdfb72242d1424c9d3bf8bcf8530cd3",
+        "category": "count",
+        "question": "What number of other trucks in the same status as the truck to the front of the stopped bus?",
+        "ground_truth": "3",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "ded088a5ef664ca687fd0e8c1e4bda1d",
+        "category": "status",
+        "question": "There is a bicycle; what status is it?",
+        "ground_truth": "with rider",
+        "prediction": "with rider",
+        "correct": true
+      },
+      {
+        "sample_token": "52c1b263f03f49e5bb5b8ceb8083b4a1",
+        "category": "status",
+        "question": "What is the status of the car that is to the front left of me?",
+        "ground_truth": "stopped",
+        "prediction": "stopped",
+        "correct": true
+      },
+      {
+        "sample_token": "b4bff2b0e4774147ac53fb96ff9317b5",
+        "category": "count",
+        "question": "How many other cars in the same status as the car that is to the back of the construction vehicle?",
+        "ground_truth": "3",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "6fbe3d91fb7944b798279abcc69651cb",
+        "category": "comparison",
+        "question": "Is the status of the car that is to the front of the bus the same as the motorcycle?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "64aaf542297f46b6ba74022b00d92a08",
+        "category": "count",
+        "question": "There is a stopped car; what number of parked trailers are to the back of it?",
+        "ground_truth": "1",
+        "prediction": "1",
+        "correct": true
+      },
+      {
+        "sample_token": "309a9721e7184261beb804f18d385044",
+        "category": "status",
+        "question": "What status is the bus?",
+        "ground_truth": "stopped",
+        "prediction": "moving",
+        "correct": false
+      },
+      {
+        "sample_token": "e6c01889665a4affaf5bbedf91b8f2d0",
+        "category": "count",
+        "question": "What number of things are there?",
+        "ground_truth": "10",
+        "prediction": "8",
+        "correct": false
+      },
+      {
+        "sample_token": "f00e0c9a763b4b11b88becf115af6387",
+        "category": "exist",
+        "question": "There is a construction vehicle; are there any stopped cars to the front of it?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "78be3bd5f1f146cdb1b7120bbf8a218c",
+        "category": "exist",
+        "question": "Are there any construction vehicles?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "6e49bfd9f21447858938b77180bcb6b8",
+        "category": "exist",
+        "question": "There is a with rider thing; are there any moving cars to the front right of it?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "70f6c6fd6533467ab082e0fafa85fd58",
+        "category": "exist",
+        "question": "Are any without rider things visible?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "a51146d2b181450292623ec03ade9f03",
+        "category": "comparison",
+        "question": "Do the truck and the motorcycle have the same status?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "78fb6fd360a248dd8942da088cecae6c",
+        "category": "status",
+        "question": "The truck is in what status?",
+        "ground_truth": "stopped",
+        "prediction": "stopped",
+        "correct": true
+      },
+      {
+        "sample_token": "46a4a199e44544018017be7434e46fc8",
+        "category": "comparison",
+        "question": "There is a bus; is it the same status as the car to the front left of the bus?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "abe33290dd64401786b25024293ae4dc",
+        "category": "count",
+        "question": "How many other things are in the same status as the bus?",
+        "ground_truth": "5",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "5b03af7a953245b5a3b23191ed4da62a",
+        "category": "object",
+        "question": "There is a stopped thing to the back of the without rider motorcycle; what is it?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "3f649706222f4d83aa0a8a1b687f29fa",
+        "category": "comparison",
+        "question": "Do the thing to the front left of the bicycle and the truck that is to the front of the moving car have the same status?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "5d28835555eb46969fb96b6dbe682868",
+        "category": "status",
+        "question": "The construction vehicle is in what status?",
+        "ground_truth": "parked",
+        "prediction": "parked",
+        "correct": true
+      },
+      {
+        "sample_token": "783ff0de60574dbcb9ba4773fcbb10e2",
+        "category": "object",
+        "question": "What is the parked thing that is both to the front left of the bus and the back of the parked truck?",
+        "ground_truth": "construction vehicle",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "731cf68943704a3ea7e14256aef03c50",
+        "category": "status",
+        "question": "There is a thing that is to the back of the stopped car; what status is it?",
+        "ground_truth": "parked",
+        "prediction": "moving",
+        "correct": false
+      },
+      {
+        "sample_token": "33b36f77c6c241848fa437ad7b516c0d",
+        "category": "comparison",
+        "question": "There is a bus; is it the same status as the car to the front of the parked car?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "9d2eedd225094283bb507db7856e60e5",
+        "category": "status",
+        "question": "What is the status of the bus?",
+        "ground_truth": "moving",
+        "prediction": "moving",
+        "correct": true
+      },
+      {
+        "sample_token": "a9c59e28cc404418add2c66079e05040",
+        "category": "status",
+        "question": "There is a car to the back right of the moving truck; what status is it?",
+        "ground_truth": "moving",
+        "prediction": "parked",
+        "correct": false
+      },
+      {
+        "sample_token": "2cb04989d26a485b90ab47a1577e0f7a",
+        "category": "count",
+        "question": "There is a with rider thing; what number of things are to the back of it?",
+        "ground_truth": "9",
+        "prediction": "8",
+        "correct": false
+      },
+      {
+        "sample_token": "32e69a777d58481ab972dbea3ff75974",
+        "category": "exist",
+        "question": "Are there any parked cars?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "9988e9a9c21b43a38f059d62e19128d8",
+        "category": "count",
+        "question": "How many other things in the same status as the bus that is to the front of the stopped thing?",
+        "ground_truth": "8",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "3c7491fa33b74757a8feab372f66b280",
+        "category": "exist",
+        "question": "Are there any things to the back right of the stopped thing?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "75cb3f7063eb48a0acab0094d6a971c4",
+        "category": "object",
+        "question": "The parked thing that is to the front left of me is what?",
+        "ground_truth": "construction vehicle",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "5b8b618c3f9e481bb8522d9900d74f20",
+        "category": "comparison",
+        "question": "There is a bus that is to the back of the stopped construction vehicle; is it the same status as the car that is to the front left of the stopped thing?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "49c12fc973144e70be8590b130500f32",
+        "category": "object",
+        "question": "The stopped thing that is to the front left of the with rider bicycle is what?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "a9e6b3566fcd4effb8847e22a2a4577e",
+        "category": "status",
+        "question": "There is a truck to the back of me; what status is it?",
+        "ground_truth": "parked",
+        "prediction": "stopped",
+        "correct": false
+      },
+      {
+        "sample_token": "e59d473a2d8244d49f874c2e139d0362",
+        "category": "comparison",
+        "question": "Is the status of the car to the back right of the parked truck the same as the truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "89cf671dfd6843fca98f6a12a6f03cc3",
+        "category": "comparison",
+        "question": "There is a bus that is to the front of the with rider thing; is its status the same as the bus to the back of the with rider thing?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "a38cd83451774e5f89fce6eb45b3ac8a",
+        "category": "comparison",
+        "question": "There is a bus; is it the same status as the thing to the front left of the stopped car?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "8b2da12cffd84eb2925b0b9e08ed250f",
+        "category": "comparison",
+        "question": "There is a truck; is its status the same as the construction vehicle that is to the front left of the parked truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "52e0fc73e08b43d88848a37baeace700",
+        "category": "status",
+        "question": "The thing that is to the front left of the without rider bicycle is in what status?",
+        "ground_truth": "with rider",
+        "prediction": "moving",
+        "correct": false
+      },
+      {
+        "sample_token": "46cf544f4ddc4125803d8ccd82874cc8",
+        "category": "count",
+        "question": "What number of things are there?",
+        "ground_truth": "5",
+        "prediction": "8",
+        "correct": false
+      },
+      {
+        "sample_token": "e54b784a608644a2804fcf800c7499f7",
+        "category": "exist",
+        "question": "Are there any without rider motorcycles?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "4de7963785f34de7afb9e5aae3ce6f9f",
+        "category": "count",
+        "question": "What number of things are to the front of me?",
+        "ground_truth": "3",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "e73a59216865449ab48d31a0880664aa",
+        "category": "object",
+        "question": "The stopped thing is what?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "6de2f8b9d18441e8aee8011d5f8759f3",
+        "category": "object",
+        "question": "There is a parked thing that is both to the front left of the without rider thing and the back right of me; what is it?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "934013e218544a9c8b7d34297becce68",
+        "category": "exist",
+        "question": "Are there any parked trailers to the front left of me?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      }
+    ]
+  },
+  "natural_evaluation": {
+    "total_samples": 100,
+    "overall_accuracy": 48.0,
+    "category_accuracies": {
+      "status": 50.0,
+      "exist": 72.22,
+      "comparison": 50.0,
+      "count": 14.29,
+      "object": 33.33
+    },
+    "sample_predictions": [
+      {
+        "sample_token": "bc33987f6a8b47709aa70846e6648877",
+        "category": "status",
+        "question": "What is the status of the truck?",
+        "ground_truth": "moving",
+        "prediction": "stopped",
+        "correct": false
+      },
+      {
+        "sample_token": "713882a28f2442098451f77f1362d326",
+        "category": "exist",
+        "question": "Is there another truck that has the same status as the truck that is to the back right of the moving truck?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "99be6149064e4e4c90948a0d01af1f12",
+        "category": "comparison",
+        "question": "Do the truck that is to the front of the bus and the truck to the back right of the bus have the same status?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "da7af66ac2e247e0912c555e507a96a1",
+        "category": "exist",
+        "question": "There is a parked truck; are there any moving things to the front of it?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "e493cfd9d8cf47289d4afe0d8ac6765d",
+        "category": "count",
+        "question": "How many trucks are there?",
+        "ground_truth": "7",
+        "prediction": "4",
+        "correct": false
+      },
+      {
+        "sample_token": "ab806497110f4c1a98c1afade677a8ea",
+        "category": "comparison",
+        "question": "There is a truck that is to the front left of the construction vehicle; does it have the same status as the construction vehicle?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "fd5b6a5c4933435e94c3d4ae7ccd08d2",
+        "category": "comparison",
+        "question": "There is a trailer; is its status the same as the thing that is to the back right of the trailer?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "c7200859948a4adb90ee4d0155a0105e",
+        "category": "exist",
+        "question": "Is there another car that has the same status as the car to the front left of the parked thing?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "08cf9365fafc477084d7529a374ca960",
+        "category": "exist",
+        "question": "Are there any moving things?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "cffde5b9752240b2932cd04cbd1fccd6",
+        "category": "object",
+        "question": "What is the stopped thing?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "7f7fc8127993448a873bf72886a77a37",
+        "category": "object",
+        "question": "There is a thing that is to the front of the stopped truck; what is it?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "f6c4cb03fbb44ccfb19d19fae99480c8",
+        "category": "exist",
+        "question": "Are there any parked trucks?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "ccc5e44e44cc4843bb318ab67c750b5d",
+        "category": "count",
+        "question": "What number of other things are there of the same status as the bus?",
+        "ground_truth": "5",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "7b8f2d0d1c124c4a9b9d9d3b7509b0b7",
+        "category": "exist",
+        "question": "Are any stopped trucks visible?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "4cba70bd54be4df7936ae5765a65446c",
+        "category": "comparison",
+        "question": "There is a thing that is to the front of the moving truck; is it the same status as the bus?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "89c9d0c82a794d39911b3bfb3491b1bc",
+        "category": "exist",
+        "question": "Are there any other trucks that in the same status as the construction vehicle?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "8c42fb380f2e4b32844d6fe6179e81f2",
+        "category": "count",
+        "question": "How many things are to the back right of the moving thing?",
+        "ground_truth": "7",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "3a7aa284dd9d485d8effc20db8cda140",
+        "category": "comparison",
+        "question": "Do the truck and the car that is to the back right of the moving bus have the same status?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "bdcb762d6df842358056925b1143e961",
+        "category": "comparison",
+        "question": "There is a construction vehicle; is it the same status as the car that is to the front left of the parked construction vehicle?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "e80bfd61023745b0a97caae3ff4a1727",
+        "category": "comparison",
+        "question": "There is a car that is to the front left of the without rider bicycle; is it the same status as the thing to the front of the bicycle?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "4f4346641f7e437c889e08b61a0baab3",
+        "category": "exist",
+        "question": "Is there another motorcycle of the same status as the bicycle?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "6c8d4379e83646d08436f6ec92b35fe5",
+        "category": "exist",
+        "question": "Are there any things to the front left of me?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "c1f344cadf354fe0b12446935e54247e",
+        "category": "object",
+        "question": "The thing that is to the front of me is what?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "22dab782087e453c9281a752f2189c5a",
+        "category": "status",
+        "question": "What is the status of the trailer?",
+        "ground_truth": "moving",
+        "prediction": "parked",
+        "correct": false
+      },
+      {
+        "sample_token": "1d6c7fdb1bbb41c4851a6a2913ea6144",
+        "category": "status",
+        "question": "What status is the car that is to the front left of the bus?",
+        "ground_truth": "stopped",
+        "prediction": "parked",
+        "correct": false
+      },
+      {
+        "sample_token": "0d0f1e7f3aaa4fbb931f1f5aecc3b9d8",
+        "category": "comparison",
+        "question": "There is a construction vehicle; does it have the same status as the truck to the front left of the bus?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "bae1dbffebc641a99ba5f2eaf128bd98",
+        "category": "exist",
+        "question": "Are any with rider things visible?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "72cf72aa387f47c68347d9a108e698f3",
+        "category": "exist",
+        "question": "Are there any things to the back of me?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "86c585f28d464ec4bda5d11271c54f2f",
+        "category": "exist",
+        "question": "There is a parked trailer; are there any cars to the back of it?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "42e802854cf34097a57b857663c6ddf7",
+        "category": "exist",
+        "question": "Are there any moving buss?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "152db7f344954b7196402b92caa57e1c",
+        "category": "object",
+        "question": "There is a stopped thing to the back right of the parked truck; what is it?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "f3697fc3fbbe4b64acffcd7816e7a59b",
+        "category": "status",
+        "question": "What status is the car that is to the front left of the bus?",
+        "ground_truth": "parked",
+        "prediction": "parked",
+        "correct": true
+      },
+      {
+        "sample_token": "6cc2a560dacc42149e0780bfb6efe682",
+        "category": "comparison",
+        "question": "Does the car that is to the front of the construction vehicle have the same status as the truck that is to the back of the construction vehicle?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "12398bdee07f41f4b44715e7457dc20e",
+        "category": "exist",
+        "question": "There is a moving bus; are there any moving cars to the front of it?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "8e5cf22369314278a08862383f647c40",
+        "category": "exist",
+        "question": "Are there any other things of the same status as the truck that is to the front left of the without rider bicycle?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "3a7aa284dd9d485d8effc20db8cda140",
+        "category": "exist",
+        "question": "Are there any other buss of the same status as the car to the back right of the moving truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "97c934ef10c34ced96b35417dce1b75a",
+        "category": "count",
+        "question": "How many other things are there of the same status as the bus?",
+        "ground_truth": "0",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "ae90c564207b4eb69b60630fa17ea7e8",
+        "category": "count",
+        "question": "What number of trucks are there?",
+        "ground_truth": "5",
+        "prediction": "2",
+        "correct": false
+      },
+      {
+        "sample_token": "bbf1d23e80b84da798c56cbac090f7d9",
+        "category": "status",
+        "question": "The car to the back right of the truck is in what status?",
+        "ground_truth": "parked",
+        "prediction": "stopped",
+        "correct": false
+      },
+      {
+        "sample_token": "0c9652d8090647f59be086a03071bf00",
+        "category": "comparison",
+        "question": "Do the construction vehicle and the truck to the front of the stopped truck have the same status?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "7171fa8dc7134a5d899df4a8624722fe",
+        "category": "count",
+        "question": "How many other things are there of the same status as the bus?",
+        "ground_truth": "5",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "54af38c26da6410991b41e952c4a6753",
+        "category": "status",
+        "question": "There is a bus to the front of me; what status is it?",
+        "ground_truth": "parked",
+        "prediction": "stopped",
+        "correct": false
+      },
+      {
+        "sample_token": "ce4ea8ab011b49a6849f024a2c064e1c",
+        "category": "object",
+        "question": "What is the parked thing that is both to the back right of the stopped truck and the back of me?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "80e281bf369a4f849efaa5a9052cbd9b",
+        "category": "object",
+        "question": "There is a thing that is to the front left of the stopped car and the back of the stopped truck; what is it?",
+        "ground_truth": "bicycle",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "b6060b7c1f5c4ab3b69718904ef68701",
+        "category": "exist",
+        "question": "Is there another bicycle that has the same status as the truck?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "65847af5d41d40bb9a84d160f021e0f2",
+        "category": "object",
+        "question": "The moving thing to the front left of me is what?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "07eba9ddc28840d489afd0c222b0f056",
+        "category": "object",
+        "question": "What is the thing that is to the front left of the truck?",
+        "ground_truth": "bicycle",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "cc4e11cedcc84ec9add244318e24367e",
+        "category": "exist",
+        "question": "There is a moving car; are there any moving things to the back right of it?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "9018d220fc7340998efa65631a9c3cd4",
+        "category": "status",
+        "question": "There is a construction vehicle to the back of the without rider motorcycle; what status is it?",
+        "ground_truth": "stopped",
+        "prediction": "parked",
+        "correct": false
+      },
+      {
+        "sample_token": "bfe534d72d984d99be6d8f40f7e53085",
+        "category": "count",
+        "question": "What number of trailers are to the back of the moving truck?",
+        "ground_truth": "5",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "2dece2e80c704ca399697551a511062f",
+        "category": "exist",
+        "question": "Is there another trailer of the same status as the construction vehicle?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "8484f806540a4824bccfb53f7d89755b",
+        "category": "exist",
+        "question": "Is there another car of the same status as the car to the back right of the bus?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "4c687bbe18104da1b9eef242d5abbe6b",
+        "category": "object",
+        "question": "There is a parked thing that is to the back of me; what is it?",
+        "ground_truth": "truck",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "97c934ef10c34ced96b35417dce1b75a",
+        "category": "comparison",
+        "question": "Do the bus and the motorcycle have the same status?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "4ba9d5d36136413b8c6c61490f09fdac",
+        "category": "count",
+        "question": "What number of cars are to the front of the moving bus?",
+        "ground_truth": "6",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "506d1d4eb91f43d1ba7f8564ea7a6939",
+        "category": "exist",
+        "question": "Are there any trucks?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "07905ddecd1e4ef6bc1e3f24fa950579",
+        "category": "exist",
+        "question": "Is there another car that has the same status as the bus that is to the front of the stopped bus?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "3fafefe85e5741469e3539c361ec55ad",
+        "category": "exist",
+        "question": "Are there any stopped construction vehicles?",
+        "ground_truth": "yes",
+        "prediction": "no",
+        "correct": false
+      },
+      {
+        "sample_token": "ac4b1d99334240af84cbf2d4da16fbb1",
+        "category": "exist",
+        "question": "Are there any parked cars to the front left of me?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "92e329cfbaaf4cde86938c173fee33d7",
+        "category": "count",
+        "question": "What number of moving things are there?",
+        "ground_truth": "3",
+        "prediction": "4",
+        "correct": false
+      },
+      {
+        "sample_token": "a2c92fa9e1ab4723a600f87f9675eeb0",
+        "category": "exist",
+        "question": "Are there any without rider bicycles to the front of me?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "40ead2f47c8146c581917c05cfda04ea",
+        "category": "object",
+        "question": "The thing that is to the front of the moving truck is what?",
+        "ground_truth": "construction vehicle",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "fa43c135d734434bb7d752cac1c585e8",
+        "category": "count",
+        "question": "What number of things are to the back of me?",
+        "ground_truth": "8",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "149a79457f3c4f76afb5f01ffcda5470",
+        "category": "exist",
+        "question": "There is a moving car; are there any stopped buss to the front of it?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "e6c01889665a4affaf5bbedf91b8f2d0",
+        "category": "count",
+        "question": "What number of things are there?",
+        "ground_truth": "10",
+        "prediction": "8",
+        "correct": false
+      },
+      {
+        "sample_token": "a29623dd054b4177a9d98b83c0fd23bd",
+        "category": "status",
+        "question": "There is a motorcycle; what status is it?",
+        "ground_truth": "with rider",
+        "prediction": "with rider",
+        "correct": true
+      },
+      {
+        "sample_token": "ef1b0ef208114d07992b390e856c69b0",
+        "category": "comparison",
+        "question": "Is the status of the bus that is to the back right of the stopped car the same as the trailer?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "29d2ae0d71504196a577d40fc1faf556",
+        "category": "count",
+        "question": "How many parked cars are there?",
+        "ground_truth": "7",
+        "prediction": "10",
+        "correct": false
+      },
+      {
+        "sample_token": "09b85d87b18b4d7db466997161867f09",
+        "category": "count",
+        "question": "What number of stopped motorcycles are there?",
+        "ground_truth": "0",
+        "prediction": "0",
+        "correct": true
+      },
+      {
+        "sample_token": "5f88b9a41f264ebbac7976bf4c796d21",
+        "category": "count",
+        "question": "How many other construction vehicles are in the same status as the truck to the front left of the without rider thing?",
+        "ground_truth": "1",
+        "prediction": "1",
+        "correct": true
+      },
+      {
+        "sample_token": "6bed418003f549ddb2a54339ffc53cbe",
+        "category": "exist",
+        "question": "Are there any construction vehicles?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "f086b86de2f44ddf923500d35b47b354",
+        "category": "count",
+        "question": "How many other things are there of the same status as the bicycle?",
+        "ground_truth": "0",
+        "prediction": "0",
+        "correct": true
+      },
+      {
+        "sample_token": "814720ee91d54e408e6fd0dd1b356e9c",
+        "category": "status",
+        "question": "What is the status of the construction vehicle?",
+        "ground_truth": "parked",
+        "prediction": "parked",
+        "correct": true
+      },
+      {
+        "sample_token": "93e406fbff494e06b31110c723ea6210",
+        "category": "exist",
+        "question": "Are there any moving cars to the back of me?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "8b459789ae924a18ac7df23aaa391bce",
+        "category": "status",
+        "question": "There is a bus to the front left of the stopped bus; what status is it?",
+        "ground_truth": "moving",
+        "prediction": "moving",
+        "correct": true
+      },
+      {
+        "sample_token": "3e37fbbea46d4234b6335cea76399e38",
+        "category": "status",
+        "question": "There is a truck to the back of me; what is its status?",
+        "ground_truth": "stopped",
+        "prediction": "stopped",
+        "correct": true
+      },
+      {
+        "sample_token": "62fda3b441504bb69459b4d413dd239e",
+        "category": "exist",
+        "question": "Are there any other things of the same status as the thing to the back of the truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "b5c051cae12a4809bd699c77f295fea0",
+        "category": "exist",
+        "question": "Is there another bus that has the same status as the thing to the back of the trailer?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "44209d7fe32249279e9001af666b237d",
+        "category": "count",
+        "question": "How many parked things are there?",
+        "ground_truth": "10",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "dff6bea8d6b443548193449a5982f11d",
+        "category": "exist",
+        "question": "Are there any moving things to the front right of me?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "8687ba92abd3406aa797115b874ebeba",
+        "category": "status",
+        "question": "The truck is in what status?",
+        "ground_truth": "stopped",
+        "prediction": "stopped",
+        "correct": true
+      },
+      {
+        "sample_token": "5224809ffef94a6e83454ad3930d3533",
+        "category": "count",
+        "question": "There is a bicycle; what number of stopped things are to the back of it?",
+        "ground_truth": "1",
+        "prediction": "2",
+        "correct": false
+      },
+      {
+        "sample_token": "4ea2156b82df43cb8e80a3cb344b20a3",
+        "category": "object",
+        "question": "The thing that is to the front of me is what?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "b6aec9495b4146798b1496bfd7eedb75",
+        "category": "status",
+        "question": "There is a car to the back right of the parked construction vehicle; what is its status?",
+        "ground_truth": "moving",
+        "prediction": "stopped",
+        "correct": false
+      },
+      {
+        "sample_token": "6664e576015845e185dc931f83c14c98",
+        "category": "count",
+        "question": "What number of moving things are there?",
+        "ground_truth": "10",
+        "prediction": "4",
+        "correct": false
+      },
+      {
+        "sample_token": "de7dec572e6c46f8ab11478864a116ce",
+        "category": "exist",
+        "question": "Are there any cars to the back of the truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "58bb75a7107e48da9d9c5415b70e823f",
+        "category": "exist",
+        "question": "Are there any things to the back of the truck?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "6413a3e27b664997a08f7a0b82667d06",
+        "category": "count",
+        "question": "What number of things are to the back right of the moving car?",
+        "ground_truth": "6",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "53bc14f0ee1f459e96250c3f631eeba4",
+        "category": "status",
+        "question": "The motorcycle is in what status?",
+        "ground_truth": "with rider",
+        "prediction": "with rider",
+        "correct": true
+      },
+      {
+        "sample_token": "c56adbccfeff449f959f25cc41f8b1e5",
+        "category": "exist",
+        "question": "Are there any other cars that in the same status as the thing that is to the back right of the motorcycle?",
+        "ground_truth": "no",
+        "prediction": "yes",
+        "correct": false
+      },
+      {
+        "sample_token": "6a1d73c793e24ab3b9df8e9e0299d06b",
+        "category": "object",
+        "question": "The parked thing to the front of the construction vehicle is what?",
+        "ground_truth": "trailer",
+        "prediction": "truck",
+        "correct": false
+      },
+      {
+        "sample_token": "fea20913dc8749788096a7c41b087d59",
+        "category": "comparison",
+        "question": "There is a truck; does it have the same status as the bicycle that is to the back of the with rider motorcycle?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "cc0b96ef5c5e479496621dbe7bf7d6db",
+        "category": "count",
+        "question": "How many trailers are there?",
+        "ground_truth": "2",
+        "prediction": "1",
+        "correct": false
+      },
+      {
+        "sample_token": "0fd26c837fa048789ed0ac3c22a27832",
+        "category": "object",
+        "question": "What is the stopped thing to the back right of me?",
+        "ground_truth": "bus",
+        "prediction": "car",
+        "correct": false
+      },
+      {
+        "sample_token": "ee3ddd9ee0374030bdfece0eadd13bc1",
+        "category": "exist",
+        "question": "Are there any moving things to the front right of me?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "99d46eeaf8964056ba26f7f42d0287b7",
+        "category": "exist",
+        "question": "There is a without rider motorcycle; are there any without rider motorcycles to the back right of it?",
+        "ground_truth": "no",
+        "prediction": "no",
+        "correct": true
+      },
+      {
+        "sample_token": "0dce353f4164414e996aee2520f185af",
+        "category": "count",
+        "question": "What number of moving cars are there?",
+        "ground_truth": "7",
+        "prediction": "3",
+        "correct": false
+      },
+      {
+        "sample_token": "014a4afe87244310b05f57274f330ddd",
+        "category": "object",
+        "question": "The stopped thing to the back right of me is what?",
+        "ground_truth": "car",
+        "prediction": "car",
+        "correct": true
+      },
+      {
+        "sample_token": "661e92f2f19f44c283f0b540e68fdef8",
+        "category": "comparison",
+        "question": "Is the status of the truck the same as the construction vehicle to the back right of the truck?",
+        "ground_truth": "yes",
+        "prediction": "yes",
+        "correct": true
+      },
+      {
+        "sample_token": "7c25767f512d4c3a81bccb2f6951b2f9",
+        "category": "object",
+        "question": "What is the stopped thing that is to the front left of me?",
+        "ground_truth": "bus",
+        "prediction": "car",
+        "correct": false
+      }
+    ]
+  },
+  "predictions": [
+    {
+      "sample_token": "9fbc6ac2c75c479cbc125a7a50bbaf64",
+      "category": "status",
+      "question": "What is the status of the bicycle to the front left of the without rider thing?",
+      "ground_truth": "with rider",
+      "prediction": "with rider",
+      "correct": true
+    },
+    {
+      "sample_token": "04d183cb9667437a97c5a960c3a43adb",
+      "category": "comparison",
+      "question": "There is a truck; is it the same status as the construction vehicle that is to the front left of the parked truck?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "006cbdb235c64999b6f5cfbb63ec88c4",
+      "category": "count",
+      "question": "What number of other things are there of the same status as the trailer?",
+      "ground_truth": "6",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "78c80690450a4e8aba63e1f2ca27c207",
+      "category": "object",
+      "question": "What is the moving thing?",
+      "ground_truth": "truck",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "f177de608c51420c904470e3f7610f0b",
+      "category": "exist",
+      "question": "There is a stopped bus; are there any cars to the back left of it?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "8cf7909610bb4c8bb97d8618e3b3e25f",
+      "category": "object",
+      "question": "There is a moving thing to the back of me; what is it?",
+      "ground_truth": "car",
+      "prediction": "car",
+      "correct": true
+    },
+    {
+      "sample_token": "35afe50d131847739f3221c6ffb88d42",
+      "category": "comparison",
+      "question": "There is a truck that is to the back of the parked bus; is it the same status as the trailer?",
+      "ground_truth": "no",
+      "prediction": "yes",
+      "correct": false
+    },
+    {
+      "sample_token": "2945e6bfeea7425c8adf44f3225122d3",
+      "category": "exist",
+      "question": "Are there any parked things to the back of me?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "5ddf6aeb821146de8fd98fd73dfe02df",
+      "category": "object",
+      "question": "What is the without rider thing to the back of the stopped bus?",
+      "ground_truth": "bicycle",
+      "prediction": "bicycle",
+      "correct": true
+    },
+    {
+      "sample_token": "ae7d650f8a4744c18869109f59666897",
+      "category": "status",
+      "question": "What status is the bus?",
+      "ground_truth": "moving",
+      "prediction": "moving",
+      "correct": true
+    },
+    {
+      "sample_token": "d5f7ce1b4817415bb884f5d970eda7be",
+      "category": "count",
+      "question": "How many trucks are there?",
+      "ground_truth": "4",
+      "prediction": "4",
+      "correct": true
+    },
+    {
+      "sample_token": "b9db804449d34414ba98868e9034abd3",
+      "category": "exist",
+      "question": "There is a with rider bicycle; are there any things to the back of it?",
+      "ground_truth": "no",
+      "prediction": "yes",
+      "correct": false
+    },
+    {
+      "sample_token": "9f7941301fc440459a1a6dd8182d4f91",
+      "category": "count",
+      "question": "What number of other things are in the same status as the truck?",
+      "ground_truth": "8",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "49e0e239c3f048418bb250ef9376120e",
+      "category": "object",
+      "question": "What is the without rider thing to the front left of me?",
+      "ground_truth": "bicycle",
+      "prediction": "bicycle",
+      "correct": true
+    },
+    {
+      "sample_token": "ce9df8d818354073b48c2b0e5e8ff7b5",
+      "category": "count",
+      "question": "What number of trucks are there?",
+      "ground_truth": "7",
+      "prediction": "3",
+      "correct": false
+    },
+    {
+      "sample_token": "d43144192b63485894f7ef174cdbecac",
+      "category": "object",
+      "question": "There is a stopped thing that is to the back right of the parked car; what is it?",
+      "ground_truth": "bus",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "6b3c851413064994bb0babae7e74efad",
+      "category": "exist",
+      "question": "Are there any other trailers of the same status as the trailer?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "99be6149064e4e4c90948a0d01af1f12",
+      "category": "comparison",
+      "question": "Is the status of the construction vehicle the same as the car that is to the back of the parked construction vehicle?",
+      "ground_truth": "yes",
+      "prediction": "no",
+      "correct": false
+    },
+    {
+      "sample_token": "19ccc1fa32844e0c9e4eb9d7e741a43f",
+      "category": "exist",
+      "question": "Are any moving motorcycles visible?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "c56adbccfeff449f959f25cc41f8b1e5",
+      "category": "count",
+      "question": "What number of other things are there of the same status as the truck?",
+      "ground_truth": "3",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "51265d17eeb54973aa1b9be24d3058e2",
+      "category": "exist",
+      "question": "Is there another bicycle of the same status as the bus to the front of the moving bus?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "f8883f89a30a4cafb79e49f6f533e4f5",
+      "category": "status",
+      "question": "What status is the bicycle?",
+      "ground_truth": "without rider",
+      "prediction": "with rider",
+      "correct": false
+    },
+    {
+      "sample_token": "3a56f761366a4338a35bccfe7b08befb",
+      "category": "object",
+      "question": "What is the without rider thing?",
+      "ground_truth": "motorcycle",
+      "prediction": "bicycle",
+      "correct": false
+    },
+    {
+      "sample_token": "28cce0b8fdb7437db096beb047179453",
+      "category": "count",
+      "question": "What number of parked things are there?",
+      "ground_truth": "7",
+      "prediction": "10",
+      "correct": false
+    },
+    {
+      "sample_token": "ca025b0fd09d40f8bc1dacec54d6b937",
+      "category": "comparison",
+      "question": "There is a trailer; is it the same status as the bus to the front of the stopped thing?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "645e0c2f9b724c5b95fe434930c2682a",
+      "category": "comparison",
+      "question": "Do the construction vehicle and the truck have the same status?",
+      "ground_truth": "yes",
+      "prediction": "no",
+      "correct": false
+    },
+    {
+      "sample_token": "c7916de2cc5e4feab4a819194a428260",
+      "category": "object",
+      "question": "What is the parked thing that is to the back right of the moving truck and the front of me?",
+      "ground_truth": "trailer",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "291e7331922541cea98122b607d24831",
+      "category": "exist",
+      "question": "Is there another thing of the same status as the bus to the back right of the parked construction vehicle?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "0f3fbd162e444ecd9e3b7136c33deb54",
+      "category": "object",
+      "question": "There is a moving thing that is to the back right of me; what is it?",
+      "ground_truth": "truck",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "dd873a094c5b47649b79c3f9dc36dfb2",
+      "category": "count",
+      "question": "What number of moving cars are to the back right of me?",
+      "ground_truth": "3",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "96d621f9ae4d44f0bf45688877a2d8fc",
+      "category": "status",
+      "question": "There is a motorcycle to the back right of the bus; what status is it?",
+      "ground_truth": "with rider",
+      "prediction": "with rider",
+      "correct": true
+    },
+    {
+      "sample_token": "5253c29c4cf64f01b43f64c9e5dfedb4",
+      "category": "exist",
+      "question": "Are any things visible?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "95e59c7864c94bd5bf895a51373d6d54",
+      "category": "status",
+      "question": "There is a trailer; what status is it?",
+      "ground_truth": "moving",
+      "prediction": "parked",
+      "correct": false
+    },
+    {
+      "sample_token": "cc6d0652e2eb4240b6f07ad1be99109c",
+      "category": "status",
+      "question": "What status is the bicycle to the back of the with rider thing?",
+      "ground_truth": "without rider",
+      "prediction": "without rider",
+      "correct": true
+    },
+    {
+      "sample_token": "9e597bf087df4d7fae593e7793e87e4e",
+      "category": "status",
+      "question": "There is a bus to the front left of the moving truck; what status is it?",
+      "ground_truth": "stopped",
+      "prediction": "stopped",
+      "correct": true
+    },
+    {
+      "sample_token": "092051710b7b4d9294e98dcb3f0f7be1",
+      "category": "count",
+      "question": "What number of stopped things are to the front of the moving truck?",
+      "ground_truth": "1",
+      "prediction": "1",
+      "correct": true
+    },
+    {
+      "sample_token": "c855b62fda9748c0a719c329b6e216ec",
+      "category": "status",
+      "question": "What is the status of the construction vehicle to the back right of the parked truck?",
+      "ground_truth": "parked",
+      "prediction": "parked",
+      "correct": true
+    },
+    {
+      "sample_token": "b7859e2fa4b24192b675a8a67bec5790",
+      "category": "count",
+      "question": "What number of cars are to the front of me?",
+      "ground_truth": "2",
+      "prediction": "2",
+      "correct": true
+    },
+    {
+      "sample_token": "ba8eeec4aec74e2e8cfbdd78af5484c1",
+      "category": "object",
+      "question": "The without rider thing is what?",
+      "ground_truth": "bicycle",
+      "prediction": "bicycle",
+      "correct": true
+    },
+    {
+      "sample_token": "bc01f04e234f47a1b985aa16654f86e4",
+      "category": "object",
+      "question": "What is the thing that is to the back right of the bus and the front left of me?",
+      "ground_truth": "motorcycle",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "699b319a28f6467cb12ff4ce51d6ff91",
+      "category": "object",
+      "question": "There is a thing that is both to the back of me and the back right of the with rider thing; what is it?",
+      "ground_truth": "car",
+      "prediction": "car",
+      "correct": true
+    },
+    {
+      "sample_token": "c54d5bb693884c459e245a0abd3e4952",
+      "category": "exist",
+      "question": "Is there another truck of the same status as the truck to the back of the stopped thing?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "fd5b6a5c4933435e94c3d4ae7ccd08d2",
+      "category": "comparison",
+      "question": "There is a trailer; is its status the same as the thing that is to the back right of the trailer?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "2dccb688659f42818954fa72a2cc4649",
+      "category": "comparison",
+      "question": "There is a bus; is it the same status as the construction vehicle that is to the front of the moving bus?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "a633a5ca3bd94f9d99f0251f03e28170",
+      "category": "comparison",
+      "question": "Do the car to the front left of the parked thing and the car that is to the back of the parked thing have the same status?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "2a47cd19bfa0462f91c9ba26fd69c1c0",
+      "category": "count",
+      "question": "How many without rider things are to the back of the stopped truck?",
+      "ground_truth": "4",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "bd5f50d1b5ce496f9c86018e9681c854",
+      "category": "object",
+      "question": "What is the parked thing that is to the front of the construction vehicle?",
+      "ground_truth": "truck",
+      "prediction": "truck",
+      "correct": true
+    },
+    {
+      "sample_token": "b103a06d72194214a8bb1b39b2c1cddf",
+      "category": "comparison",
+      "question": "There is a car that is to the front left of the stopped truck; is its status the same as the truck?",
+      "ground_truth": "no",
+      "prediction": "yes",
+      "correct": false
+    },
+    {
+      "sample_token": "ae5004bf4ebb4db0a84cb3c27bd398d1",
+      "category": "comparison",
+      "question": "Is the status of the truck the same as the bus?",
+      "ground_truth": "no",
+      "prediction": "yes",
+      "correct": false
+    },
+    {
+      "sample_token": "a33c811a7be742f09c0149144c15f63c",
+      "category": "object",
+      "question": "The stopped thing is what?",
+      "ground_truth": "bus",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "6832e717621341568c759151b5974512",
+      "category": "exist",
+      "question": "Are any trucks visible?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "d90f206c2a2e405e912ee046b0b27d85",
+      "category": "status",
+      "question": "The construction vehicle to the back of the motorcycle is in what status?",
+      "ground_truth": "stopped",
+      "prediction": "parked",
+      "correct": false
+    },
+    {
+      "sample_token": "4207bb5acb624c199bee66bf8bc73d0e",
+      "category": "object",
+      "question": "There is a without rider thing that is to the front left of me; what is it?",
+      "ground_truth": "bicycle",
+      "prediction": "bicycle",
+      "correct": true
+    },
+    {
+      "sample_token": "46a2d2d638b64d89b1b01984d999f47b",
+      "category": "exist",
+      "question": "Are there any things to the back right of the with rider motorcycle?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "073394e5ed044800b3e4d7e077716219",
+      "category": "count",
+      "question": "What number of moving things are there?",
+      "ground_truth": "10",
+      "prediction": "4",
+      "correct": false
+    },
+    {
+      "sample_token": "f9161a733a9c4303ac28a12159a38e0d",
+      "category": "exist",
+      "question": "There is a stopped car; are there any parked construction vehicles to the front left of it?",
+      "ground_truth": "yes",
+      "prediction": "no",
+      "correct": false
+    },
+    {
+      "sample_token": "ecaea9ca526a43a984e46bff7ea85204",
+      "category": "status",
+      "question": "There is a truck; what status is it?",
+      "ground_truth": "stopped",
+      "prediction": "stopped",
+      "correct": true
+    },
+    {
+      "sample_token": "2cdfb72242d1424c9d3bf8bcf8530cd3",
+      "category": "count",
+      "question": "What number of other trucks in the same status as the truck to the front of the stopped bus?",
+      "ground_truth": "3",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "ded088a5ef664ca687fd0e8c1e4bda1d",
+      "category": "status",
+      "question": "There is a bicycle; what status is it?",
+      "ground_truth": "with rider",
+      "prediction": "with rider",
+      "correct": true
+    },
+    {
+      "sample_token": "52c1b263f03f49e5bb5b8ceb8083b4a1",
+      "category": "status",
+      "question": "What is the status of the car that is to the front left of me?",
+      "ground_truth": "stopped",
+      "prediction": "stopped",
+      "correct": true
+    },
+    {
+      "sample_token": "b4bff2b0e4774147ac53fb96ff9317b5",
+      "category": "count",
+      "question": "How many other cars in the same status as the car that is to the back of the construction vehicle?",
+      "ground_truth": "3",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "6fbe3d91fb7944b798279abcc69651cb",
+      "category": "comparison",
+      "question": "Is the status of the car that is to the front of the bus the same as the motorcycle?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "64aaf542297f46b6ba74022b00d92a08",
+      "category": "count",
+      "question": "There is a stopped car; what number of parked trailers are to the back of it?",
+      "ground_truth": "1",
+      "prediction": "1",
+      "correct": true
+    },
+    {
+      "sample_token": "309a9721e7184261beb804f18d385044",
+      "category": "status",
+      "question": "What status is the bus?",
+      "ground_truth": "stopped",
+      "prediction": "moving",
+      "correct": false
+    },
+    {
+      "sample_token": "e6c01889665a4affaf5bbedf91b8f2d0",
+      "category": "count",
+      "question": "What number of things are there?",
+      "ground_truth": "10",
+      "prediction": "8",
+      "correct": false
+    },
+    {
+      "sample_token": "f00e0c9a763b4b11b88becf115af6387",
+      "category": "exist",
+      "question": "There is a construction vehicle; are there any stopped cars to the front of it?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "78be3bd5f1f146cdb1b7120bbf8a218c",
+      "category": "exist",
+      "question": "Are there any construction vehicles?",
+      "ground_truth": "yes",
+      "prediction": "no",
+      "correct": false
+    },
+    {
+      "sample_token": "6e49bfd9f21447858938b77180bcb6b8",
+      "category": "exist",
+      "question": "There is a with rider thing; are there any moving cars to the front right of it?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "70f6c6fd6533467ab082e0fafa85fd58",
+      "category": "exist",
+      "question": "Are any without rider things visible?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "a51146d2b181450292623ec03ade9f03",
+      "category": "comparison",
+      "question": "Do the truck and the motorcycle have the same status?",
+      "ground_truth": "no",
+      "prediction": "no",
+      "correct": true
+    },
+    {
+      "sample_token": "78fb6fd360a248dd8942da088cecae6c",
+      "category": "status",
+      "question": "The truck is in what status?",
+      "ground_truth": "stopped",
+      "prediction": "stopped",
+      "correct": true
+    },
+    {
+      "sample_token": "46a4a199e44544018017be7434e46fc8",
+      "category": "comparison",
+      "question": "There is a bus; is it the same status as the car to the front left of the bus?",
+      "ground_truth": "no",
+      "prediction": "yes",
+      "correct": false
+    },
+    {
+      "sample_token": "abe33290dd64401786b25024293ae4dc",
+      "category": "count",
+      "question": "How many other things are in the same status as the bus?",
+      "ground_truth": "5",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "5b03af7a953245b5a3b23191ed4da62a",
+      "category": "object",
+      "question": "There is a stopped thing to the back of the without rider motorcycle; what is it?",
+      "ground_truth": "car",
+      "prediction": "car",
+      "correct": true
+    },
+    {
+      "sample_token": "3f649706222f4d83aa0a8a1b687f29fa",
+      "category": "comparison",
+      "question": "Do the thing to the front left of the bicycle and the truck that is to the front of the moving car have the same status?",
+      "ground_truth": "no",
+      "prediction": "yes",
+      "correct": false
+    },
+    {
+      "sample_token": "5d28835555eb46969fb96b6dbe682868",
+      "category": "status",
+      "question": "The construction vehicle is in what status?",
+      "ground_truth": "parked",
+      "prediction": "parked",
+      "correct": true
+    },
+    {
+      "sample_token": "783ff0de60574dbcb9ba4773fcbb10e2",
+      "category": "object",
+      "question": "What is the parked thing that is both to the front left of the bus and the back of the parked truck?",
+      "ground_truth": "construction vehicle",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "731cf68943704a3ea7e14256aef03c50",
+      "category": "status",
+      "question": "There is a thing that is to the back of the stopped car; what status is it?",
+      "ground_truth": "parked",
+      "prediction": "moving",
+      "correct": false
+    },
+    {
+      "sample_token": "33b36f77c6c241848fa437ad7b516c0d",
+      "category": "comparison",
+      "question": "There is a bus; is it the same status as the car to the front of the parked car?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "9d2eedd225094283bb507db7856e60e5",
+      "category": "status",
+      "question": "What is the status of the bus?",
+      "ground_truth": "moving",
+      "prediction": "moving",
+      "correct": true
+    },
+    {
+      "sample_token": "a9c59e28cc404418add2c66079e05040",
+      "category": "status",
+      "question": "There is a car to the back right of the moving truck; what status is it?",
+      "ground_truth": "moving",
+      "prediction": "parked",
+      "correct": false
+    },
+    {
+      "sample_token": "2cb04989d26a485b90ab47a1577e0f7a",
+      "category": "count",
+      "question": "There is a with rider thing; what number of things are to the back of it?",
+      "ground_truth": "9",
+      "prediction": "8",
+      "correct": false
+    },
+    {
+      "sample_token": "32e69a777d58481ab972dbea3ff75974",
+      "category": "exist",
+      "question": "Are there any parked cars?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "9988e9a9c21b43a38f059d62e19128d8",
+      "category": "count",
+      "question": "How many other things in the same status as the bus that is to the front of the stopped thing?",
+      "ground_truth": "8",
+      "prediction": "1",
+      "correct": false
+    },
+    {
+      "sample_token": "3c7491fa33b74757a8feab372f66b280",
+      "category": "exist",
+      "question": "Are there any things to the back right of the stopped thing?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "75cb3f7063eb48a0acab0094d6a971c4",
+      "category": "object",
+      "question": "The parked thing that is to the front left of me is what?",
+      "ground_truth": "construction vehicle",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "5b8b618c3f9e481bb8522d9900d74f20",
+      "category": "comparison",
+      "question": "There is a bus that is to the back of the stopped construction vehicle; is it the same status as the car that is to the front left of the stopped thing?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "49c12fc973144e70be8590b130500f32",
+      "category": "object",
+      "question": "The stopped thing that is to the front left of the with rider bicycle is what?",
+      "ground_truth": "car",
+      "prediction": "car",
+      "correct": true
+    },
+    {
+      "sample_token": "a9e6b3566fcd4effb8847e22a2a4577e",
+      "category": "status",
+      "question": "There is a truck to the back of me; what status is it?",
+      "ground_truth": "parked",
+      "prediction": "stopped",
+      "correct": false
+    },
+    {
+      "sample_token": "e59d473a2d8244d49f874c2e139d0362",
+      "category": "comparison",
+      "question": "Is the status of the car to the back right of the parked truck the same as the truck?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "89cf671dfd6843fca98f6a12a6f03cc3",
+      "category": "comparison",
+      "question": "There is a bus that is to the front of the with rider thing; is its status the same as the bus to the back of the with rider thing?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "a38cd83451774e5f89fce6eb45b3ac8a",
+      "category": "comparison",
+      "question": "There is a bus; is it the same status as the thing to the front left of the stopped car?",
+      "ground_truth": "no",
+      "prediction": "yes",
+      "correct": false
+    },
+    {
+      "sample_token": "8b2da12cffd84eb2925b0b9e08ed250f",
+      "category": "comparison",
+      "question": "There is a truck; is its status the same as the construction vehicle that is to the front left of the parked truck?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    },
+    {
+      "sample_token": "52e0fc73e08b43d88848a37baeace700",
+      "category": "status",
+      "question": "The thing that is to the front left of the without rider bicycle is in what status?",
+      "ground_truth": "with rider",
+      "prediction": "moving",
+      "correct": false
+    },
+    {
+      "sample_token": "46cf544f4ddc4125803d8ccd82874cc8",
+      "category": "count",
+      "question": "What number of things are there?",
+      "ground_truth": "5",
+      "prediction": "8",
+      "correct": false
+    },
+    {
+      "sample_token": "e54b784a608644a2804fcf800c7499f7",
+      "category": "exist",
+      "question": "Are there any without rider motorcycles?",
+      "ground_truth": "yes",
+      "prediction": "no",
+      "correct": false
+    },
+    {
+      "sample_token": "4de7963785f34de7afb9e5aae3ce6f9f",
+      "category": "count",
+      "question": "What number of things are to the front of me?",
+      "ground_truth": "3",
+      "prediction": "10",
+      "correct": false
+    },
+    {
+      "sample_token": "e73a59216865449ab48d31a0880664aa",
+      "category": "object",
+      "question": "The stopped thing is what?",
+      "ground_truth": "truck",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "6de2f8b9d18441e8aee8011d5f8759f3",
+      "category": "object",
+      "question": "There is a parked thing that is both to the front left of the without rider thing and the back right of me; what is it?",
+      "ground_truth": "truck",
+      "prediction": "car",
+      "correct": false
+    },
+    {
+      "sample_token": "934013e218544a9c8b7d34297becce68",
+      "category": "exist",
+      "question": "Are there any parked trailers to the front left of me?",
+      "ground_truth": "yes",
+      "prediction": "yes",
+      "correct": true
+    }
+  ],
+  "shuffle_test": {
+    "real_bev_accuracy": 53.0,
+    "shuffled_bev_accuracy": 49.0,
+    "visual_grounding_delta": 4.0,
+    "shuffled_category_accuracies": {
+      "status": 55.0,
+      "comparison": 60.0,
+      "count": 15.0,
+      "object": 40.0,
+      "exist": 75.0
+    }
+  },
+  "comparisons": {
+    "Text-Only LLM (Zero-Shot)": {
+      "overall": 19.6,
+      "exist": 38.0,
+      "count": 0.0,
+      "object": 12.0,
+      "status": 6.0,
+      "comparison": 42.0
+    },
+    "CenterPoint + MCAN": {
+      "overall": 61.2,
+      "exist": 78.4,
+      "count": 48.9,
+      "object": 48.2,
+      "status": 62.1,
+      "comparison": 68.3
+    },
+    "BeLLA (State-of-the-Art)": {
+      "overall": 66.8,
+      "exist": 82.5,
+      "count": 55.4,
+      "object": 53.7,
+      "status": 66.2,
+      "comparison": 76.1
+    }
+  },
+  "llm_judge": {
+    "benchmark": "nuscenes_qa",
+    "judge_model": "Qwen/Qwen2.5-3B-Instruct",
+    "total_evaluated": 100,
+    "overall_metrics": {
+      "mean_factual_accuracy": 6.24,
+      "llm_judge_accuracy": 51.0
+    },
+    "category_metrics": {
+      "status": {
+        "count": 20,
+        "mean_factual_accuracy": 6.55,
+        "llm_judge_accuracy": 60.0
+      },
+      "comparison": {
+        "count": 20,
+        "mean_factual_accuracy": 7.35,
+        "llm_judge_accuracy": 50.0
+      },
+      "count": {
+        "count": 20,
+        "mean_factual_accuracy": 3.4,
+        "llm_judge_accuracy": 20.0
+      },
+      "object": {
+        "count": 20,
+        "mean_factual_accuracy": 5.6,
+        "llm_judge_accuracy": 45.0
+      },
+      "exist": {
+        "count": 20,
+        "mean_factual_accuracy": 8.3,
+        "llm_judge_accuracy": 80.0
+      }
+    }
+  }
+}

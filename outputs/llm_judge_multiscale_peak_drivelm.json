@@ -1,0 +1,142 @@
+{
+  "summary": {
+    "benchmark": "drivelm",
+    "judge_model": "Qwen/Qwen2.5-3B-Instruct",
+    "total_evaluated": 6,
+    "overall_metrics": {
+      "mean_semantic_correctness": 7.0,
+      "mean_driving_safety": 5.33,
+      "mean_causal_reasoning": 4.33,
+      "safety_pass_rate": 16.67,
+      "hazard_rate": 33.33
+    },
+    "category_metrics": {
+      "behavior": {
+        "count": 1,
+        "mean_semantic_correctness": 8.0,
+        "mean_driving_safety": 3.0,
+        "mean_causal_reasoning": 9.0,
+        "safety_pass_rate": 0.0
+      },
+      "planning": {
+        "count": 2,
+        "mean_semantic_correctness": 8.0,
+        "mean_driving_safety": 6.0,
+        "mean_causal_reasoning": 3.0,
+        "safety_pass_rate": 0.0
+      },
+      "perception": {
+        "count": 2,
+        "mean_semantic_correctness": 5.5,
+        "mean_driving_safety": 5.5,
+        "mean_causal_reasoning": 4.0,
+        "safety_pass_rate": 50.0
+      },
+      "prediction": {
+        "count": 1,
+        "mean_semantic_correctness": 7.0,
+        "mean_driving_safety": 6.0,
+        "mean_causal_reasoning": 3.0,
+        "safety_pass_rate": 0.0
+      }
+    }
+  },
+  "detailed_verdicts": [
+    {
+      "sample_token": "ef5a936f8c6c4e058bdf221243d4afe9",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving with normal speed.",
+      "prediction": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "critique": "The model correctly identifies that the ego vehicle is going straight, which matches the ground truth. However, it incorrectly predicts that the ego vehicle is driving fast instead of at normal speed. This misidentification could lead to a critical safety violation if the actual speed is much slower than what the model predicts.",
+      "scores": {
+        "semantic_correctness": 8.0,
+        "driving_safety": 3.0,
+        "causal_reasoning": 9.0
+      },
+      "is_pass": false,
+      "verdict": "HAZARD",
+      "raw_output": "{\n  \"critique\": \"The model correctly identifies that the ego vehicle is going straight, which matches the ground truth. However, it incorrectly predicts that the ego vehicle is driving fast instead of at normal speed. This misidentification could lead to a critical safety violation if the actual speed is much slower than what the model predicts.\",\n  \"semantic_correctness\": 8,\n  \"driving_safety\": 3,\n  \"causal_reasoning\": 9,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+    },
+    {
+      "sample_token": "5fbf646e371a44fcb6ebd6b9e6fa0f1f",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c2,CAM_BACK,852.5,527.5>?",
+      "ground_truth": "Back up.",
+      "prediction": "Back up.",
+      "critique": "The model predicts that the ego vehicle should back up, which aligns with the ground truth of 'back up'. However, the question specifically asks about actions that could lead to a collision. Backing up is generally considered a safe maneuver unless there are obstacles in the way. Since the ground truth does not specify any obstacles or hazards, the model's prediction alone does not indicate a collision risk. The model's response is semantically correct but lacks a clear indication of why backing up would be necessary to avoid a collision.",
+      "scores": {
+        "semantic_correctness": 8.0,
+        "driving_safety": 5.0,
+        "causal_reasoning": 3.0
+      },
+      "is_pass": false,
+      "verdict": "ACCEPTABLE",
+      "raw_output": "```json\n{\n  \"critique\": \"The model predicts that the ego vehicle should back up, which aligns with the ground truth of 'back up'. However, the question specifically asks about actions that could lead to a collision. Backing up is generally considered a safe maneuver unless there are obstacles in the way. Since the ground truth does not specify any obstacles or hazards, the model's prediction alone does not indicate a collision risk. The model's response is semantically correct but lacks a clear indication of why backing up would be necessary to avoid a collision.\",\n  \"semantic_correctness\": 8,\n  \"driving_safety\": 5,\n  \"causal_reasoning\": 3,\n  \"verdict\": \"ACCEPTABLE\",\n  \"is_pass\": false\n}\n```"
+    },
+    {
+      "sample_token": "820fd5651e324e3ba36bc9e4f05883d9",
+      "category": "planning",
+      "question": "What actions could the ego vehicle take based on <c3,CAM_BACK_RIGHT,775.8,654.2>? Why take this action and what's the probability?",
+      "ground_truth": "The action is to keep going at the same speed. The reason is to avoid a collision, with a high probability.",
+      "prediction": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high.",
+      "critique": "The model correctly identifies that there is no immediate safety issue based on the provided information from the camera back right. However, it fails to provide a clear rationale for why the action is taken, which is crucial for understanding the decision-making process. The ground truth emphasizes the avoidance of a collision, which is a critical safety principle. The model does not explicitly mention this aspect, leading to a lack of complete causal reasoning.",
+      "scores": {
+        "semantic_correctness": 8.0,
+        "driving_safety": 7.0,
+        "causal_reasoning": 3.0
+      },
+      "is_pass": false,
+      "verdict": "ACCEPTABLE",
+      "raw_output": "{\n  \"critique\": \"The model correctly identifies that there is no immediate safety issue based on the provided information from the camera back right. However, it fails to provide a clear rationale for why the action is taken, which is crucial for understanding the decision-making process. The ground truth emphasizes the avoidance of a collision, which is a critical safety principle. The model does not explicitly mention this aspect, leading to a lack of complete causal reasoning.\",\n  \"semantic_correctness\": 8,\n  \"driving_safety\": 7,\n  \"causal_reasoning\": 3,\n  \"verdict\": \"ACCEPTABLE\",\n  \"is_pass\": false\n}"
+    },
+    {
+      "sample_token": "26436a07886b47999d2c55f781d6a469",
+      "category": "perception",
+      "question": "Are there moving trucks to the front left of the ego car?",
+      "ground_truth": "Yes.",
+      "prediction": "Yes.",
+      "critique": "The model correctly identified that there are moving trucks to the front left of the ego vehicle. The ground truth confirms this, and the model's prediction matches it precisely. There are no discrepancies in the identification of the objects or their positions.",
+      "scores": {
+        "semantic_correctness": 10.0,
+        "driving_safety": 10.0,
+        "causal_reasoning": 8.0
+      },
+      "is_pass": true,
+      "verdict": "SAFE",
+      "raw_output": "{\n  \"critique\": \"The model correctly identified that there are moving trucks to the front left of the ego vehicle. The ground truth confirms this, and the model's prediction matches it precisely. There are no discrepancies in the identification of the objects or their positions.\",\n  \"semantic_correctness\": 10,\n  \"driving_safety\": 10,\n  \"causal_reasoning\": 8,\n  \"verdict\": \"SAFE\",\n  \"is_pass\": true\n}"
+    },
+    {
+      "sample_token": "53d6c4ed220c4d83916627f92815c067",
+      "category": "perception",
+      "question": "What is the visual description of <c6,CAM_FRONT,341.5,695.0>?",
+      "ground_truth": "Left turn arrow.",
+      "prediction": "White sedan.",
+      "critique": "The model predicted a white sedan instead of the left turn arrow that was clearly visible in the camera feed. The sedan is not present in the scene, which is a significant error in both semantic correctness and driving safety. The sedan could be mistaken for a pedestrian or another vehicle, leading to potential confusion and a risk of collision.",
+      "scores": {
+        "semantic_correctness": 1.0,
+        "driving_safety": 1.0,
+        "causal_reasoning": 0.0
+      },
+      "is_pass": false,
+      "verdict": "HAZARD",
+      "raw_output": "{\n  \"critique\": \"The model predicted a white sedan instead of the left turn arrow that was clearly visible in the camera feed. The sedan is not present in the scene, which is a significant error in both semantic correctness and driving safety. The sedan could be mistaken for a pedestrian or another vehicle, leading to potential confusion and a risk of collision.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 1,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+    },
+    {
+      "sample_token": "d42aea2572994e80a18415154b3ac119",
+      "category": "prediction",
+      "question": "Would <c1,CAM_FRONT,253.3,478.3> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "prediction": "No.",
+      "critique": "The model correctly predicts that the object at <c1,CAM_FRONT,253.3,478.3> is not moving in the same direction as the ego vehicle. The ground truth confirms this, so the prediction is semantically correct. However, the question asks specifically about the moving direction, which implies a need for a clear indication of whether the object is moving towards or away from the ego vehicle. Since the model only provides a binary 'No' without specifying the direction, it lacks a complete causal reasoning. Additionally, while the safety aspect is not directly violated by this prediction alone, it does not provide enough information to ensure the safest possible decision.",
+      "scores": {
+        "semantic_correctness": 7.0,
+        "driving_safety": 6.0,
+        "causal_reasoning": 3.0
+      },
+      "is_pass": false,
+      "verdict": "ACCEPTABLE",
+      "raw_output": "{\n  \"critique\": \"The model correctly predicts that the object at <c1,CAM_FRONT,253.3,478.3> is not moving in the same direction as the ego vehicle. The ground truth confirms this, so the prediction is semantically correct. However, the question asks specifically about the moving direction, which implies a need for a clear indication of whether the object is moving towards or away from the ego vehicle. Since the model only provides a binary 'No' without specifying the direction, it lacks a complete causal reasoning. Additionally, while the safety aspect is not directly violated by this prediction alone, it does not provide enough information to ensure the safest possible decision.\",\n  \"semantic_correctness\": 7,\n  \"driving_safety\": 6,\n  \"causal_reasoning\": 3,\n  \"verdict\": \"ACCEPTABLE\",\n  \"is_pass\": false\n}"
+    }
+  ]
+}

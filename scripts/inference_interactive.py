@@ -23,6 +23,12 @@ import datetime
 import json
 import logging
 import os
+from bev_vqa.utils.io import get_default_paths
+
+_PATHS = get_default_paths()
+
+from bev_vqa.utils.seed import set_seed
+from bev_vqa.constants import Colors
 from pathlib import Path
 import random
 import subprocess
@@ -32,11 +38,12 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 
-# Ensure src/ is on sys.path
+# Ensure REPO_ROOT is on sys.path
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
-if str(REPO_ROOT / "src") not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT / "src"))
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 
 from bev_vqa.data.dataset import build_tokenizer, normalize_answer, BEV_TOKEN, VQA_SYSTEM_PROMPT
 from bev_vqa.models.projector import ProjectorConfig
@@ -54,15 +61,15 @@ logging.basicConfig(level=logging.WARNING, format="%(asctime)s [%(levelname)s] %
 logger = logging.getLogger("inference_interactive")
 
 # ANSI Color codes for rich terminal styling
-CYAN = "\033[96m"
-GREEN = "\033[92m"
-YELLOW = "\033[93m"
+
+
+
 BLUE = "\033[94m"
 MAGENTA = "\033[95m"
 RED = "\033[91m"
-BOLD = "\033[1m"
+
 DIM = "\033[2m"
-RESET = "\033[0m"
+
 
 DRIVELM_SYSTEM_PROMPT = (
     "You are an autonomous driving perception and planning assistant. "
@@ -70,15 +77,24 @@ DRIVELM_SYSTEM_PROMPT = (
     "concise, and clear answers regarding perception, prediction, and planning decisions."
 )
 
-DEFAULT_CHECKPOINT = "checkpoints/sota_drivelm_v2/best_model"
-DEFAULT_CAM_MAP_PATH = "/home/nazario.pizzicoli/nuscenes/.cache_cam_map_v1.0-trainval.json"
-DEFAULT_DRIVELM_JSON = "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_val.json"
-DEFAULT_NUSCENES_QA_JSON = "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_val.json"
+DEFAULT_CHECKPOINT = "checkpoints/ablation_pos_embed/2d_polar_metric/drivelm/best_model"
+DEFAULT_CAM_MAP_PATH = os.environ.get(
+    "NUSCENES_CAM_MAP", "/home/nazario.pizzicoli/nuscenes/.cache_cam_map_v1.0-trainval.json"
+)
+DEFAULT_DRIVELM_JSON = os.environ.get(
+    "DRIVELM_VAL_JSON", "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_val.json"
+)
+DEFAULT_NUSCENES_QA_JSON = os.environ.get(
+    "NUSCENES_QA_VAL_JSON", "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_val.json"
+)
 DEFAULT_BEV_DIRS = [
-    "/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/val",
-    "/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/train",
-    "/media/nazario.pizzicoli/Datos/dataset/bev_features/val",
-    "/media/nazario.pizzicoli/Datos/dataset/bev_features/train",
+    d for d in [
+        os.environ.get("BEV_FEATURES_DIR"),
+        "/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/val",
+        "/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/train",
+        "/media/nazario.pizzicoli/Datos/dataset/bev_features/val",
+        "/media/nazario.pizzicoli/Datos/dataset/bev_features/train",
+    ] if d is not None
 ]
 
 
@@ -89,8 +105,13 @@ class BEVInferencePipeline:
         self,
         checkpoint_dir: str = DEFAULT_CHECKPOINT,
         llm_path: str = "Qwen/Qwen2.5-3B-Instruct",
-        arch_type: str = "deeper_conv",
+        arch_type: Optional[str] = None,
+        pos_embed_type: Optional[str] = None,
         num_tokens: int = 32,
+        spatial_shape: Optional[Tuple[int, int]] = None,
+        use_dual_pooling: Optional[bool] = None,
+        use_l2_pooling: Optional[bool] = None,
+        l2_pooling_gamma: float = 1.0,
         bev_dirs: Optional[List[str]] = None,
         cam_map_path: str = DEFAULT_CAM_MAP_PATH,
         drivelm_json: str = DEFAULT_DRIVELM_JSON,
@@ -101,7 +122,12 @@ class BEVInferencePipeline:
         self.checkpoint_dir = checkpoint_dir
         self.llm_path = llm_path
         self.arch_type = arch_type
+        self.pos_embed_type = pos_embed_type
         self.num_tokens = num_tokens
+        self.spatial_shape = tuple(spatial_shape) if spatial_shape is not None else None
+        self.use_dual_pooling = use_dual_pooling
+        self.use_l2_pooling = use_l2_pooling
+        self.l2_pooling_gamma = l2_pooling_gamma
         self.cam_map_path = cam_map_path
         self.drivelm_json = drivelm_json
         self.nuscenes_qa_json = nuscenes_qa_json
@@ -186,7 +212,7 @@ class BEVInferencePipeline:
 
     def _init_model(self):
         """Initializes tokenizer and BEVVLM architecture, and loads weights."""
-        print(f"{CYAN}Loading tokenizer from: {self.llm_path}...{RESET}")
+        print(f"{Colors.CYAN}Loading tokenizer from: {self.llm_path}...{Colors.RESET}")
         self.tokenizer = build_tokenizer(self.llm_path)
 
         # Detect LoRA parameters from checkpoint if available
@@ -202,10 +228,62 @@ class BEVInferencePipeline:
             except Exception:
                 pass
 
-        print(f"{CYAN}Building BEVVLM (d_llm=2048, tokens={self.num_tokens}, LoRA r={lora_r})...{RESET}")
+        # Auto-detect projector configuration from checkpoint if not explicitly provided
+        detected_spatial_shape = (8, 4)
+        detected_dual_pooling = False
+        detected_l2_pooling = False
+        detected_arch_type = "multiscale_peak"
+        detected_pos_embed_type = "2d_polar_metric"
+        proj_weights_path = Path(self.checkpoint_dir) / "projector.pt"
+        if proj_weights_path.exists():
+            try:
+                sd = torch.load(proj_weights_path, map_location="cpu")
+                if "pool_shape_tensor" in sd:
+                    detected_spatial_shape = tuple(sd["pool_shape_tensor"].tolist())
+                if "lateral_scale" in sd:
+                    detected_arch_type = "multiscale_peak"
+                elif "sparse_embed" in sd:
+                    detected_arch_type = "hybrid_sparse"
+                elif "cross_attn.in_proj_weight" in sd:
+                    detected_arch_type = "question_aware"
+                elif "pool_proj.weight" in sd:
+                    detected_arch_type = "dual_pooling"
+                    detected_dual_pooling = True
+
+                if "polar_pe" in sd:
+                    detected_pos_embed_type = "2d_polar_metric"
+                elif "cartesian_pe" in sd:
+                    detected_pos_embed_type = "2d_cartesian_metric"
+                elif "row_embed" in sd:
+                    detected_pos_embed_type = "2d_separable_learned"
+                elif "pos_embed" in sd:
+                    detected_pos_embed_type = "1d_learned"
+
+                if "l2_gamma" in sd or "l2_pooling" in str(self.checkpoint_dir).lower():
+                    detected_l2_pooling = True
+            except Exception as e:
+                logger.warning(f"Could not inspect projector.pt for metadata: {e}")
+
+        arch_type = self.arch_type if self.arch_type is not None else detected_arch_type
+        pos_embed_type = self.pos_embed_type if self.pos_embed_type is not None else detected_pos_embed_type
+        spatial_shape = self.spatial_shape if self.spatial_shape is not None else detected_spatial_shape
+        use_dual_pooling = self.use_dual_pooling if self.use_dual_pooling is not None else detected_dual_pooling
+        use_l2_pooling = self.use_l2_pooling if self.use_l2_pooling is not None else detected_l2_pooling
+        num_tokens = (spatial_shape[0] * spatial_shape[1]) if spatial_shape is not None else self.num_tokens
+
+        grid_desc = f"{spatial_shape[0]}x{spatial_shape[1]} ({num_tokens} tokens)" if spatial_shape else f"{num_tokens} tokens"
+        print(f"{Colors.CYAN}Building BEVVLM ({arch_type}, {pos_embed_type}, Grid: {grid_desc}, LoRA r={lora_r})...{Colors.RESET}")
         cfg = BEVVLMConfig(
             llm_name_or_path=self.llm_path,
-            projector_config=ProjectorConfig(arch_type=self.arch_type, num_tokens=self.num_tokens),
+            projector_config=ProjectorConfig(
+                arch_type=arch_type,
+                pos_embed_type=pos_embed_type,
+                num_tokens=num_tokens,
+                spatial_shape=spatial_shape,
+                use_dual_pooling=use_dual_pooling,
+                use_l2_pooling=use_l2_pooling,
+                l2_pooling_gamma=self.l2_pooling_gamma,
+            ),
             lora_r=lora_r,
             lora_alpha=lora_alpha,
         )
@@ -214,13 +292,13 @@ class BEVInferencePipeline:
 
         ckpt_path = Path(self.checkpoint_dir)
         if ckpt_path.exists():
-            print(f"{GREEN}Loading checkpoint weights from: {self.checkpoint_dir}...{RESET}")
+            print(f"{Colors.GREEN}Loading checkpoint weights from: {self.checkpoint_dir}...{Colors.RESET}")
             self.model.load_checkpoint(str(ckpt_path))
         else:
-            print(f"{YELLOW}WARNING: Checkpoint {self.checkpoint_dir} not found. Running with uninitialized weights!{RESET}")
+            print(f"{Colors.YELLOW}WARNING: Checkpoint {self.checkpoint_dir} not found. Running with uninitialized weights!{Colors.RESET}")
 
         self.model.eval()
-        print(f"{BOLD}{GREEN}✓ BEV-VLM Engine initialized on {self.device}{RESET}\n")
+        print(f"{Colors.BOLD}{Colors.GREEN}✓ BEV-VLM Engine initialized on {self.device}{Colors.RESET}\n")
 
     def get_camera_paths(self, sample_token: str) -> Dict[str, str]:
         """Returns camera paths dictionary for a sample token."""
@@ -351,20 +429,20 @@ class BEVInferencePipeline:
 
         cam_paths = self.get_camera_paths(sample_token)
 
-        print(f"\n{BOLD}{CYAN}--- [TERMINAL PREVIEW: 6 SURROUND CAMERAS] ---{RESET}")
+        print(f"\n{Colors.BOLD}{Colors.CYAN}--- [TERMINAL PREVIEW: 6 SURROUND CAMERAS] ---{Colors.RESET}")
         try:
             mosaic_ansi = render_ansi_camera_mosaic(cam_paths, width=72)
             print(mosaic_ansi)
         except Exception as e:
-            print(f"{YELLOW}[Camera mosaic preview unavailable: {e}]{RESET}")
+            print(f"{Colors.YELLOW}[Camera mosaic preview unavailable: {e}]{Colors.RESET}")
 
         if bev_tensor is not None:
-            print(f"\n{BOLD}{CYAN}--- [TERMINAL PREVIEW: BEV FEATURE HEATMAP (L2 NORM)] ---{RESET}")
+            print(f"\n{Colors.BOLD}{Colors.CYAN}--- [TERMINAL PREVIEW: BEV FEATURE HEATMAP (L2 NORM)] ---{Colors.RESET}")
             try:
                 bev_ansi = render_ansi_bev_grid(bev_tensor, width=44)
                 print(bev_ansi)
             except Exception as e:
-                print(f"{YELLOW}[BEV ANSI grid preview unavailable: {e}]{RESET}")
+                print(f"{Colors.YELLOW}[BEV ANSI grid preview unavailable: {e}]{Colors.RESET}")
         print()
 
 
@@ -452,7 +530,7 @@ def run_headless_inference(
     )
 
     if not res["success"]:
-        print(f"{RED}Inference failed: {res.get('error')}{RESET}")
+        print(f"{RED}Inference failed: {res.get('error')}{Colors.RESET}")
         return res
 
     pred = res["raw_answer"]
@@ -460,20 +538,20 @@ def run_headless_inference(
     norm_gt = normalize_answer(selected_gt) if selected_gt else None
     is_match = (norm_gt is not None) and ((norm_pred == norm_gt) or (norm_gt in norm_pred.split()) or (norm_gt in norm_pred))
 
-    print(f"\n{BOLD}{CYAN}=== BEV-VLM INFERENCE RESULT ==={RESET}")
-    print(f"  {BOLD}Sample Token:{RESET}     {token}")
+    print(f"\n{Colors.BOLD}{Colors.CYAN}=== BEV-VLM INFERENCE RESULT ==={Colors.RESET}")
+    print(f"  {Colors.BOLD}Sample Token:{Colors.RESET}     {token}")
     if selected_cat:
-        print(f"  {BOLD}Category:{RESET}         {selected_cat}")
-    print(f"  {BOLD}Question:{RESET}         {selected_q}")
+        print(f"  {Colors.BOLD}Category:{Colors.RESET}         {selected_cat}")
+    print(f"  {Colors.BOLD}Question:{Colors.RESET}         {selected_q}")
     if selected_gt:
-        print(f"  {BOLD}Ground Truth:{RESET}     {GREEN}{selected_gt}{RESET}")
-    print(f"  {BOLD}Prediction:{RESET}       {BOLD}{BLUE}{pred}{RESET}")
+        print(f"  {Colors.BOLD}Ground Truth:{Colors.RESET}     {Colors.GREEN}{selected_gt}{Colors.RESET}")
+    print(f"  {Colors.BOLD}Prediction:{Colors.RESET}       {Colors.BOLD}{BLUE}{pred}{Colors.RESET}")
     if selected_gt:
-        status_str = f"{GREEN}✓ MATCH{RESET}" if is_match else f"{YELLOW}✗ MISMATCH{RESET}"
-        print(f"  {BOLD}Evaluation:{RESET}       {status_str}")
-    print(f"  {BOLD}Latency:{RESET}          {res['latency_ms']} ms")
+        status_str = f"{Colors.GREEN}✓ MATCH{Colors.RESET}" if is_match else f"{Colors.YELLOW}✗ MISMATCH{Colors.RESET}"
+        print(f"  {Colors.BOLD}Evaluation:{Colors.RESET}       {status_str}")
+    print(f"  {Colors.BOLD}Latency:{Colors.RESET}          {res['latency_ms']} ms")
     if res.get("vram_allocated_gb", 0) > 0:
-        print(f"  {BOLD}VRAM Used:{RESET}        {res['vram_allocated_gb']} GB")
+        print(f"  {Colors.BOLD}VRAM Used:{Colors.RESET}        {res['vram_allocated_gb']} GB")
 
     # Generate visual figure unless disabled
     saved_figure_path = None
@@ -489,7 +567,7 @@ def run_headless_inference(
             category=selected_cat,
             output_path=output_image,
         )
-        print(f"\n{BOLD}{GREEN}✓ Visual debug dashboard saved to:{RESET} {saved_figure_path}")
+        print(f"\n{Colors.BOLD}{Colors.GREEN}✓ Visual debug dashboard saved to:{Colors.RESET} {saved_figure_path}")
 
         if open_gui and saved_figure_path and Path(saved_figure_path).exists():
             try:
@@ -505,22 +583,22 @@ def run_headless_inference(
 
 def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = False, max_new_tokens: int = 64):
     """Interactive REPL session in the terminal."""
-    print(f"\n{BOLD}{MAGENTA}======================================================================{RESET}")
-    print(f"{BOLD}{MAGENTA}     BEV-VLM INTERACTIVE INFERENCE & VISUAL DEBUGGING PIPELINE        {RESET}")
-    print(f"{BOLD}{MAGENTA}======================================================================{RESET}")
+    print(f"\n{Colors.BOLD}{MAGENTA}======================================================================{Colors.RESET}")
+    print(f"{Colors.BOLD}{MAGENTA}     BEV-VLM INTERACTIVE INFERENCE & VISUAL DEBUGGING PIPELINE        {Colors.RESET}")
+    print(f"{Colors.BOLD}{MAGENTA}======================================================================{Colors.RESET}")
     print(f"  Available BEV scenes indexed:       {len(pipeline.available_bevs):,}")
     print(f"  NuScenes camera map scenes:         {len(pipeline.cam_map):,}")
     print(f"  DriveLM / NuScenes-QA Q&A scenes:   {len(pipeline.questions_by_token):,}")
     print(f"  Active checkpoint:                  {pipeline.checkpoint_dir}")
     print(f"  Device:                             {pipeline.device}")
-    print(f"{MAGENTA}----------------------------------------------------------------------{RESET}\n")
+    print(f"{MAGENTA}----------------------------------------------------------------------{Colors.RESET}\n")
 
     # Prefer scenes that have both BEV and official questions
     rich_tokens = [t for t in pipeline.available_bevs.keys() if t in pipeline.questions_by_token]
     all_tokens = list(pipeline.available_bevs.keys())
 
     if not all_tokens:
-        print(f"{RED}No BEV feature files found. Please check --bev-dirs paths.{RESET}")
+        print(f"{RED}No BEV feature files found. Please check --bev-dirs paths.{Colors.RESET}")
         return
 
     active_token = None
@@ -528,7 +606,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
         if active_token is None:
             try:
                 token_input = input(
-                    f"{BOLD}{CYAN}Enter sample_token or press [Enter] for random sample ('q' to quit): {RESET}"
+                    f"{Colors.BOLD}{Colors.CYAN}Enter sample_token or press [Enter] for random sample ('q' to quit): {Colors.RESET}"
                 ).strip()
             except (KeyboardInterrupt, EOFError):
                 print("\nExiting interactive session.")
@@ -541,7 +619,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
             if token_input:
                 target_token = token_input
                 if target_token not in pipeline.available_bevs and pipeline.find_bev_path(target_token) is None:
-                    print(f"{YELLOW}Warning: Token '{target_token}' not found in indexed BEV feature files. Try another.{RESET}\n")
+                    print(f"{Colors.YELLOW}Warning: Token '{target_token}' not found in indexed BEV feature files. Try another.{Colors.RESET}\n")
                     continue
             else:
                 # Pick random token
@@ -559,7 +637,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
         cam_count = sum(1 for c in SURROUND_CAMERAS if c in cams and Path(cams[c]).exists())
         qs = pipeline.get_questions_for_sample(target_token)
 
-        print(f"\n{BOLD}{GREEN}Active Scene Sample Token:{RESET} {BOLD}{target_token}{RESET}")
+        print(f"\n{Colors.BOLD}{Colors.GREEN}Active Scene Sample Token:{Colors.RESET} {Colors.BOLD}{target_token}{Colors.RESET}")
         print(f"  Cameras found: {cam_count}/6  |  Pre-indexed Q&A items: {len(qs)}")
 
         # Visual preview in terminal
@@ -567,22 +645,22 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
 
         # Inner loop for asking questions on this scene
         while True:
-            print(f"{BOLD}{CYAN}Available questions for this scene:{RESET}")
+            print(f"{Colors.BOLD}{Colors.CYAN}Available questions for this scene:{Colors.RESET}")
             if qs:
                 for idx, q_item in enumerate(qs, 1):
                     src_tag = f"({q_item['category']})"
-                    gt_tag = f"{GREEN}[GT: {q_item['answer']}]{RESET}"
-                    print(f"  {BOLD}[{idx}]{RESET} {src_tag} {q_item['question']} {gt_tag}")
+                    gt_tag = f"{Colors.GREEN}[GT: {q_item['answer']}]{Colors.RESET}"
+                    print(f"  {Colors.BOLD}[{idx}]{Colors.RESET} {src_tag} {q_item['question']} {gt_tag}")
             else:
-                print(f"  {DIM}(No pre-indexed questions found for this token in DriveLM / NuScenes-QA){RESET}")
+                print(f"  {DIM}(No pre-indexed questions found for this token in DriveLM / NuScenes-QA){Colors.RESET}")
 
-            print(f"  {BOLD}[C]{RESET} Custom question")
-            print(f"  {BOLD}[N]{RESET} Next random sample")
-            print(f"  {BOLD}[T]{RESET} Specific sample token")
-            print(f"  {BOLD}[Q]{RESET} Quit")
+            print(f"  {Colors.BOLD}[C]{Colors.RESET} Custom question")
+            print(f"  {Colors.BOLD}[N]{Colors.RESET} Next random sample")
+            print(f"  {Colors.BOLD}[T]{Colors.RESET} Specific sample token")
+            print(f"  {Colors.BOLD}[Q]{Colors.RESET} Quit")
 
             try:
-                choice = input(f"\n{BOLD}Select an option [1-{len(qs)} / C / N / T / Q]: {RESET}").strip()
+                choice = input(f"\n{Colors.BOLD}Select an option [1-{len(qs)} / C / N / T / Q]: {Colors.RESET}").strip()
             except (KeyboardInterrupt, EOFError):
                 return
 
@@ -601,7 +679,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
 
             if choice.lower() in ["t", "token"]:
                 try:
-                    new_tok = input(f"{BOLD}{CYAN}Enter sample_token: {RESET}").strip()
+                    new_tok = input(f"{Colors.BOLD}{Colors.CYAN}Enter sample_token: {Colors.RESET}").strip()
                 except (KeyboardInterrupt, EOFError):
                     return
                 if new_tok:
@@ -610,7 +688,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
                         print()
                         break
                     else:
-                        print(f"{YELLOW}Token '{new_tok}' not found. Staying on current scene.{RESET}\n")
+                        print(f"{Colors.YELLOW}Token '{new_tok}' not found. Staying on current scene.{Colors.RESET}\n")
                         continue
                 continue
 
@@ -620,7 +698,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
 
             if choice.lower() == "c":
                 try:
-                    custom_q = input(f"{BOLD}{BLUE}Enter your custom question: {RESET}").strip()
+                    custom_q = input(f"{Colors.BOLD}{BLUE}Enter your custom question: {Colors.RESET}").strip()
                 except (KeyboardInterrupt, EOFError):
                     return
                 if not custom_q:
@@ -635,14 +713,14 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
                     selected_gt = item.get("answer", item.get("templated_answer"))
                     selected_cat = item.get("category")
                 else:
-                    print(f"{YELLOW}Invalid option number.{RESET}\n")
+                    print(f"{Colors.YELLOW}Invalid option number.{Colors.RESET}\n")
                     continue
             else:
-                print(f"{YELLOW}Invalid selection.{RESET}\n")
+                print(f"{Colors.YELLOW}Invalid selection.{Colors.RESET}\n")
                 continue
 
             # Run inference
-            print(f"\n{CYAN}⚡ Running BEV-VLM Multimodal Generation...{RESET}")
+            print(f"\n{Colors.CYAN}⚡ Running BEV-VLM Multimodal Generation...{Colors.RESET}")
             res = pipeline.answer_question(
                 sample_token=target_token,
                 question=selected_q,
@@ -651,19 +729,19 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
             )
 
             if not res["success"]:
-                print(f"{RED}Generation error: {res.get('error')}{RESET}\n")
+                print(f"{RED}Generation error: {res.get('error')}{Colors.RESET}\n")
                 continue
 
             pred = res["raw_answer"]
-            print(f"\n{BOLD}{BLUE}BEV-VLM Prediction:{RESET}  {BOLD}{pred}{RESET}")
+            print(f"\n{Colors.BOLD}{BLUE}BEV-VLM Prediction:{Colors.RESET}  {Colors.BOLD}{pred}{Colors.RESET}")
             if selected_gt:
-                print(f"{BOLD}{GREEN}Ground Truth:       {RESET}  {selected_gt}")
+                print(f"{Colors.BOLD}{Colors.GREEN}Ground Truth:       {Colors.RESET}  {selected_gt}")
                 norm_pred = res["normalized_answer"]
                 norm_gt = normalize_answer(selected_gt)
                 is_match = (norm_pred == norm_gt) or (norm_gt in norm_pred.split()) or (norm_gt in norm_pred)
-                match_str = f"{GREEN}✓ MATCH{RESET}" if is_match else f"{YELLOW}✗ MISMATCH{RESET}"
-                print(f"{BOLD}Evaluation:         {RESET}  {match_str}")
-            print(f"{DIM}Latency: {res['latency_ms']} ms | VRAM: {res.get('vram_allocated_gb', 0)} GB{RESET}\n")
+                match_str = f"{Colors.GREEN}✓ MATCH{Colors.RESET}" if is_match else f"{Colors.YELLOW}✗ MISMATCH{Colors.RESET}"
+                print(f"{Colors.BOLD}Evaluation:         {Colors.RESET}  {match_str}")
+            print(f"{DIM}Latency: {res['latency_ms']} ms | VRAM: {res.get('vram_allocated_gb', 0)} GB{Colors.RESET}\n")
 
             # Save Visual Debug Dashboard PNG
             out_img = build_multimodal_debug_figure(
@@ -675,7 +753,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
                 ground_truth=selected_gt,
                 category=selected_cat,
             )
-            print(f"{BOLD}{GREEN}✓ Dashboard PNG saved to:{RESET} {out_img}")
+            print(f"{Colors.BOLD}{Colors.GREEN}✓ Dashboard PNG saved to:{Colors.RESET} {out_img}")
 
             if open_gui and Path(out_img).exists():
                 try:
@@ -684,7 +762,7 @@ def run_interactive_session(pipeline: BEVInferencePipeline, open_gui: bool = Fal
                 except Exception as e:
                     logger.warning(f"Could not open GUI: {e}")
 
-            print(f"{MAGENTA}{'-'*70}{RESET}\n")
+            print(f"{MAGENTA}{'-'*70}{Colors.RESET}\n")
 
 
 def parse_args():
@@ -695,8 +773,13 @@ def parse_args():
     # Checkpoint & Model Options
     parser.add_argument("--checkpoint", type=str, default=DEFAULT_CHECKPOINT, help="Path to checkpoint directory (containing projector.pt and lora_adapters)")
     parser.add_argument("--llm-path", type=str, default="Qwen/Qwen2.5-3B-Instruct", help="LLM backbone huggingface identifier or path")
-    parser.add_argument("--arch-type", type=str, default="deeper_conv", help="Projector architecture type")
+    parser.add_argument("--arch-type", type=str, default=None, help="Projector architecture type (auto-detected if omitted)")
+    parser.add_argument("--pos-embed-type", type=str, default=None, help="Positional encoding type (auto-detected if omitted)")
     parser.add_argument("--num-tokens", type=int, default=32, help="Number of visual tokens produced by projector")
+    parser.add_argument("--spatial-shape", type=int, nargs=2, default=None, metavar=("H", "W"), help="Explicit spatial pooling grid (H, W), e.g. 8 4 (auto-detected if omitted)")
+    parser.add_argument("--use-dual-pooling", action=argparse.BooleanOptionalAction, default=None, help="Enable/disable Dual Pooling (auto-detected from checkpoint if omitted)")
+    parser.add_argument("--use-l2-pooling", action=argparse.BooleanOptionalAction, default=None, help="Enable/disable L2-norm salience pooling (auto-detected from checkpoint if omitted)")
+    parser.add_argument("--l2-pooling-gamma", type=float, default=1.0, help="L2 pooling salience gamma/temperature")
     parser.add_argument("--device", type=str, default=None, help="Device to run on ('cuda', 'cpu')")
     parser.add_argument("--max-new-tokens", type=int, default=64, help="Maximum generated tokens")
 
@@ -730,7 +813,12 @@ def main():
         checkpoint_dir=args.checkpoint,
         llm_path=args.llm_path,
         arch_type=args.arch_type,
+        pos_embed_type=args.pos_embed_type,
         num_tokens=args.num_tokens,
+        spatial_shape=args.spatial_shape,
+        use_dual_pooling=args.use_dual_pooling,
+        use_l2_pooling=args.use_l2_pooling,
+        l2_pooling_gamma=args.l2_pooling_gamma,
         bev_dirs=args.bev_dirs,
         cam_map_path=args.cam_map_path,
         drivelm_json=args.drivelm_json,
