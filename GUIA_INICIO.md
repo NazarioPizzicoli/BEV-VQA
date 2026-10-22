@@ -53,11 +53,18 @@ Comprueba que PyTorch detecta tu GPU y que la arquitectura carga correctamente:
 docker compose run --rm bev-vlm python scripts/verify_docker_environment.py
 ```
 
-### 3. Prueba interactiva (Inferencia real con visualización terminal)
-Carga una muestra aleatoria de validación, renderiza las 6 cámaras surround y el mapa BEV en el terminal, y genera la predicción del modelo:
-```bash
-docker compose run --rm interactive --random --terminal-viz
-```
+### 3. Prueba interactiva (Inferencia real y visualización)
+
+* **Menú interactivo completo (seleccionar preguntas preindexadas [1-N], hacer preguntas personalizadas con [C] o cambiar de escena con [N]):**
+  ```bash
+  docker compose run --rm interactive --interactive
+  ```
+
+* **Prueba rápida en una línea (escena aleatoria con visualización de cámaras y BEV):**
+  ```bash
+  docker compose run --rm interactive
+  ```
+  *(O haciendo una pregunta libre directamente: `docker compose run --rm interactive --random --question "¿Es seguro girar a la izquierda?" --terminal-viz`)*
 
 ### 4. Evaluación DriveLM con LLM-as-a-Judge
 Ejecuta la evaluación generativa (BLEU-4, CIDEr, METEOR) combinada con el evaluador LLM local (`Qwen2.5-3B-Instruct`):

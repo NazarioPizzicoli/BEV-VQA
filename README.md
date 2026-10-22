@@ -102,11 +102,14 @@ uv pip install -e ".[dev]"
 Inspect sample scenes, examine synchronized 6-camera surround perspectives, and view BEV spatial heatmaps with generated model predictions:
 
 ```bash
-# Launch interactive REPL with visual debugging
-python scripts/inference_interactive.py
+# Launch interactive REPL menu (select indexed questions [1-N] or ask custom queries with [C])
+python scripts/inference_interactive.py --interactive
 
 # Query a random sample directly with ANSI terminal visualization
 python scripts/inference_interactive.py --random --terminal-viz
+
+# Ask a specific custom driving question directly in one line
+python scripts/inference_interactive.py --random --question "Is it safe to proceed?" --terminal-viz
 ```
 
 ### 3. Evaluation
@@ -131,8 +134,11 @@ The framework is fully containerized with NVIDIA GPU acceleration (CUDA 12.1 + P
 # Build the Docker image
 docker compose build
 
-# Launch interactive visual debugger inside container (with surround cameras & BEV heatmap)
-docker compose run --rm interactive --random --terminal-viz
+# Launch full interactive REPL menu inside container (select questions [1-N] or ask custom queries with [C])
+docker compose run --rm interactive --interactive
+
+# Quick one-shot visual demo inside container (with surround cameras & BEV heatmap)
+docker compose run --rm interactive
 
 # Run DriveLM benchmark inside container with LLM-as-a-Judge
 docker compose run --rm eval-drivelm
