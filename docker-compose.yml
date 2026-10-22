@@ -13,8 +13,8 @@ services:
               count: all
               capabilities: [gpu]
     environment:
-      - BEV_VQA_BEV_DIR=/data/bev_features
-      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - BEV_VQA_BEV_DIR=${BEV_VQA_BEV_DIR:-/data/dataset/bev_features}
+      - BEV_VQA_DATASETS_DIR=${BEV_VQA_DATASETS_DIR:-/data/vqa_datasets/unified}
       - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
@@ -40,8 +40,8 @@ services:
               count: all
               capabilities: [gpu]
     environment:
-      - BEV_VQA_BEV_DIR=/data/bev_features
-      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - BEV_VQA_BEV_DIR=${BEV_VQA_BEV_DIR:-/data/dataset/bev_features}
+      - BEV_VQA_DATASETS_DIR=${BEV_VQA_DATASETS_DIR:-/data/vqa_datasets/unified}
       - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
@@ -67,8 +67,8 @@ services:
               count: all
               capabilities: [gpu]
     environment:
-      - BEV_VQA_BEV_DIR=/data/bev_features
-      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - BEV_VQA_BEV_DIR=${BEV_VQA_BEV_DIR:-/data/dataset/bev_features}
+      - BEV_VQA_DATASETS_DIR=${BEV_VQA_DATASETS_DIR:-/data/vqa_datasets/unified}
       - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
@@ -80,6 +80,8 @@ services:
       python scripts/evaluate_drivelm_nlg.py
       --checkpoint checkpoints/ablation_pos_embed/2d_polar_metric/drivelm/best_model
       --num-samples 100
+      --llm-judge
+      --judge-samples 100
 
   eval-nuscenes:
     build:
@@ -95,8 +97,8 @@ services:
               count: all
               capabilities: [gpu]
     environment:
-      - BEV_VQA_BEV_DIR=/data/bev_features
-      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - BEV_VQA_BEV_DIR=${BEV_VQA_BEV_DIR:-/data/dataset/bev_features}
+      - BEV_VQA_DATASETS_DIR=${BEV_VQA_DATASETS_DIR:-/data/vqa_datasets/unified}
       - PYTHONUNBUFFERED=1
     volumes:
       - .:/app

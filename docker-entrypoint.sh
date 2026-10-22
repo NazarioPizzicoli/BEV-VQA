@@ -14,8 +14,8 @@ if torch.cuda.is_available():
 " 2>/dev/null || true
 
 # Set default directory paths if not already provided
-export BEV_VQA_BEV_DIR="${BEV_VQA_BEV_DIR:-/data/bev_features}"
-export BEV_VQA_DATASETS_DIR="${BEV_VQA_DATASETS_DIR:-/data/vqa_datasets}"
+export BEV_VQA_BEV_DIR="${BEV_VQA_BEV_DIR:-/data/dataset/bev_features}"
+export BEV_VQA_DATASETS_DIR="${BEV_VQA_DATASETS_DIR:-/data/vqa_datasets/unified}"
 
 echo "Working directory: $(pwd)"
 echo "BEV Features Dir:  $BEV_VQA_BEV_DIR"
