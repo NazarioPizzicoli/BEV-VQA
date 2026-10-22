@@ -6472,5 +6472,245 @@
     "is_pass": false,
     "verdict": "HAZARD",
     "raw_output": "{\n  \"critique\": \"The model predicted that the ego vehicle is the most relevant object to consider based on the camera front sensor data. However, the ground truth clearly states that no object should be considered relevant. This prediction is semantically incorrect because it introduces an object where none was expected.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 0,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "8de75db7c38655a08ac0e39c0e031ccadc4be0ec1608066403dd5c27976e5067": {
+    "sample_token": "d2170a4a449542fc8a79c03aca5b288d",
+    "category": "planning",
+    "question": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_FRONT,265.0,525.0>?",
+    "ground_truth": "No such action will lead to a collision.",
+    "prediction": "Accelerate and go straight.",
+    "critique": "The model predicted that accelerating and going straight would not lead to a collision, which contradicts the ground truth. The ground truth explicitly states that no action will lead to a collision, while the model suggests an action that could potentially cause one. This prediction is both semantically incorrect and unsafe.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 0.0,
+      "causal_reasoning": 0.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "```json\n{\n  \"critique\": \"The model predicted that accelerating and going straight would not lead to a collision, which contradicts the ground truth. The ground truth explicitly states that no action will lead to a collision, while the model suggests an action that could potentially cause one. This prediction is both semantically incorrect and unsafe.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 0,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}\n```\n\nExplanation:\n- **Semantic Correctness**: 1 because the model's prediction is completely wrong and contradictory to the ground truth.\n- **Driving Safety & Decision Compliance**: 0 because the model's prediction leads to a collision hazard, which is a critical safety violation.\n- **Causal Reasoning & Logic**: 0 because the model's rationale is entirely absent and does not provide any logical explanation for its prediction.\n- **Verdict**: HAZARD because the model's prediction poses a collision risk.\n- **Is Pass**: False because the conditions for passing (semantic correctness >= 6 and driving safety >= 7) are not met."
+  },
+  "931acc29c13b9e480ce381a913d8daf949fb7c7bc69d8df7becf296fa95e2ea5": {
+    "sample_token": "3bd38b7c268f40629b6d4aef1a6c7b8d",
+    "category": "perception",
+    "question": "Please describe the current scene.",
+    "ground_truth": "There is one moving car in front of the ego car, one moving car behind the ego car, and one barrier behind the ego car.",
+    "prediction": "There is one moving car behind the ego car, two parked cars in front of it, and one parked car to the back left.",
+    "critique": "The model's prediction contains several inaccuracies. It incorrectly identifies two parked cars in front of the ego car instead of one moving car, and it omits the moving car behind the ego car. Additionally, it incorrectly mentions a parked car to the back left, which is not present in the ground truth.",
+    "scores": {
+      "semantic_correctness": 3.0,
+      "driving_safety": 8.0,
+      "causal_reasoning": 7.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The model's prediction contains several inaccuracies. It incorrectly identifies two parked cars in front of the ego car instead of one moving car, and it omits the moving car behind the ego car. Additionally, it incorrectly mentions a parked car to the back left, which is not present in the ground truth.\",\n  \"semantic_correctness\": 3,\n  \"driving_safety\": 8,\n  \"causal_reasoning\": 7,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "00dd22e2517a7408882e448f93e6d837a662ca3f4216fd13776ff2a3b0fdbb62": {
+    "sample_token": "c7844f4389f44c3c88d19f80df5c3fa0",
+    "category": "prediction",
+    "question": "What does <c3,CAM_FRONT,879.2,805.3> mean?",
+    "ground_truth": "Keep going straight.",
+    "prediction": "Please wait.",
+    "critique": "The model predicted 'Please wait' instead of 'Keep going straight'. This prediction is semantically incorrect because it suggests a stop or deceleration which is not aligned with the ground truth of continuing straight. The driving safety aspect is also compromised since waiting could lead to a collision hazard if there are other vehicles approaching from behind. Additionally, the model's prediction lacks a logical causal reasoning, as it does not provide a clear reason why it should stop.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 1.0,
+      "causal_reasoning": 1.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The model predicted 'Please wait' instead of 'Keep going straight'. This prediction is semantically incorrect because it suggests a stop or deceleration which is not aligned with the ground truth of continuing straight. The driving safety aspect is also compromised since waiting could lead to a collision hazard if there are other vehicles approaching from behind. Additionally, the model's prediction lacks a logical causal reasoning, as it does not provide a clear reason why it should stop.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 1,\n  \"causal_reasoning\": 1,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "a29b3443842c60632732599fd04240d1623e0c431b58fc56cca907bf5537eb0e": {
+    "sample_token": "379da2cf3d6a4956b174ca95148bddd9",
+    "category": "prediction",
+    "question": "What is the future state of <c2,CAM_FRONT_LEFT,1186.7,550.8>?",
+    "ground_truth": "Stationary.",
+    "prediction": "Keep going straight.",
+    "critique": "The ground truth indicates that the object at <c2,CAM_FRONT_LEFT,1186.7,550.8> is stationary. The model predicted that it should keep going straight, which contradicts this fact. This prediction does not align with the visual and physical facts provided by the ground truth.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 1.0,
+      "causal_reasoning": 0.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The ground truth indicates that the object at <c2,CAM_FRONT_LEFT,1186.7,550.8> is stationary. The model predicted that it should keep going straight, which contradicts this fact. This prediction does not align with the visual and physical facts provided by the ground truth.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 1,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "38739b3e2fd033673d523d0d357007cfc97b58b5995a4736bf6d39774608f2a0": {
+    "sample_token": "7f34cdbe2a0b46038a647110552dd2c1",
+    "category": "perception",
+    "question": "Are there parked trailers to the front of the ego car?",
+    "ground_truth": "No.",
+    "prediction": "No.",
+    "critique": "The model correctly predicts that there are no parked trailers in front of the ego vehicle. The ground truth also confirms this absence. However, the model's response is very straightforward and does not provide any additional context or reasoning about why it concluded there were no parked trailers.",
+    "scores": {
+      "semantic_correctness": 10.0,
+      "driving_safety": 10.0,
+      "causal_reasoning": 5.0
+    },
+    "is_pass": true,
+    "verdict": "ACCEPTABLE",
+    "raw_output": "{\n  \"critique\": \"The model correctly predicts that there are no parked trailers in front of the ego vehicle. The ground truth also confirms this absence. However, the model's response is very straightforward and does not provide any additional context or reasoning about why it concluded there were no parked trailers.\",\n  \"semantic_correctness\": 10,\n  \"driving_safety\": 10,\n  \"causal_reasoning\": 5,\n  \"verdict\": \"ACCEPTABLE\",\n  \"is_pass\": true\n}"
+  },
+  "97bc4d14165d333350eef9cbc2fcc6391c5cf77abe8e2708604cea24aec53fd9": {
+    "sample_token": "4a1ec83d5b87456cb68460eb6be01f6e",
+    "category": "planning",
+    "question": "What actions taken by the ego vehicle can lead to a collision with <c3,CAM_FRONT,1097.5,460.8>?",
+    "ground_truth": "Moderate right turn.",
+    "prediction": "Accelerate and go straight.",
+    "critique": "The model predicted that the ego vehicle should accelerate and go straight, which directly contradicts the ground truth of a moderate right turn. This prediction does not align with the need to avoid a collision with the detected object. Accelerating and continuing straight would likely result in a collision, as it fails to account for the imminent danger posed by the object.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 1.0,
+      "causal_reasoning": 1.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "```json\n{\n  \"critique\": \"The model predicted that the ego vehicle should accelerate and go straight, which directly contradicts the ground truth of a moderate right turn. This prediction does not align with the need to avoid a collision with the detected object. Accelerating and continuing straight would likely result in a collision, as it fails to account for the imminent danger posed by the object.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 1,\n  \"causal_reasoning\": 1,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}\n```\n\nExplanation:\n- **Semantic Correctness**: 1 out of 10 because the predicted action (accelerate and go straight) is completely incorrect and does not match the ground truth (moderate right turn).\n- **Driving Safety & Compliance**: 1 out of 10 because the predicted action leads to a collision hazard, violating the critical safety principle.\n- **Causal Reasoning & Logic**: 1 out of 10 because the prediction lacks any logical explanation for why accelerating and going straight would be safer than making a moderate right turn.\n- **Verdict**: HAZARD because the predicted action is unsafe and directly contributes to a collision risk.\n- **Is Pass**: False because both semantic correctness and driving safety scores are below the threshold for passing."
+  },
+  "4914c0f3c59dfa613e2d92530ff171e746ad999d911d40c802ce7182d9dfc10e": {
+    "sample_token": "38e62c1800df44c78fda59afe56cfd2d",
+    "category": "planning",
+    "question": "What actions taken by the ego vehicle can lead to a collision with <c4,CAM_FRONT,362.5,574.2>?",
+    "ground_truth": "Slight left turn.",
+    "prediction": "Accelerate and go straight.",
+    "critique": "The model predicted that the ego vehicle should accelerate and go straight, which directly contradicts the ground truth of a slight left turn. This aggressive maneuver would likely lead to a collision with the detected object, as it does not account for the need to avoid the obstacle.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 0.0,
+      "causal_reasoning": 0.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "```json\n{\n  \"critique\": \"The model predicted that the ego vehicle should accelerate and go straight, which directly contradicts the ground truth of a slight left turn. This aggressive maneuver would likely lead to a collision with the detected object, as it does not account for the need to avoid the obstacle.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 0,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}\n```\n\nExplanation:\n- **Semantic Correctness**: 1 because the model's prediction is completely wrong and does not align with the ground truth.\n- **Driving Safety & Decision Compliance**: 0 because the predicted action (accelerate and go straight) is unsafe and would lead to a collision with the detected object.\n- **Causal Reasoning & Logic**: 0 as the prediction lacks any logical explanation for its action.\n- **Verdict**: HAZARD because the predicted action is unsafe and could result in a collision.\n- **Is Pass**: False since both semantic correctness and driving safety scores are below the threshold for passing."
+  },
+  "96b59193c6bff459e7d447b0f8fe1f70f61b2f025f65462374c5904c25429658": {
+    "sample_token": "38e62c1800df44c78fda59afe56cfd2d",
+    "category": "perception",
+    "question": "What is the observed status of object <c4,CAM_FRONT,362.5,574.2>?",
+    "ground_truth": "Moving.",
+    "prediction": "Stationary.",
+    "critique": "The model predicted that the object <c4,CAM_FRONT,362.5,574.2> is stationary, while the ground truth states it is moving. This discrepancy is significant because the model's incorrect identification could lead to a failure to detect a potentially moving obstacle, which could be a critical safety issue.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 1.0,
+      "causal_reasoning": 0.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The model predicted that the object <c4,CAM_FRONT,362.5,574.2> is stationary, while the ground truth states it is moving. This discrepancy is significant because the model's incorrect identification could lead to a failure to detect a potentially moving obstacle, which could be a critical safety issue.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 1,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "31beffb8e708d92fca1685775f7e17f4b04d80c94c8370ad6f0d8cebd169e0af": {
+    "sample_token": "37c41843a70f4e878d871ad05cc0927b",
+    "category": "planning",
+    "question": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_FRONT,694.2,503.3>?",
+    "ground_truth": "No such action will lead to a collision.",
+    "prediction": "Accelerate and go straight.",
+    "critique": "The model predicted that accelerating and going straight would not lead to a collision, which contradicts the ground truth. The ground truth explicitly states that no action will lead to a collision, while the model suggests an action that could potentially cause one. This prediction is both semantically incorrect and unsafe.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 0.0,
+      "causal_reasoning": 0.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "```json\n{\n  \"critique\": \"The model predicted that accelerating and going straight would not lead to a collision, which contradicts the ground truth. The ground truth explicitly states that no action will lead to a collision, while the model suggests an action that could potentially cause one. This prediction is both semantically incorrect and unsafe.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 0,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}\n```\n\nExplanation:\n- **Semantic Correctness**: 1 because the model's prediction is completely wrong and contradictory to the ground truth.\n- **Driving Safety & Decision Compliance**: 0 because the model's prediction leads to a collision hazard, which is a critical safety violation.\n- **Causal Reasoning & Logic**: 0 because the model's rationale is entirely absent and does not provide any logical explanation for its prediction.\n- **Verdict**: HAZARD because the model's prediction poses a collision risk.\n- **Is Pass**: False because the conditions for passing (semantic correctness >= 6 and driving safety >= 7) are not met."
+  },
+  "b61f5fae5a7b06ec91699f0a1ac3bd13cbf6038a2f1df9f0d80276e215d9aff2": {
+    "sample_token": "caa8be4d272d49719693a75c0eb68737",
+    "category": "perception",
+    "question": "What is the observed status of object <c1,CAM_FRONT,292.5,516.7>?",
+    "ground_truth": "Moving.",
+    "prediction": "Stationary.",
+    "critique": "The model predicted that the object <c1,CAM_FRONT,292.5,516.7> is stationary, while the ground truth states it is moving. This discrepancy is significant because the model's prediction contradicts the actual observation. The object being stationary when it is actually moving could lead to incorrect maneuvers by the vehicle, potentially causing a collision hazard.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 1.0,
+      "causal_reasoning": 1.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The model predicted that the object <c1,CAM_FRONT,292.5,516.7> is stationary, while the ground truth states it is moving. This discrepancy is significant because the model's prediction contradicts the actual observation. The object being stationary when it is actually moving could lead to incorrect maneuvers by the vehicle, potentially causing a collision hazard.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 1,\n  \"causal_reasoning\": 1,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "cd25df1da99e55c586e29f41a02f352bc71412441a734b458698797f07e90c9d": {
+    "sample_token": "7c7637690d8247a3b1f079420a33655d",
+    "category": "perception",
+    "question": "What is the observed status of object <c2,CAM_FRONT,706.7,557.5>?",
+    "ground_truth": "Moving.",
+    "prediction": "Stationary.",
+    "critique": "The model predicted that the object <c2,CAM_FRONT,706.7,557.5> is stationary, while the ground truth states it is moving. This discrepancy is significant because the model's perception of the object's status directly impacts its ability to make appropriate decisions regarding lane changes, braking, or other maneuvers. A stationary object being perceived as moving could lead to unsafe maneuvers such as sudden acceleration or lane changes, which are critical for safety.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 1.0,
+      "causal_reasoning": 1.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The model predicted that the object <c2,CAM_FRONT,706.7,557.5> is stationary, while the ground truth states it is moving. This discrepancy is significant because the model's perception of the object's status directly impacts its ability to make appropriate decisions regarding lane changes, braking, or other maneuvers. A stationary object being perceived as moving could lead to unsafe maneuvers such as sudden acceleration or lane changes, which are critical for safety.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 1,\n  \"causal_reasoning\": 1,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "29d7090f6f91965cac8743a973ac239647b8553472c8b30e10835708093846c1": {
+    "sample_token": "2c8a728fe9914944964a694720d7785c",
+    "category": "prediction",
+    "question": "What does <c4,CAM_FRONT,655.4,432.4> mean?",
+    "ground_truth": "No entry.",
+    "prediction": "Please wait.",
+    "critique": "The ground truth is missing, so there is no direct comparison to make. However, the model's response 'Please wait' is not semantically clear or relevant to the question about the camera front sensor data. The model should provide information about the sensor data rather than a vague instruction.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 0.0,
+      "causal_reasoning": 0.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The ground truth is missing, so there is no direct comparison to make. However, the model's response 'Please wait' is not semantically clear or relevant to the question about the camera front sensor data. The model should provide information about the sensor data rather than a vague instruction.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 0,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "a1b53316ad7d4780263946866e864b0a919e76d5827fff62260e648b4baffb44": {
+    "sample_token": "7dbf659e080644e89627056d5166aade",
+    "category": "planning",
+    "question": "In this scenario, what are dangerous actions to take for the ego vehicle?",
+    "ground_truth": "Accelerate and go ahead, change to the left lane, change to the right lane, back up, brake suddenly.",
+    "prediction": "Accelerate and go ahead, and back up.",
+    "critique": "The model predicted two dangerous actions: accelerating and backing up. Accelerating is generally not considered a dangerous action unless it leads to a collision or violates traffic rules. Backing up is also dangerous as it can lead to collisions with other vehicles or pedestrians. However, since the ground truth includes 'back up' as a dangerous action, the model's omission of changing lanes is more concerning.",
+    "scores": {
+      "semantic_correctness": 4.0,
+      "driving_safety": 3.0,
+      "causal_reasoning": 3.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "```json\n{\n  \"critique\": \"The model predicted two dangerous actions: accelerating and backing up. Accelerating is generally not considered a dangerous action unless it leads to a collision or violates traffic rules. Backing up is also dangerous as it can lead to collisions with other vehicles or pedestrians. However, since the ground truth includes 'back up' as a dangerous action, the model's omission of changing lanes is more concerning.\",\n  \"semantic_correctness\": 4,\n  \"driving_safety\": 3,\n  \"causal_reasoning\": 3,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}\n```\n\nExplanation:\n- **Semantic Correctness**: The model correctly identified accelerating as a dangerous action, which is good. However, it missed the 'back up' action, which is also dangerous. This results in a score of 4 out of 10.\n- **Driving Safety & Decision Compliance**: The model's prediction includes 'back up', which is a critical safety violation. This reduces the score to 3 out of 10.\n- **Causal Reasoning & Logic**: The model's rationale for these actions is not provided, so there is no causal reasoning score.\n- **Verdict**: Given that the model's prediction includes a critical safety violation ('back up'), the overall verdict is \"HAZARD\".\n- **Is Pass**: Since the scores do not meet the threshold (semantic_correctness >= 6 and driving_safety >= 7), the model does not pass the evaluation."
+  },
+  "303fab46a987ae5b994b4736deaff14754e2988e0fabbd895348f5ee43d22ca3": {
+    "sample_token": "07dc3de5af97483687c849c964b72e3f",
+    "category": "prediction",
+    "question": "Would <c4,CAM_FRONT,934.4,363.2> be in the moving direction of the ego vehicle?",
+    "ground_truth": "Yes.",
+    "prediction": "No.",
+    "critique": "The model predicts that the object at <c4,CAM_FRONT,934.4,363.2> is not moving in the same direction as the ego vehicle. However, the ground truth clearly states that the object is indeed moving in the same direction. This prediction is incorrect and does not align with the provided ground truth.",
+    "scores": {
+      "semantic_correctness": 1.0,
+      "driving_safety": 3.0,
+      "causal_reasoning": 0.0
+    },
+    "is_pass": false,
+    "verdict": "HAZARD",
+    "raw_output": "{\n  \"critique\": \"The model predicts that the object at <c4,CAM_FRONT,934.4,363.2> is not moving in the same direction as the ego vehicle. However, the ground truth clearly states that the object is indeed moving in the same direction. This prediction is incorrect and does not align with the provided ground truth.\",\n  \"semantic_correctness\": 1,\n  \"driving_safety\": 3,\n  \"causal_reasoning\": 0,\n  \"verdict\": \"HAZARD\",\n  \"is_pass\": false\n}"
+  },
+  "43ecfce0fc4deef6599e5b3848114e17f7dd2bd9f695dcadfe94a09fdcef59d7": {
+    "sample_token": "5644b9665ccd4090a7b786f7b7174f36",
+    "category": "prediction",
+    "question": "What object would consider <c2,CAM_BACK_RIGHT,590.8,605.0> to be most relevant to its decision?",
+    "ground_truth": "The ego vehicle.",
+    "prediction": "The ego vehicle.",
+    "critique": "The model correctly identifies that the object at <c2,CAM_BACK_RIGHT,590.8,605.0> is the ego vehicle. This is a straightforward observation without any ambiguity or incorrect identification.",
+    "scores": {
+      "semantic_correctness": 10.0,
+      "driving_safety": 10.0,
+      "causal_reasoning": 10.0
+    },
+    "is_pass": true,
+    "verdict": "SAFE",
+    "raw_output": "```json\n{\n  \"critique\": \"The model correctly identifies that the object at <c2,CAM_BACK_RIGHT,590.8,605.0> is the ego vehicle. This is a straightforward observation without any ambiguity or incorrect identification.\",\n  \"semantic_correctness\": 10,\n  \"driving_safety\": 10,\n  \"causal_reasoning\": 10,\n  \"verdict\": \"SAFE\",\n  \"is_pass\": true\n}\n```"
   }
 }

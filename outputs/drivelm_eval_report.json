@@ -1,0 +1,875 @@
+{
+  "checkpoint": "checkpoints/ablation_pos_embed/2d_polar_metric/drivelm/best_model",
+  "num_evaluated": 100,
+  "overall_metrics": {
+    "bleu_1": 70.19,
+    "bleu_2": 67.07,
+    "bleu_3": 64.3,
+    "bleu_4": 61.5,
+    "rouge_l": 74.17,
+    "cider": 4.028,
+    "meteor": 60.35,
+    "BLEU-1": 70.19,
+    "BLEU-2": 67.07,
+    "BLEU-3": 64.3,
+    "BLEU-4": 61.5,
+    "ROUGE-L": 74.17,
+    "CIDEr": 4.028,
+    "METEOR": 60.35
+  },
+  "category_metrics": {
+    "perception": {
+      "bleu_1": 70.06,
+      "bleu_2": 64.75,
+      "bleu_3": 59.07,
+      "bleu_4": 53.96,
+      "rouge_l": 79.21,
+      "cider": 4.018,
+      "meteor": 64.35,
+      "BLEU-1": 70.06,
+      "BLEU-2": 64.75,
+      "BLEU-3": 59.07,
+      "BLEU-4": 53.96,
+      "ROUGE-L": 79.21,
+      "CIDEr": 4.018,
+      "METEOR": 64.35
+    },
+    "prediction": {
+      "bleu_1": 71.57,
+      "bleu_2": 73.43,
+      "bleu_3": 75.79,
+      "bleu_4": 80.02,
+      "rouge_l": 72.0,
+      "cider": 3.6,
+      "meteor": 51.52,
+      "BLEU-1": 71.57,
+      "BLEU-2": 73.43,
+      "BLEU-3": 75.79,
+      "BLEU-4": 80.02,
+      "ROUGE-L": 72.0,
+      "CIDEr": 3.6,
+      "METEOR": 51.52
+    },
+    "planning": {
+      "bleu_1": 43.16,
+      "bleu_2": 38.27,
+      "bleu_3": 35.9,
+      "bleu_4": 34.06,
+      "rouge_l": 56.27,
+      "cider": 1.656,
+      "meteor": 35.09,
+      "BLEU-1": 43.16,
+      "BLEU-2": 38.27,
+      "BLEU-3": 35.9,
+      "BLEU-4": 34.06,
+      "ROUGE-L": 56.27,
+      "CIDEr": 1.656,
+      "METEOR": 35.09
+    },
+    "behavior": {
+      "bleu_1": 85.36,
+      "bleu_2": 83.37,
+      "bleu_3": 81.36,
+      "bleu_4": 79.12,
+      "rouge_l": 89.19,
+      "cider": 0.0,
+      "meteor": 90.43,
+      "BLEU-1": 85.36,
+      "BLEU-2": 83.37,
+      "BLEU-3": 81.36,
+      "BLEU-4": 79.12,
+      "ROUGE-L": 89.19,
+      "CIDEr": 0.0,
+      "METEOR": 90.43
+    }
+  },
+  "sample_previews": [
+    {
+      "sample_token": "abff1081848f4564b8fed609a1db5475",
+      "category": "prediction",
+      "question": "What object would consider <c5,CAM_FRONT,890.0,503.3> to be most relevant to its decision?",
+      "ground_truth": "The ego vehicle.",
+      "predicted": "The ego vehicle."
+    },
+    {
+      "sample_token": "5fbf646e371a44fcb6ebd6b9e6fa0f1f",
+      "category": "prediction",
+      "question": "Which object is most likely to be occluded by <c3,CAM_FRONT,512.0,623.3>? Would this object affect the ego vehicle? Based on this object, what action of the ego vehicle is dangerous?",
+      "ground_truth": "None, no, none.",
+      "predicted": "None, no, none."
+    },
+    {
+      "sample_token": "caa8be4d272d49719693a75c0eb68737",
+      "category": "perception",
+      "question": "What are objects to the front right of the ego car?",
+      "ground_truth": "There are many barriers to the front right of the ego car.",
+      "predicted": "There are two cars to the front right of the ego car."
+    },
+    {
+      "sample_token": "1bb59128f07b4512a4aa6ef0a5ad3f7d",
+      "category": "perception",
+      "question": "What are objects to the back of the ego car?",
+      "ground_truth": "There are many barriers, two traffic cones, three construction vehicles, many cars, two pedestrians, and one truck behind the ego car.",
+      "predicted": "There are many cars and one truck behind the ego car."
+    },
+    {
+      "sample_token": "986e2e3396e34e5b84032a8a3fdbe156",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is slightly steering to the left. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "5aaa5aa3345945819e247b6d393eebc4",
+      "category": "perception",
+      "question": "Are there parked cars to the front of the ego car?",
+      "ground_truth": "Yes.",
+      "predicted": "Yes."
+    }
+  ],
+  "predictions": [
+    {
+      "sample_token": "abff1081848f4564b8fed609a1db5475",
+      "category": "prediction",
+      "question": "What object would consider <c5,CAM_FRONT,890.0,503.3> to be most relevant to its decision?",
+      "ground_truth": "The ego vehicle.",
+      "predicted": "The ego vehicle."
+    },
+    {
+      "sample_token": "5fbf646e371a44fcb6ebd6b9e6fa0f1f",
+      "category": "prediction",
+      "question": "Which object is most likely to be occluded by <c3,CAM_FRONT,512.0,623.3>? Would this object affect the ego vehicle? Based on this object, what action of the ego vehicle is dangerous?",
+      "ground_truth": "None, no, none.",
+      "predicted": "None, no, none."
+    },
+    {
+      "sample_token": "caa8be4d272d49719693a75c0eb68737",
+      "category": "perception",
+      "question": "What are objects to the front right of the ego car?",
+      "ground_truth": "There are many barriers to the front right of the ego car.",
+      "predicted": "There are two cars to the front right of the ego car."
+    },
+    {
+      "sample_token": "1bb59128f07b4512a4aa6ef0a5ad3f7d",
+      "category": "perception",
+      "question": "What are objects to the back of the ego car?",
+      "ground_truth": "There are many barriers, two traffic cones, three construction vehicles, many cars, two pedestrians, and one truck behind the ego car.",
+      "predicted": "There are many cars and one truck behind the ego car."
+    },
+    {
+      "sample_token": "986e2e3396e34e5b84032a8a3fdbe156",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is slightly steering to the left. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "5aaa5aa3345945819e247b6d393eebc4",
+      "category": "perception",
+      "question": "Are there parked cars to the front of the ego car?",
+      "ground_truth": "Yes.",
+      "predicted": "Yes."
+    },
+    {
+      "sample_token": "74f1506fb3f348a28783f117d9e50ff7",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving very fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "45afcd537c0f496c86b15f0f3cb9fc5d",
+      "category": "perception",
+      "question": "What are objects to the back right of the ego car?",
+      "ground_truth": "There are many cars and one truck to the back right of the ego car.",
+      "predicted": "There are many cars to the back right of the ego car."
+    },
+    {
+      "sample_token": "04258e0aabb24146b5a50d889c20d753",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is steering to the right. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "d2170a4a449542fc8a79c03aca5b288d",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_FRONT,265.0,525.0>?",
+      "ground_truth": "No such action will lead to a collision.",
+      "predicted": "Accelerate and go straight."
+    },
+    {
+      "sample_token": "a49262c15fd440b49a239dc7f8c2e0c9",
+      "category": "perception",
+      "question": "Are there moving cars to the back of the ego car?",
+      "ground_truth": "Yes.",
+      "predicted": "Yes."
+    },
+    {
+      "sample_token": "3bd38b7c268f40629b6d4aef1a6c7b8d",
+      "category": "perception",
+      "question": "Please describe the current scene.",
+      "ground_truth": "There is one moving car in front of the ego car, one moving car behind the ego car, and one barrier behind the ego car.",
+      "predicted": "There is one moving car behind the ego car, two parked cars in front of it, and one parked car to the back left."
+    },
+    {
+      "sample_token": "cc4fe0cb5e094d798902dc19ea800510",
+      "category": "prediction",
+      "question": "Would <c5,CAM_BACK,839.2,642.6> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "dae6a9febc3447b0999dec350965e67a",
+      "category": "perception",
+      "question": "Is there any traffic element in the front view?",
+      "ground_truth": "Yes, there are traffic elements in the front view.",
+      "predicted": "Yes, there are traffic elements in the front view."
+    },
+    {
+      "sample_token": "7f8343a3bb6a489aaa45cde8e3699db6",
+      "category": "planning",
+      "question": "What is the traffic signal that the ego vehicle should pay attention to?",
+      "ground_truth": "None.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "de51db30165749aeb93fdbf1f1f7e79d",
+      "category": "perception",
+      "question": "What are objects to the front of the ego car?",
+      "ground_truth": "There is one bicycle, one car, two barriers, and one traffic cone in front of the ego car.",
+      "predicted": "There are many cars in front of the ego car."
+    },
+    {
+      "sample_token": "9dc4cabe80d74d83a9bb89338e8f8f46",
+      "category": "planning",
+      "question": "Is <c1,CAM_BACK,763.3,517.5> an object that the ego vehicle should consider in the current scene?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "c7844f4389f44c3c88d19f80df5c3fa0",
+      "category": "prediction",
+      "question": "What does <c3,CAM_FRONT,879.2,805.3> mean?",
+      "ground_truth": "Keep going straight.",
+      "predicted": "Please wait."
+    },
+    {
+      "sample_token": "1c68f7c0ffc0484f8754069454440d00",
+      "category": "prediction",
+      "question": "Would <c2,CAM_BACK,1157.5,560.0> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "b410f2e1bc574b7a80c08b3c3e208e45",
+      "category": "prediction",
+      "question": "Except for the ego vehicle, what object would consider <c1,CAM_FRONT,1203.3,540.0> to be most relevant to its decision?",
+      "ground_truth": "None.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "fe155b46ed33446fbb75e26d946fe6f7",
+      "category": "perception",
+      "question": "Are there moving construction vehicles to the front of the ego car?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "616604601309474db9dbd30e28705c51",
+      "category": "planning",
+      "question": "What actions could the ego vehicle take based on <c2,CAM_BACK,607.8,480.0>? Why take this action and what's the probability?",
+      "ground_truth": "The action is to keep going at the same speed. The reason is that the object has little reference value for the ego vehicle, with a high probability.",
+      "predicted": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high."
+    },
+    {
+      "sample_token": "e0845f5322254dafadbbed75aaa07969",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "24e7dfad82a34986b63ea3a365f0084d",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "1215ff38637849ab9a5282b5eeb662ab",
+      "category": "planning",
+      "question": "What is the traffic signal that the ego vehicle should pay attention to?",
+      "ground_truth": "Green light.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "e0845f5322254dafadbbed75aaa07969",
+      "category": "planning",
+      "question": "What actions could the ego vehicle take based on <c4,CAM_FRONT,974.2,486.7>? Why take this action and what's the probability?",
+      "ground_truth": "The action is to keep going at the same speed because there is no safety issue. The probability of this action is high.",
+      "predicted": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high."
+    },
+    {
+      "sample_token": "379da2cf3d6a4956b174ca95148bddd9",
+      "category": "prediction",
+      "question": "What is the future state of <c2,CAM_FRONT_LEFT,1186.7,550.8>?",
+      "ground_truth": "Stationary.",
+      "predicted": "Keep going straight."
+    },
+    {
+      "sample_token": "782ec2ef376b4443951bd662fd664296",
+      "category": "prediction",
+      "question": "What object would consider <c1,CAM_FRONT,1453.3,543.3> to be most relevant to its decision?",
+      "ground_truth": "The ego vehicle.",
+      "predicted": "The ego vehicle."
+    },
+    {
+      "sample_token": "7f34cdbe2a0b46038a647110552dd2c1",
+      "category": "perception",
+      "question": "Are there parked trailers to the front of the ego car?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "4cdb49e3b72f4ecea7bc337b6cc8b41a",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is slightly steering to the right. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "19f69c6a06ad467989ada0bb2ecc87f3",
+      "category": "prediction",
+      "question": "What object would consider <c1,CAM_FRONT,675.9,487.0> to be most relevant to its decision?",
+      "ground_truth": "<c2,CAM_FRONT,546.5,502.5>.",
+      "predicted": "The ego vehicle."
+    },
+    {
+      "sample_token": "7324de00b6fb4abd8880f45de408b853",
+      "category": "planning",
+      "question": "Is <c2,CAM_FRONT_LEFT,987.5,512.5> an object that the ego vehicle should consider in the current scene?",
+      "ground_truth": "No.",
+      "predicted": "Yes."
+    },
+    {
+      "sample_token": "38e62c1800df44c78fda59afe56cfd2d",
+      "category": "prediction",
+      "question": "Are <c1,CAM_BACK,788.3,672.5> and <c4,CAM_FRONT,362.5,574.2> traffic signs?",
+      "ground_truth": "Neither is a traffic sign.",
+      "predicted": "Neither is a traffic sign."
+    },
+    {
+      "sample_token": "4a1ec83d5b87456cb68460eb6be01f6e",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c3,CAM_FRONT,1097.5,460.8>?",
+      "ground_truth": "Moderate right turn.",
+      "predicted": "Accelerate and go straight."
+    },
+    {
+      "sample_token": "707adf9db2084990973d30ee2f2a04db",
+      "category": "prediction",
+      "question": "Is <c4,CAM_FRONT,545.8,485.8> a traffic sign or a road barrier?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "24e7dfad82a34986b63ea3a365f0084d",
+      "category": "planning",
+      "question": "What actions could the ego vehicle take based on <c2,CAM_FRONT_LEFT,445.0,505.0>? Why take this action and what's the probability?",
+      "ground_truth": "The action is to keep going at the same speed. The reason is that the object has little reference value for the ego vehicle, and the probability is high.",
+      "predicted": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high."
+    },
+    {
+      "sample_token": "1fe1d4ffcb2446fb9e6a626143faaa2f",
+      "category": "planning",
+      "question": "What is the probability of colliding with <c3,CAM_FRONT_LEFT,1351.7,571.7> after the ego vehicle goes straight and keeps the same speed?",
+      "ground_truth": "Low.",
+      "predicted": "Low."
+    },
+    {
+      "sample_token": "d2e39d907cb34653981662fd1265340b",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "1e3d79dae62742a0ad64c91679863358",
+      "category": "perception",
+      "question": "What is the moving status of object <c1,CAM_FRONT,1266.7,532.5>?",
+      "ground_truth": "Going ahead.",
+      "predicted": "Going ahead."
+    },
+    {
+      "sample_token": "38e62c1800df44c78fda59afe56cfd2d",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c4,CAM_FRONT,362.5,574.2>?",
+      "ground_truth": "Slight left turn.",
+      "predicted": "Accelerate and go straight."
+    },
+    {
+      "sample_token": "e91879b1ab1a4a7a80d2be6e89f2f5d8",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is steering to the right. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "37938fd79ce148c19b56c77d3a50b994",
+      "category": "prediction",
+      "question": "What object would consider <c2,CAM_FRONT_LEFT,672.4,614.8> to be most relevant to its decision?",
+      "ground_truth": "The ego vehicle.",
+      "predicted": "The ego vehicle."
+    },
+    {
+      "sample_token": "49d2a344c3ab44c79669f9b41b740c60",
+      "category": "perception",
+      "question": "What is the observed status of object <c1,CAM_BACK,831.7,517.5>?",
+      "ground_truth": "Moving.",
+      "predicted": "Moving."
+    },
+    {
+      "sample_token": "d538bb728f8f40698d8147a0361a6e92",
+      "category": "prediction",
+      "question": "Are <c1,CAM_BACK,691.5,554.2> and <c2,CAM_BACK,970.0,534.2> traffic signs?",
+      "ground_truth": "Neither is a traffic sign.",
+      "predicted": "Neither is a traffic sign."
+    },
+    {
+      "sample_token": "a23629c7cdc84c48a51cc527996bbb73",
+      "category": "planning",
+      "question": "Is <c6,CAM_BACK,835.8,524.2> an object that the ego vehicle should consider in the current scene?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "b7275d52179546fb88f4c523f3737933",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "a69526ee7ca04b4cab7bef701439ee37",
+      "category": "prediction",
+      "question": "Would <c3,CAM_FRONT,1212.5,513.3> take <c1,CAM_FRONT,624.7,536.8> into account?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "38e62c1800df44c78fda59afe56cfd2d",
+      "category": "perception",
+      "question": "What is the observed status of object <c4,CAM_FRONT,362.5,574.2>?",
+      "ground_truth": "Moving.",
+      "predicted": "Stationary."
+    },
+    {
+      "sample_token": "05fa079df9534a328040c0dd2ba2103d",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "b75527be10fd4c1da8cafc73f51bae09",
+      "category": "planning",
+      "question": "In this scenario, what are safe actions to take for the ego vehicle?",
+      "ground_truth": "Brake gently to a stop, brake suddenly.",
+      "predicted": "Keep going at the same speed, decelerate gradually without braking."
+    },
+    {
+      "sample_token": "c251eb330e304affa0577415d7a5fd6a",
+      "category": "perception",
+      "question": "What is the status of the trailer that is to the back of the ego car?",
+      "ground_truth": "One trailer is parked.",
+      "predicted": "One trailer is parked."
+    },
+    {
+      "sample_token": "d538bb728f8f40698d8147a0361a6e92",
+      "category": "prediction",
+      "question": "What object would consider <c2,CAM_BACK,970.0,534.2> to be most relevant to its decision?",
+      "ground_truth": "None.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "1fe1d4ffcb2446fb9e6a626143faaa2f",
+      "category": "perception",
+      "question": "What is the status of the pedestrian that is to the front of the ego car?",
+      "ground_truth": "The pedestrian in front of the ego car is moving.",
+      "predicted": "The pedestrian in front of the ego car is moving."
+    },
+    {
+      "sample_token": "2c66893c302944c3944c0d621655970e",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "bf0bb329b6db4de395d61f138c9e0eaf",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is slightly steering to the left. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "8fe764dcb38b475692dbb78dda3f0b89",
+      "category": "planning",
+      "question": "Is <c5,CAM_FRONT,1075.0,495.0> an object that the ego vehicle should consider in the current scene?",
+      "ground_truth": "Yes.",
+      "predicted": "Yes."
+    },
+    {
+      "sample_token": "37c41843a70f4e878d871ad05cc0927b",
+      "category": "planning",
+      "question": "What actions taken by the ego vehicle can lead to a collision with <c1,CAM_FRONT,694.2,503.3>?",
+      "ground_truth": "No such action will lead to a collision.",
+      "predicted": "Accelerate and go straight."
+    },
+    {
+      "sample_token": "caa8be4d272d49719693a75c0eb68737",
+      "category": "perception",
+      "question": "What is the observed status of object <c1,CAM_FRONT,292.5,516.7>?",
+      "ground_truth": "Moving.",
+      "predicted": "Stationary."
+    },
+    {
+      "sample_token": "1e16aa8e6c9f4d65bdd4cb36b8504328",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "710d81bfcd554fbdb49ceff986f9d6a0",
+      "category": "prediction",
+      "question": "Would <c3,CAM_FRONT,1134.2,518.3> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "689730a361924e31b626ca9725499213",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is not moving.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "7bd4f2b4e9e447d091e2b677c382b9ce",
+      "category": "prediction",
+      "question": "Will <c3,CAM_FRONT,655.0,481.7> change its motion state based on <c2,CAM_FRONT,753.3,475.0>?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "09f347893c9f44cf9cb9eaa2994611d0",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "f5cf6738a94f43ccb1ceb431cd6c1203",
+      "category": "perception",
+      "question": "Are there parked cars to the back right of the ego car?",
+      "ground_truth": "Yes.",
+      "predicted": "Yes."
+    },
+    {
+      "sample_token": "11ba7e5bc2b840c2a8e6000a2bebba21",
+      "category": "perception",
+      "question": "What is the status of the cars that are to the front left of the ego car?",
+      "ground_truth": "Three of the cars are moving, and three are parked.",
+      "predicted": "Many cars are parked."
+    },
+    {
+      "sample_token": "7c7637690d8247a3b1f079420a33655d",
+      "category": "perception",
+      "question": "What is the observed status of object <c2,CAM_FRONT,706.7,557.5>?",
+      "ground_truth": "Moving.",
+      "predicted": "Stationary."
+    },
+    {
+      "sample_token": "f95390db354847229dc1f22820f86821",
+      "category": "perception",
+      "question": "What is the moving status of object <c5,CAM_BACK,695.8,505.8>?",
+      "ground_truth": "Going ahead.",
+      "predicted": "Going ahead."
+    },
+    {
+      "sample_token": "a49262c15fd440b49a239dc7f8c2e0c9",
+      "category": "perception",
+      "question": "What is the status of the pedestrians that are to the back left of the ego car?",
+      "ground_truth": "Two pedestrians are moving.",
+      "predicted": "Two pedestrians are moving."
+    },
+    {
+      "sample_token": "f53f20f884774654a5424ed1e1d439ce",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is not moving.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "9e9f1dcc38d844d1897685ca6124ca27",
+      "category": "planning",
+      "question": "What is the probability of colliding with <c2,CAM_BACK_RIGHT,998.3,634.2> after the ego vehicle goes straight and keeps the same speed?",
+      "ground_truth": "Low.",
+      "predicted": "Low."
+    },
+    {
+      "sample_token": "bbd5199ba215415fae929f2762f87a7c",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "2c8a728fe9914944964a694720d7785c",
+      "category": "prediction",
+      "question": "What does <c4,CAM_FRONT,655.4,432.4> mean?",
+      "ground_truth": "No entry.",
+      "predicted": "Please wait."
+    },
+    {
+      "sample_token": "401c380497824b0e8efafb8a6244a1e9",
+      "category": "prediction",
+      "question": "Which object is most likely to be occluded by <c1,CAM_BACK,785.8,665.0>? Would this object affect the ego vehicle? Based on this object, what action of the ego vehicle is dangerous?",
+      "ground_truth": "None, no, none.",
+      "predicted": "None, no, none."
+    },
+    {
+      "sample_token": "4ce671d35bdc45c6a65af91365e5cea9",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving slowly.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "ce00bf4f545a4741b9213ced01eac1c1",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "8c9bfbf367084054bb1f0115e6f8a20e",
+      "category": "planning",
+      "question": "What is the probability of colliding with <c3,CAM_FRONT_LEFT,831.7,585.0> after the ego vehicle goes straight and keeps the same speed?",
+      "ground_truth": "Low.",
+      "predicted": "Low."
+    },
+    {
+      "sample_token": "1853b834ebba46c9b3dd19b0a40828a9",
+      "category": "planning",
+      "question": "What is the probability of colliding with <c3,CAM_BACK,889.2,524.2> after the ego vehicle goes straight and keeps the same speed?",
+      "ground_truth": "Low.",
+      "predicted": "Low."
+    },
+    {
+      "sample_token": "81bb51133a85471cbf2949c6b279b65a",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is steering to the left. The ego vehicle is driving with normal speed.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "538b4336b7084e6c8e77cfab20139e72",
+      "category": "planning",
+      "question": "What actions could the ego vehicle take based on <c2,CAM_FRONT,1058.3,492.5>? Why take this action and what's the probability?",
+      "ground_truth": "The action is to keep going at the same speed. The reason for taking this action is to avoid a collision, which is highly probable.",
+      "predicted": "The action is to keep going at the same speed. The reason is that there is no safety issue, and the probability is high."
+    },
+    {
+      "sample_token": "dc8f0646f77f4dbead65f5ccfacafa19",
+      "category": "planning",
+      "question": "In this scenario, what are safe actions to take for the ego vehicle?",
+      "ground_truth": "Slightly offset to the left, slightly offset to the right are safe actions to take for the ego vehicle in this scenario.",
+      "predicted": "Keep going at the same speed, decelerate gradually without braking."
+    },
+    {
+      "sample_token": "a4df56003002406785593e584318287d",
+      "category": "prediction",
+      "question": "Would <c2,CAM_FRONT_LEFT,830.8,660.0> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "b50f3fe7fdcc416396a941dd1026dd8e",
+      "category": "perception",
+      "question": "Are there parked cars to the back of the ego car?",
+      "ground_truth": "Yes.",
+      "predicted": "Yes."
+    },
+    {
+      "sample_token": "a2b52f052dbb4202a7e3f4b767ca645b",
+      "category": "prediction",
+      "question": "What is the future state of <c1,CAM_FRONT_RIGHT,329.2,489.2>?",
+      "ground_truth": "Keep going straight.",
+      "predicted": "Stationary."
+    },
+    {
+      "sample_token": "f10b6232cf9243a2815ee44c11e45fc5",
+      "category": "perception",
+      "question": "What is the observed status of object <c3,CAM_BACK,856.7,521.7>?",
+      "ground_truth": "Moving.",
+      "predicted": "Moving."
+    },
+    {
+      "sample_token": "1e3d79dae62742a0ad64c91679863358",
+      "category": "planning",
+      "question": "What is the target action of the ego vehicle?",
+      "ground_truth": "Turn left.",
+      "predicted": "Go straight."
+    },
+    {
+      "sample_token": "cf0c7a6863194d5fa232ad6eb33a2735",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "26436a07886b47999d2c55f781d6a469",
+      "category": "planning",
+      "question": "What is the traffic signal that the ego vehicle should pay attention to?",
+      "ground_truth": "None.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "6769c88b3ba540dd9500954c43e0d942",
+      "category": "planning",
+      "question": "What is the traffic signal that the ego vehicle should pay attention to?",
+      "ground_truth": "None.",
+      "predicted": "None."
+    },
+    {
+      "sample_token": "f5cf6738a94f43ccb1ceb431cd6c1203",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "5dbb11e189704be68880df14d8dea156",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving with normal speed.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "e4d73cf6fe45495fa87eed49c3a0d8ce",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "40896e93312649f6a858080df01ff723",
+      "category": "behavior",
+      "question": "Predict the behavior of the ego vehicle.",
+      "ground_truth": "The ego vehicle is going straight. The ego vehicle is driving very fast.",
+      "predicted": "The ego vehicle is going straight. The ego vehicle is driving fast."
+    },
+    {
+      "sample_token": "7dbf659e080644e89627056d5166aade",
+      "category": "planning",
+      "question": "In this scenario, what are dangerous actions to take for the ego vehicle?",
+      "ground_truth": "Accelerate and go ahead, change to the left lane, change to the right lane, back up, brake suddenly.",
+      "predicted": "Accelerate and go ahead, and back up."
+    },
+    {
+      "sample_token": "07dc3de5af97483687c849c964b72e3f",
+      "category": "prediction",
+      "question": "Would <c4,CAM_FRONT,934.4,363.2> be in the moving direction of the ego vehicle?",
+      "ground_truth": "Yes.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "d5a1fc03ea4d4876a0bc7a04e426fff8",
+      "category": "perception",
+      "question": "What is the moving status of object <c3,CAM_BACK,843.3,530.0>?",
+      "ground_truth": "Going ahead.",
+      "predicted": "Going ahead."
+    },
+    {
+      "sample_token": "ec7a8148031849c7b73ae314fb7f0dc6",
+      "category": "prediction",
+      "question": "Would <c1,CAM_FRONT,1227.5,485.0> be in the moving direction of the ego vehicle?",
+      "ground_truth": "No.",
+      "predicted": "No."
+    },
+    {
+      "sample_token": "37938fd79ce148c19b56c77d3a50b994",
+      "category": "planning",
+      "question": "What is the probability of colliding with <c1,CAM_BACK,855.0,510.0> after the ego vehicle goes straight and keeps the same speed?",
+      "ground_truth": "Low.",
+      "predicted": "Low."
+    },
+    {
+      "sample_token": "5644b9665ccd4090a7b786f7b7174f36",
+      "category": "prediction",
+      "question": "What object would consider <c2,CAM_BACK_RIGHT,590.8,605.0> to be most relevant to its decision?",
+      "ground_truth": "The ego vehicle.",
+      "predicted": "The ego vehicle."
+    },
+    {
+      "sample_token": "dc44c753aef745379cb133a7985fd250",
+      "category": "perception",
+      "question": "What are objects to the back left of the ego car?",
+      "ground_truth": "There are many trailers to the back left of the ego car.",
+      "predicted": "There are many cars to the back left of the ego car."
+    },
+    {
+      "sample_token": "9897195554d64f90856681a17d008b94",
+      "category": "prediction",
+      "question": "What object would consider <c4,CAM_FRONT,694.2,459.2> to be most relevant to its decision?",
+      "ground_truth": "None.",
+      "predicted": "The ego vehicle."
+    }
+  ],
+  "latency_seconds": 57.72,
+  "llm_judge": {
+    "benchmark": "drivelm",
+    "judge_model": "Qwen/Qwen2.5-3B-Instruct",
+    "total_evaluated": 100,
+    "overall_metrics": {
+      "mean_semantic_correctness": 6.24,
+      "mean_driving_safety": 6.4,
+      "mean_causal_reasoning": 5.3,
+      "safety_pass_rate": 58.0,
+      "hazard_rate": 40.0
+    },
+    "category_metrics": {
+      "prediction": {
+        "count": 25,
+        "mean_semantic_correctness": 6.88,
+        "mean_driving_safety": 6.76,
+        "mean_causal_reasoning": 5.6,
+        "safety_pass_rate": 68.0
+      },
+      "perception": {
+        "count": 25,
+        "mean_semantic_correctness": 6.56,
+        "mean_driving_safety": 8.04,
+        "mean_causal_reasoning": 6.44,
+        "safety_pass_rate": 64.0
+      },
+      "behavior": {
+        "count": 25,
+        "mean_semantic_correctness": 5.4,
+        "mean_driving_safety": 4.92,
+        "mean_causal_reasoning": 5.12,
+        "safety_pass_rate": 44.0
+      },
+      "planning": {
+        "count": 25,
+        "mean_semantic_correctness": 6.12,
+        "mean_driving_safety": 5.88,
+        "mean_causal_reasoning": 4.04,
+        "safety_pass_rate": 56.0
+      }
+    }
+  }
+}

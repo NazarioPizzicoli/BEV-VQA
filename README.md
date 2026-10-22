@@ -1,5 +1,14 @@
 # BEV-VLM: High-Efficiency Multimodal Bird's-Eye-View VLM for Autonomous Driving
 
+```text
+  ██████╗ ███████╗██╗   ██╗      ██╗   ██╗██╗     ███╗   ███╗
+  ██╔══██╗██╔════╝██║   ██║      ██║   ██║██║     ████╗ ████║
+  ██████╔╝█████╗  ██║   ██║      ██║   ██║██║     ██╔████╔██║
+  ██╔══██╗██╔══╝  ╚██╗ ██╔╝      ╚██╗ ██╔╝██║     ██║╚██╔╝██║
+  ██████╔╝███████╗ ╚████╔╝   ██╗  ╚████╔╝ ███████╗██║ ╚═╝ ██║
+  ╚═════╝ ╚══════╝  ╚═══╝    ╚═╝   ╚═══╝  ╚══════╝╚═╝     ╚═╝
+```
+
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![Qwen2.5-3B](https://img.shields.io/badge/LLM-Qwen2.5--3B--Instruct-ff69b4.svg)](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct)
@@ -125,20 +134,20 @@ python scripts/evaluate_nuscenes_qa.py \
 
 ### 4. Docker Deployment
 
-The framework is fully containerized with NVIDIA GPU acceleration (CUDA 12.1 + PyTorch 2.4):
+The framework is fully containerized with NVIDIA GPU acceleration (CUDA 12.1 + PyTorch 2.4). An aesthetic ASCII banner dynamically verifies GPU allocation, VRAM, and volume mounts upon container startup:
 
 ```bash
 # Build the Docker image
 docker compose build
 
-# Verify environment inside container (GPU, CUDA, BEV-VLM model forward pass)
-docker compose run --rm bev-vlm python scripts/verify_docker_environment.py
+# Launch interactive visual debugger inside container (with surround cameras & BEV heatmap)
+docker compose run --rm interactive --random --terminal-viz
 
-# Launch interactive visual debugger inside container
-docker compose run --rm interactive
-
-# Run DriveLM benchmark inside container
+# Run DriveLM benchmark inside container with LLM-as-a-Judge
 docker compose run --rm eval-drivelm
+
+# Run full test suite inside container (74 tests)
+docker compose run --rm test
 ```
 
 ---
