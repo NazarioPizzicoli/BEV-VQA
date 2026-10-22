@@ -1,5 +1,6 @@
 """Unit tests for the 4 unified projector architectures."""
 
+from pathlib import Path
 import pytest
 import torch
 from bev_vqa.models.projector import ProjectorConfig, build_projector
@@ -68,7 +69,9 @@ def test_projector_gradient_flow(arch_type):
 
 
 def test_stage1_checkpoint_loading():
-    checkpoint_path = "checkpoints/sota/stage1/stage1_projector_best.pt"
+    checkpoint_path = Path("checkpoints/sota/stage1/stage1_projector_best.pt")
+    if not checkpoint_path.exists():
+        pytest.skip(f"Stage 1 checkpoint not found at {checkpoint_path} (skipped on clean clone)")
     state_dict = torch.load(checkpoint_path, map_location="cpu")
     
     for arch_type in ["dual_pooling", "multiscale_peak", "hybrid_sparse", "question_aware"]:
