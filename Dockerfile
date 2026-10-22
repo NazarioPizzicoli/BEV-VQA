@@ -33,7 +33,7 @@ COPY pyproject.toml /app/pyproject.toml
 RUN uv pip install --system --no-cache -e ".[dev]"
 
 # Pre-download required NLTK resources for offline evaluation
-RUN python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
+RUN python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('wordnet'); nltk.download('omw-1.4')"
 
 # Copy repository source code
 COPY . /app

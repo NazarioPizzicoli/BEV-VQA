@@ -81,20 +81,37 @@ DEFAULT_CHECKPOINT = "checkpoints/ablation_pos_embed/2d_polar_metric/drivelm/bes
 DEFAULT_CAM_MAP_PATH = os.environ.get(
     "NUSCENES_CAM_MAP", "/home/nazario.pizzicoli/nuscenes/.cache_cam_map_v1.0-trainval.json"
 )
+# Robust paths across host and Docker container
+_BEV_BASE = os.environ.get("BEV_VQA_BEV_DIR", os.environ.get("BEV_FEATURES_DIR", "/data/dataset/bev_features"))
+_DATASETS_BASE = os.environ.get("BEV_VQA_DATASETS_DIR", "/data/vqa_datasets/unified")
+
 DEFAULT_DRIVELM_JSON = os.environ.get(
-    "DRIVELM_VAL_JSON", "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_val.json"
+    "DRIVELM_VAL_JSON",
+    os.path.join(_DATASETS_BASE, "drivelm_val.json")
+    if os.path.exists(os.path.join(_DATASETS_BASE, "drivelm_val.json"))
+    else "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/drivelm_val.json",
 )
 DEFAULT_NUSCENES_QA_JSON = os.environ.get(
-    "NUSCENES_QA_VAL_JSON", "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_val.json"
+    "NUSCENES_QA_VAL_JSON",
+    os.path.join(_DATASETS_BASE, "nuscenes_qa_val.json")
+    if os.path.exists(os.path.join(_DATASETS_BASE, "nuscenes_qa_val.json"))
+    else "/media/nazario.pizzicoli/Datos/vqa_datasets/unified/nuscenes_qa_val.json",
 )
 DEFAULT_BEV_DIRS = [
     d for d in [
+        os.environ.get("BEV_VQA_BEV_DIR"),
         os.environ.get("BEV_FEATURES_DIR"),
+        os.path.join(_BEV_BASE, "val"),
+        os.path.join(_BEV_BASE, "train"),
+        "/data/dataset/bev_features/val",
+        "/data/dataset/bev_features/train",
+        "/data/dataset_veh/bev_features_veh/val",
+        "/data/dataset_veh/bev_features_veh/train",
         "/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/val",
         "/media/nazario.pizzicoli/Datos/dataset_veh/bev_features_veh/train",
         "/media/nazario.pizzicoli/Datos/dataset/bev_features/val",
         "/media/nazario.pizzicoli/Datos/dataset/bev_features/train",
-    ] if d is not None
+    ] if d is not None and os.path.exists(d)
 ]
 
 

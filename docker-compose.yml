@@ -19,6 +19,7 @@ services:
     volumes:
       - .:/app
       - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ~/.cache/huggingface:/root/.cache/huggingface
       - ./checkpoints:/app/checkpoints
       - ./outputs:/app/outputs
     ipc: host
@@ -46,6 +47,7 @@ services:
     volumes:
       - .:/app
       - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ~/.cache/huggingface:/root/.cache/huggingface
       - ./checkpoints:/app/checkpoints
       - ./outputs:/app/outputs
     ipc: host
@@ -73,6 +75,7 @@ services:
     volumes:
       - .:/app
       - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ~/.cache/huggingface:/root/.cache/huggingface
       - ./checkpoints:/app/checkpoints
       - ./outputs:/app/outputs
     ipc: host
@@ -103,6 +106,7 @@ services:
     volumes:
       - .:/app
       - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ~/.cache/huggingface:/root/.cache/huggingface
       - ./checkpoints:/app/checkpoints
       - ./outputs:/app/outputs
     ipc: host
@@ -125,8 +129,14 @@ services:
               count: all
               capabilities: [gpu]
     environment:
+      - BEV_VQA_BEV_DIR=${BEV_VQA_BEV_DIR:-/data/dataset/bev_features}
+      - BEV_VQA_DATASETS_DIR=${BEV_VQA_DATASETS_DIR:-/data/vqa_datasets/unified}
       - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
+      - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ~/.cache/huggingface:/root/.cache/huggingface
+      - ./checkpoints:/app/checkpoints
+      - ./outputs:/app/outputs
     ipc: host
     command: pytest tests/
