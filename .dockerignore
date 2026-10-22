@@ -1,0 +1,40 @@
+# Git & environment
+.git/
+.venv/
+.env
+env/
+venv/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Large binary checkpoints & weights (mount via host volume)
+checkpoints/
+*.pt
+*.pth
+*.safetensors
+*.ckpt
+
+# Memmap & dataset caches
+cache/
+*.bin
+*.mmap
+*.npy
+*.npz
+
+# Build & packaging
+dist/
+build/
+*.egg-info/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*~
+to-do.md

@@ -74,8 +74,12 @@ BEV-VQA/
 │   ├── evaluate_nuscenes_qa.py     # NuScenes-QA spatial evaluation
 │   ├── run_projector_ablation.py   # Compartment 1 ablation benchmark script
 │   ├── run_pos_embed_ablation.py   # Compartment 2 ablation benchmark script
-│   └── run_stage1_pretrain.py      # Stage 1 pretraining pipeline
+│   ├── run_stage1_pretrain.py      # Stage 1 pretraining pipeline
+│   └── verify_docker_environment.py # Diagnostic check for GPU & container integrity
 ├── tests/                          # 79 automated pytest unit tests (100% pass)
+├── Dockerfile                      # Production CUDA 12.1 container specification
+├── docker-compose.yml              # GPU service orchestration & volume mapping
+├── docker-entrypoint.sh            # Container initialization & GPU verification
 ├── pyproject.toml                  # Packaging & dependencies
 └── README.md                       # Main documentation
 ```
@@ -117,6 +121,24 @@ python scripts/evaluate_drivelm_nlg.py \
 python scripts/evaluate_nuscenes_qa.py \
     --checkpoint checkpoints/ablation_pos_embed/2d_polar_metric/nuscenes_qa/best_model \
     --balanced-samples-per-cat 20
+```
+
+### 4. Docker Deployment
+
+The framework is fully containerized with NVIDIA GPU acceleration (CUDA 12.1 + PyTorch 2.4):
+
+```bash
+# Build the Docker image
+docker compose build
+
+# Verify environment inside container (GPU, CUDA, BEV-VLM model forward pass)
+docker compose run --rm bev-vlm python scripts/verify_docker_environment.py
+
+# Launch interactive visual debugger inside container
+docker compose run --rm interactive
+
+# Run DriveLM benchmark inside container
+docker compose run --rm eval-drivelm
 ```
 
 ---

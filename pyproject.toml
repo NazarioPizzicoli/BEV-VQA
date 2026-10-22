@@ -19,6 +19,13 @@ dependencies = [
     "pycocoevalcap>=1.2",
     # Viz
     "matplotlib>=3.7.0",
+    # Networking / Judge
+    "requests>=2.30.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
 ]
 
 [build-system]

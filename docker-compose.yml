@@ -1,0 +1,130 @@
+services:
+  bev-vlm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bev-vlm:latest
+    container_name: bev-vlm
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - BEV_VQA_BEV_DIR=/data/bev_features
+      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+      - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ./checkpoints:/app/checkpoints
+      - ./outputs:/app/outputs
+    ipc: host
+    stdin_open: true
+    tty: true
+    command: bash
+
+  interactive:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bev-vlm:latest
+    container_name: bev-vlm-interactive
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - BEV_VQA_BEV_DIR=/data/bev_features
+      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+      - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ./checkpoints:/app/checkpoints
+      - ./outputs:/app/outputs
+    ipc: host
+    stdin_open: true
+    tty: true
+    command: python scripts/inference_interactive.py
+
+  eval-drivelm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bev-vlm:latest
+    container_name: bev-vlm-eval-drivelm
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - BEV_VQA_BEV_DIR=/data/bev_features
+      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+      - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ./checkpoints:/app/checkpoints
+      - ./outputs:/app/outputs
+    ipc: host
+    command: >
+      python scripts/evaluate_drivelm_nlg.py
+      --checkpoint checkpoints/ablation_pos_embed/2d_polar_metric/drivelm/best_model
+      --num-samples 100
+
+  eval-nuscenes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bev-vlm:latest
+    container_name: bev-vlm-eval-nuscenes
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - BEV_VQA_BEV_DIR=/data/bev_features
+      - BEV_VQA_DATASETS_DIR=/data/vqa_datasets
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+      - ${HOST_DATA_DIR:-/media/nazario.pizzicoli/Datos}:/data:ro
+      - ./checkpoints:/app/checkpoints
+      - ./outputs:/app/outputs
+    ipc: host
+    command: >
+      python scripts/evaluate_nuscenes_qa.py
+      --checkpoint checkpoints/ablation_pos_embed/2d_polar_metric/nuscenes_qa/best_model
+      --balanced-samples-per-cat 20
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bev-vlm:latest
+    container_name: bev-vlm-test
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+    ipc: host
+    command: pytest tests/
