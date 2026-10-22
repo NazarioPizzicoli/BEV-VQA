@@ -10,4 +10,9 @@ if [ -z "$QUIET" ] && [ -f "/app/scripts/banner.py" ]; then
     python /app/scripts/banner.py 2>/dev/null || true
 fi
 
+# If first argument starts with a dash (-), forward as arguments to interactive inference
+if [ $# -gt 0 ] && [ "${1:0:1}" = "-" ]; then
+    set -- python scripts/inference_interactive.py "$@"
+fi
+
 exec "$@"

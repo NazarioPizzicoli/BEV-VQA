@@ -53,7 +53,7 @@ services:
     ipc: host
     stdin_open: true
     tty: true
-    command: python scripts/inference_interactive.py
+    command: python scripts/inference_interactive.py --random --terminal-viz
 
   eval-drivelm:
     build:
