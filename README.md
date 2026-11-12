@@ -128,16 +128,23 @@ python scripts/evaluate_nuscenes_qa.py \
 
 ### 4. Docker Deployment
 
-The framework is fully containerized with NVIDIA GPU acceleration (CUDA 12.1 + PyTorch 2.4):
+The framework is fully containerized with NVIDIA GPU acceleration (CUDA 12.1 + PyTorch 2.4). An aesthetic ASCII banner dynamically verifies GPU allocation, VRAM, and volume mount status upon container startup.
+
+#### 4.1. Local Machine (Default Setup)
+
+On the primary local machine, default paths for dataset storage (`/media/nazario.pizzicoli/Datos`) and checkpoints (`./checkpoints`) work out-of-the-box:
 
 ```bash
 # Build the Docker image
 docker compose build
 
-# Launch full interactive REPL menu inside container (select questions [1-N] or ask custom queries with [C])
+# Verify environment inside container (GPU, CUDA, BEV-VLM model forward pass)
+docker compose run --rm bev-vlm python scripts/verify_docker_environment.py
+
+# Launch full interactive REPL menu (select questions [1-N], ask custom queries [C], or next scene [N])
 docker compose run --rm interactive --interactive
 
-# Quick one-shot visual demo inside container (with surround cameras & BEV heatmap)
+# Quick one-shot visual demo (random scene with surround cameras & BEV heatmap)
 docker compose run --rm interactive
 
 # Run DriveLM benchmark inside container with LLM-as-a-Judge
@@ -146,6 +153,58 @@ docker compose run --rm eval-drivelm
 # Run full test suite inside container (74 tests)
 docker compose run --rm test
 ```
+
+#### 4.2. On Another Machine / External Collaborator (Custom Paths)
+
+When deploying on a different workstation or remote server (e.g. `robesafe-100` or a collaborator's PC):
+
+1. **Clone the repository and place/symlink checkpoints:**
+   ```bash
+   git clone https://github.com/NazarioPizzicoli/BEV-VQA.git
+   cd BEV-VQA
+
+   # If checkpoints are located elsewhere on the machine, symlink them:
+   rm -rf checkpoints && ln -s /path/to/checkpoints checkpoints
+   ```
+
+2. **Configure Host Data Directory:**
+   Specify where datasets and BEV features are located on the host machine.
+
+   *Option A: Create a `.env` file (Recommended)*
+   ```bash
+   cat << 'EOF' > .env
+   HOST_DATA_DIR=/path/to/your/data_root
+   BEV_VQA_BEV_DIR=/data/dataset/bev_features
+   BEV_VQA_DATASETS_DIR=/data/vqa_datasets/unified
+   EOF
+   ```
+   *(Note: `/data` inside the container maps directly to `HOST_DATA_DIR` on the host machine)*
+
+   *Option B: Pass `HOST_DATA_DIR` inline*
+   ```bash
+   HOST_DATA_DIR=/path/to/your/data_root docker compose run --rm interactive --interactive
+   ```
+
+3. **Run Commands:**
+   ```bash
+   # Build the Docker image
+   docker compose build
+
+   # Verify GPU access and container environment
+   docker compose run --rm bev-vlm python scripts/verify_docker_environment.py
+
+   # Launch interactive REPL menu
+   docker compose run --rm interactive --interactive
+
+   # Quick one-shot visual demo
+   docker compose run --rm interactive
+
+   # Run DriveLM benchmark with LLM-as-a-Judge
+   docker compose run --rm eval-drivelm
+
+   # Run full test suite inside container
+   docker compose run --rm test
+   ```
 
 ---
 
